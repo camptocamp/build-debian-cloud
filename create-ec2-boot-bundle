@@ -1,0 +1,24 @@
+#!/bin/bash
+#
+# create-ec2-boot-bundle
+#
+# This script creates a boot bundle from the system it runs on for use with
+# ec2debian-build-ami. The bundles contain the content of /boot (including
+# the kernel and grub configuration) and the kernel modules.
+
+bundledir=$(mktemp)
+
+if [ $(uname -m) = 'x86_64' ]; then
+  bundlearch="x86_64"
+else
+  bundlearch="i386"
+fi
+
+
+rsync -a /boot $bundledir
+
+mkdir -p $bundledir/lib/modules
+rsync -a /lib/modules/$(uname -r) $bundledir/lib/modules
+
+tar cvjf /tmp/ec2-boot-bundle-$bundlearch-$(date +%Y%m%d).tar.bz2 $bundledir
+
