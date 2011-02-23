@@ -531,18 +531,16 @@ apt-get install -y binutils unzip debootstrap rsync ruby openssl curl ca-certifi
 # To build kernel modules yourself, see:
 # http://alestic.com/2008/05/kernel-modules-2-6-21
 
-# FIXME: use some kins of bundle for the modules (and kernel below)
-modules=
-#if [ ! "$kernel" -a ! "$modules" ]; then
-#  if [ $bsarch = 'amd64' ]; then
-#    modules=http://alestic-downloads.s3.amazonaws.com/ec2-kernel-modules-2.6.21.7-2.fc8xen-ec2-x86_64-20090930.tar.gz
-#  elif [ $bsarch = 'i386' ]; then
-#    modules=http://alestic-downloads.s3.amazonaws.com/ec2-kernel-modules-2.6.21.7-2.fc8xen-ec2-i686-20090930.tar.gz
-#  else
-#    echo >&2 "$0: Unrecognized --arch $bsarch"
-#    exit 1
-#  fi
-#fi
+if [ ! "$kernel" -a ! "$modules" ]; then
+  if [ $bsarch = 'amd64' ]; then
+    modules=http://camptocamp.s3.amazonaws.com/ec2-boot/ec2-boot-bundle-x86_64-20110223.tar.bz2
+  elif [ $bsarch = 'i386' ]; then
+    modules=http://camptocamp.s3.amazonaws.com/ec2-boot/ec2-boot-bundle-i386-20110223.tar.bz2
+  else
+    echo >&2 "$0: Unrecognized --arch $bsarch"
+    exit 1
+  fi
+fi
 echo "modules:      $modules"
 echo "packages:     $packages"
 
@@ -604,12 +602,11 @@ chroot $imagedir apt-get install -y $packages
 chroot $imagedir apt-get remove -y apparmor apparmor-utils || true
 unset DEBIAN_FRONTEND
 
-# Install kernel modules
-#for module in $modules; do
-#  curl -s $module | tar xzC $imagedir
-#done
-# FIXME: use some kind of bundle for i386 and amd64
-rsync -a /lib/modules/$(uname -r) $imagedir/lib/modules
+# Install kernel, kernel modules and grub configuration
+for module in $modules; do
+  curl -s $module | tar xjC $imagedir
+done
+sed -i 's!/dev/hda1!/dev/sda1!' $imagedir/boot/grub/menu.lst
 
 # This kernel module has historically been loaded; keeping the tradition.
 echo "xfs" >> $imagedir/etc/modules
@@ -624,12 +621,6 @@ mkdir -p $imagedir/boot/grub
 chroot $imagedir apt-get install ucf
 curl -s -o $imagedir/tmp/grub-legacy-ec2.deb http://ch.archive.ubuntu.com/ubuntu/pool/main/c/cloud-init/grub-legacy-ec2_0.5.10-0ubuntu1.5_all.deb
 chroot $imagedir dpkg -i /tmp/grub-legacy-ec2.deb
-
-# Setup kernel and boot
-# FIXME: use some kind of bundle for these things we rsync
-rsync /boot/* $imagedir/boot/
-sed -i 's!/dev/hda1!/dev/sda1!' $imagedir/boot/grub/menu.lst
-chroot $imagedir /usr/sbin/update-grub-legacy-ec2
 
 # Xen expects a single tty1
 /bin/rm -f $imagedir/etc/event.d/tty[2-6]
