@@ -1,0 +1,5 @@
+This script builds, bundles, and uploads an Debian AMI for
+Amazon EC2.
+
+This script is a fork of ec2ubuntu-build-ami available here:
+http://ec2ubuntu.googlecode.com/svn/trunk/bin/ec2ubuntu-build-ami

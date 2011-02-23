@@ -1,0 +1,842 @@
+#!/bin/bash
+#
+# ec2debian-build-ami
+#
+# This script builds, bundles, and uploads an Debian AMI for
+# Amazon EC2.
+#
+# This has currently only been tested on standard ubuntu EC2 instances, but
+# should run fine on most systems with minimal fine tuning.
+#
+# This script is a fork of ec2ubuntu-build-ami available here:
+# http://ec2ubuntu.googlecode.com/svn/trunk/bin/ec2ubuntu-build-ami
+#
+# Command line options:
+#
+#   --ebs                 - Build an EBS boot AMI (defaults to S3 based AMI)
+#   --user ID             - Defaults to $AWS_USER_ID
+#   --access-key ID       - Defaults to $AWS_ACCESS_KEY_ID
+#   --secret-key ID       - Defaults to $AWS_SECRET_ACCESS_KEY_ID
+#   --private-key PATH    - Defaults to $EC2_PRIVATE_KEY
+#   --cert PATH           - Defaults to $EC2_CERT
+#   --distribution NAME   - ubuntu                          debian
+#   --codename NAME   - dapper hardy intrepid jaunty karmic etch lenny squeeze
+#   --release VERSION - 6.06   8.04  8.10     9.04   9.10   4.0  5.0   6.0
+#   --arch ARCHITECTURE   - i386 amd64 (defaults to arch of the running host)
+#   --timezone ZONE       - Defaults to UTC
+#   --locale LOCALE       - Defaults to en_US
+#   --charmap CHARMAP     - Defaults to UTF-8
+#   --no-run-user-data    - Do not run user-data script on first boot
+#   --package NAME        - Additional Ubuntu package to install
+#   --script FILE         - External script/command to run before bundle
+#   --modules "URL1 URL2" - Kernel modules to download and install
+#   --rightscale          - Include RightScale integration support
+#   --builddir DIR        - Build directory [default: /mnt/build]
+#   --location US/EU      - AWS location [default: US]
+#   --ec2-ami-tools-version VER - EC2 AMI tools version (e.g., "1.3.xxxxxx")
+#
+#   The following options are only for S3-based AMIS (not using --ebs):
+#
+#   --bucket NAME         - S3 bucket name for non-EBS AMIs
+#   --prefix PREFIX       - Defaults to a reasonable manifest name
+#   --tag TAGNAME         - Used in the default prefix value
+#   --size MB             - Root partition size in megabytes (default 10240)
+#   --bundle-opts OPTIONS - Options to pass to ec2-bundle-vol
+#
+#   It is ok to specify multiple --package and --script options.
+#   It is ok to specify a quoted command for the --script option.
+#   You can also use "--desktop yes" to install the desktop packages
+#   without the NX software.
+#
+# Example:
+#
+#   Build an Ubuntu 8.04 Hardy base install AMI and upload to MYBUCKET:
+#
+#   bash ec2ubuntu-build-ami             \
+#   --codename    hardy                  \
+#   --bucket      MYBUCKET               \
+#   --user        $AWS_USER_ID           \
+#   --access-key  $AWS_ACCESS_KEY_ID     \
+#   --secret-key  $AWS_SECRET_ACCESS_KEY \
+#   --private-key pk*.pem                \
+#   --cert        cert*.pem 
+#
+# Amazon EC2 AMIs built using this script:
+#
+#   http://alestic.com
+#
+# Updated versions of this script:
+#
+#   http://code.google.com/p/ec2ubuntu/
+#
+# General Ubuntu on EC2 support (including support for this script):
+#
+#   http://groups.google.com/group/ec2ubuntu
+#
+# History:
+#
+#   2011-02-23 Christin Kaenzig <christian.kaenzig@camptocamp.com>
+#   - Forked and renamed script
+#   - Dropped support for building images other than Debian Squeeze
+#
+#   2010-06-24 Shahar Evron <shahar.evron@gmail.com>
+#   - Use lazy umount to avoid "device is busy"
+#
+#   2010-01-07 Tom White
+#   - Add support for gzip-compressed user data (in ec2-run-user-data)
+#
+#   2009-12-29 Terry Jones <terry@jon.es>
+#   - Add support for building an EBS snapshot AMI.
+#
+#   2009-12-27 Eric Hammond <ehammond@thinksome.com>
+#   - Save .orig copy of sshd_config
+#
+#   2009-10-28 Eric Hammond <ehammond@thinksome.com>
+#   - Add Alestic PPA to apt sources on Debian (using "karmic")
+#   - Install runrul from Alestic PPA on Debian
+#   - Upgrade EC2 AMI tools to 1.3-45758
+#
+#   2009-10-28 Eric Hammond <ehammond@thinksome.com>
+#   - Wait for meta-data before setting ssh host key (Thanks to truecyclist)
+#   - Allow user-data to remove "been run" file (Thanks to Gabriell Nell)
+#
+#   2009-10-12 Eric Hammond <ehammond@thinksome.com>
+#   - Ensure /lib/modules are owned by root (Thanks to Dmitry for catching)
+#
+#   2009-10-11 Eric Hammond <ehammond@thinksome.com>
+#   - Upgrade to debootstrap 1.0.20
+#
+#   2009-09-30 Eric Hammond <ehammond@thinksome.com>
+#   - Use new 2.6.21 kernels and kernel modules from Amazon (security fix)
+#   - Add Alestic PPA to apt sources on Ubuntu
+#   - Install runurl from Alestic PPA
+#
+#   2009-06-15 Toby White
+#   - Upgrade to debootstrap 1.0.19
+#
+#   2009-09-04 Eric Hammond <ehammond@thinksome.com>
+#   - Don't try to install xfs.ko when --kernel is specified
+#   - Add --rightscale option
+#
+#   2009-08-05 Eric Hammond <ehammond@thinksome.com>
+#   - Pin the ec2-ami-tools package version so it does not get downgraded
+#   - Add --ec2-ami-tools-version option
+#
+#   2009-08-04 Andrew Becherer <andrew@isecpartners.com>
+#   - Security: Generate ssh host key *after* initializing RNG seed
+#
+#   2009-06-23 Eric Hammond <ehammond@thinksome.com>
+#   - Add support for building Ubuntu 9.10 "karmic" images
+#   - Upgrade EC2 AMI tools to 1.3-34544
+#
+#   2009-06-15 Eric Hammond <ehammond@thinksome.com>
+#   - Upgrade to debootstrap 1.0.13
+#
+#   2009-06-14 Eric Hammond <ehammond@thinksome.com>
+#   - Add --kernel and --ramdisk options to specify AKI and ARI.
+#   - Install "denyhosts" on desktop images for improved security
+#   - Add failover for Ubuntu archive mirror hosts across availability zones
+#
+#   2009-05-05 Eric Hammond <ehammond@thinksome.com>
+#   - Remove support for Ubuntu edgy, feisty, gutsy
+#
+#   2009-04-28 Steven Parkes <smparkes@smparkes.net>
+#   - Typo fix for $originaldir
+#   - Typo catch for /dev/ptmx
+#
+#   2009-04-26 Paul Downman <lists@pauldowman.com>
+#   - Use RightScale Ubuntu mirror for 9.04 Jaunty
+#
+#   2009-04-24 Eric Hammond <ehammond@thinksome.com>
+#   - Upgrade EC2 AMI tools to 1.3-31780
+#
+#   2009-04-10 Eric Hammond <ehammond@thinksome.com>
+#   - Leave PasswordAuthentication enabled on desktop builds for NX auth
+#   - Upgrade desktop to latest 3.3.0 versions of NX Free Edition software
+#   - Pre-load xfs.ko kernel module to avoid some problems
+#
+#   2009-04-06 Eric Hammond <ehammond@thinksome.com>
+#   - Default to "PasswordAuthentication no" in /etc/ssh/sshd_config
+#     at the request of Amazon Web Services security team.
+#
+#   2009-04-05 Eric Hammond <ehammond@thinksome.com>
+#   - Install XFS kernel module to match Amazon's 2.6.21fc8 kernel
+#     Fixes XFS bug on Lenny, Intrepid and above http://ec2xfs-fix.notlong.com
+#
+#   2009-02-15 Eric Hammond <ehammond@thinksome.com>
+#   - Hardy and Intrepid use Ubuntu mirrors on EC2 provided by RightScale
+#   - Added support for Debian "squeeze"
+#
+#   2009-02-09 Terry Jones <terry@jon.es>
+#   - Script hooks are run from within original directory
+#   - Non-zero exit from scripts cause failure of entire build
+#
+#   2009-01-15 Jim Dixon <jddixon@gmail.com>
+#   - Added --location option, defaulting to US
+#   - Wrapped loading of external scripts in DEBIAN_FRONTEND=noninteractive
+#   - Still problem handling en_GB and en_UK locales (Ubuntu problem? Perl?)
+#   - As of this date bucket name must be all lower case (bug in ami-tools)
+#
+#   2009-01-05 Dietmar Scharf
+#   - Fix for --locale option
+#
+#   2008-11-26 Eric Hammond <ehammond@thinksome.com>
+#   - Add support for building Ubuntu 9.04 "jaunty" images
+#   - Upgrade EC2 AMI tools to 1.3-30748
+#   - Upgrade desktop to latest 3.3.0 versions of NX Free Edition software
+#
+#   2008-11-26 Eric Hammond <ehammond@thinksome.com>
+#   - Upgrade EC2 AMI tools to 1.3-26357
+#   - Remove old 2.6.16 kernel modules
+#   - Upgrade desktop images to NX Free Edition 3.3.0
+#
+#   2008-11-26 Don Spaulding II <>
+#   - Add --arch option
+#
+#   2008-10-31 Eric Hammond <ehammond@thinksome.com>
+#   - Upgrade desktop to latest version of NX Free Edition software
+#
+#   2008-10-06 Eric Hammond <ehammond@thinksome.com>
+#   - Remove apparmor which will not work on older kernels.
+#
+#   2008-10-02 Eric Hammond <ehammond@thinksome.com>
+#   - Add 'hwcap 0 nosegneg' to /etc/ld.so.conf.d/libc6-xen.conf
+#     Thanks to research by Eric Mason
+#
+#   2008-09-23 Eric Hammond <ehammond@thinksome.com>
+#   - Garrett Smith noted ec2-bundle-vol now requires --generate-fstab
+#
+#   2008-09-16 Eric Hammond <ehammond@thinksome.com>
+#   - Changes based on ideas from Hans Omli:
+#   - Hardy and Intrepid now install libc6-xen (and remove libc6-i686)
+#
+#   2008-09-16 Eric Hammond <ehammond@thinksome.com>
+#   - Changes based on ideas from justnulling:
+#   - Run depmod for all installed kernel module versions
+#   - Add --bundle-opts option
+#   - Cleanup the correct cache/log files in the image
+#
+#   2008-09-16 Eric Hammond <ehammond@thinksome.com>
+#   - Changes based on ideas from yourabi:
+#   - Add --no-run-user-data option.
+#   - Do not purge patch and alien as this would remove build-essential.
+#   - Export $distribution to external scripts.
+#
+#   2008-09-04 Eric Hammond <ehammond@thinksome.com>
+#   - Fix ec2-ssh-host-key-gen to not run on reboot.
+#
+#   2008-08-04 Eric Hammond <ehammond@thinksome.com>
+#   - Upgrade to latest AMI tools 1.3-21885 (obviates 1 patch)
+#
+#   2008-07-21 Eric Hammond <ehammond@thinksome.com>
+#   - Upgrade to debootstrap 1.0.10
+#   - Output new ssh host keys to console log for security.
+#   - Use newly built kernel modules where fuse supports NFS export.
+#
+#   2008-07-03 Eric Hammond <ehammond@thinksome.com>
+#   - Split startup scripts into their own files and reorganize a bit.
+#
+#   2008-06-30 Eric Hammond <ehammond@thinksome.com>
+#   - Support building Debian desktop AMIs.
+#
+#   2008-06-28 Eric Hammond <ehammond@thinksome.com>
+#   - Enhance to support building Debian AMIs as well as Ubuntu AMIs.
+#   - Add "intrepid" for the Ubuntu 8.10 alpha release.
+#
+#   2008-06-10 Thomas Shealy <thomas.shealy@gmail.com>
+#   - Upgrade NX server to latest version.
+#
+#   2008-06-10 Thomas Shealy <thomas.shealy@gmail.com>
+#   - Add --builddir option to support multiple concurrent AMI builds.
+#   - Make build parameters available in external scripts.
+#
+#   2008-06-09 Eric Hammond <ehammond@thinksome.com>
+#   - Prevent prompting for desktop packages w/ DEBIAN_FRONTEND=noninteractive
+#   - Use fixed revision of ec2-run-user-data
+#   - Use fixed release of the Amazon EC2 AMI command line tools.
+#
+#   2008-06-04 Eric Hammond <ehammond@thinksome.com>
+#   - Run --script file directly if it is executable, otherwise use /bin/bash
+#   - Option to --script can be a quoted command line.
+#
+#   2008-06-02 Eric Hammond <ehammond@thinksome.com>
+#   - Change default timezone to UTC.
+#   - Increase default root partition size to 10GB (still 3GB for Dapper).
+#   - Upgrade to debootstrap 1.0.9
+#
+#   2008-06-01 Eric Hammond <ehammond@thinksome.com>
+#   - Tweaks to allow running this script on Ubuntu 8.04 Hardy.
+#   - Trim 15MB off of the post-boot disk footprint.
+#
+#   2008-05-21 Eric Hammond <ehammond@thinksome.com>
+#   - Add "kubuntu-desktop" to desktop builds so they have Gnome and KDE.
+#
+#   2008-05-20 Eric Hammond <ehammond@thinksome.com>
+#   - Add option to specify kernel modules.
+#
+#   2008-05-16 Eric Hammond <ehammond@thinksome.com>
+#   - Run the instance user-data if it looks like a script (starts with #!)
+#   - Wait for the network (DHCP) to come up before grabbing instance data.
+#
+#   2008-05-14 Eric Hammond <ehammond@thinksome.com>
+#   - Create new ssh host keys on first boot.
+#   - Disable apparmor as we don't have the kernel module installed yet.
+#   - Don't claim every AMI was built by Eric Hammond in /etc/motd
+#   - Create /tmp earlier in the boot process to avoid warnings.
+#   - Implemented following suggestions from Hans Omli:
+#   - Disable useless CMOS hwclock at boot to avoid error and save seconds.
+#   - Avoid grep warning about missing authorized_keys file on first boot.
+#
+#   2008-05-13 Thomas Shealy <thomas.shealy@gmail.com>
+#   - Add --retry to ec2-upload-bundle.
+#
+#   2008-05-12 Thomas Shealy <thomas.shealy@gmail.com>
+#   - Support 64-bit desktop AMIs.
+#   - Upgrade to NX 3.2.
+#
+#   2008-04-29 Eric Hammond <ehammond@thinksome.com>
+#   - Support command line options with reasonable defaults.
+#   - Support building Ubuntu 8.04 Hardy Heron.
+#
+#   2008-04-22 Vincent Desjardins
+#   - Add a variable to override the default size of the image created
+#   - Add a optional call to an external script before bundling the AMI
+#
+#   2008-04-19 Eric Hammond <ehammond@thinksome.com>
+#   - Support 2.6.21 kernel with 64-bit builds.
+#
+#   2008-04-18 Eric Hammond <ehammond@thinksome.com>
+#   - Fix performance problem with 2.6.21 initrd (with killall nash-hotplug).
+#
+#   2008-04-11 Eric Hammond <ehammond@thinksome.com>
+#   - Install kernel modules for both 2.6.16-xenU and 2.6.21.7-2.fc8xen
+#
+#   2008-04-05 Eric Hammond <ehammond@thinksome.com>
+#   - Add support for desktop build with NoMachine NX Free.
+#
+#   2008-04-03 Eric Hammond <ehammond@thinksome.com>
+#   - Upgrade to latest AMI tools 1.3-20041 (obviates several patches)
+#   - Add new Ubuntu patches for new version of AMI tools
+#   - Switch from "uname -i" to "uname -m" to enable building on Ubuntu 64-bit
+#   - Merge Dapper, Edgy, Feisty, Gutsy, Hardy scripts (Hardy doesn't work yet)
+#
+#   2008-03-13 Eric Hammond <ehammond@thinksome.com>
+#   - Prevent apt-get from running newly installed daemons
+#
+#   2008-03-09 Eric Hammond <ehammond@thinksome.com>
+#   - Upgrade to kernel modules 2.6.16.60
+#   - Upgrade fuse kernel module to 2.7.3
+#   - Upgrade to latest AMI tools 1.3-19365 (obviates one patch)
+#
+#   2008-02-05 Eric Hammond <ehammond@thinksome.com>
+#   - Patch AMI tools to work with new Ruby 1.8.6
+#
+#   2008-02-03 Eric Hammond <ehammond@thinksome.com>
+#   - Install rsync without lutimes support (as it's not in the EC2 kernel)
+#
+#   2008-01-17 Eric Hammond <ehammond@thinksome.com>
+#   - Upgrade to debootstrap 1.0.8
+#
+#   2007-12-25 Eric Hammond <ehammond@thinksome.com>
+#   - Install fuse kernel module (32-bit)
+#   - Upgrade to debootstrap 1.0.7
+#
+#   2007-12-02 Eric Hammond <ehammond@thinksome.com>
+#   - Use architecture "amd64" instead of "i386" for debootstrap on 64-bit
+#   - Add ia32-libs compatability package for 64-bit
+#
+#   2007-12-01 Eric Hammond <ehammond@thinksome.com>
+#   - Add support for building on 64-bit kernel (large, extra large instances)
+#
+#   2007-11-23 Eric Hammond <ehammond@thinksome.com>
+#   - ssh credentials retrieved from instance parameters or ephemeral storage.
+#   - Patch ec2-unbundle to work on Ubuntu
+#   - Also add locale to /etc/default/locale
+#
+#   2007-11-22 Eric Hammond <ehammond@thinksome.com>
+#   - Upgrade Ubuntu AMI tools patch to match new AMI tools source.
+#   - Install ca-certificates to better support ec2-upload-bundle per:
+#     http://developer.amazonwebservices.com/connect/thread.jspa?threadID=16543&tstart=0
+#   - ec2-bundle-vol excludes /etc/udev/rules.d/70-persistent-net.rules
+#     so that the network works on a rebundled instance, per:
+#   http://developer.amazonwebservices.com/connect/message.jspa?messageID=70873
+#
+#   2007-11-18 Eric Hammond <ehammond@thinksome.com>
+#   - Original put together based on code, tricks, and fixes from many
+#     others.
+#
+
+svnpath=http://ec2ubuntu.googlecode.com/svn-history/r183
+originaldir=$(/bin/pwd)
+
+#packages="openssh-server rsync ruby openssl curl ca-certificates libopenssl-ruby patch"
+packages="openssh-server"
+
+while [ $# -gt 0 ]; do
+  case $1 in
+    --distribution) distribution=$2;                    shift 2 ;;
+    --codename)    codename=$2;                         shift 2 ;;
+    --release)     release=$2;                          shift 2 ;;
+    --arch)        bsarch=$2;                           shift 2 ;;
+    --tag)         tag=$2;                              shift 2 ;;
+    --bucket)      bucket=$2;                           shift 2 ;;
+    --prefix)      prefix=$2;                           shift 2 ;;
+    --user)        AWS_USER_ID=$2;                      shift 2 ;;
+    --access-key)  AWS_ACCESS_KEY_ID=$2;                shift 2 ;;
+    --secret-key)  AWS_SECRET_ACCESS_KEY=$2;            shift 2 ;;
+    --private-key) EC2_PRIVATE_KEY=$2;                  shift 2 ;;
+    --cert)        EC2_CERT=$2;                         shift 2 ;;
+    --timezone)    timezone=$2;                         shift 2 ;;
+    --locale)      locale=$2;                           shift 2 ;;
+    --charmap)     charmap=$2;                          shift 2 ;;
+    --size)        size=$2;                             shift 2 ;;
+    --no-run-user-data) no_run_user_data=1;             shift ;;
+    --script)      scripts=("${scripts[@]}" "$2");      shift 2 ;;
+    --package)     packages="$packages $2";             shift 2 ;;
+    --modules)     modules=$2;                          shift 2 ;;
+    --rightscale)  rightscale=1;                        shift ;;
+    --builddir)    builddir=$2;                         shift 2 ;;
+    --bundle-opts) bundle_vol_options=$2;               shift 2 ;;
+    --location)    location=$2;                         shift 2 ;;
+    --ec2-ami-tools-version) tools_version=$2;          shift 2 ;;
+    --ebs)         ebs=1;                               shift ;;
+    *)             echo "$0: Unrecognized option: $1" >&2; exit 1;
+  esac
+done
+
+if [ "$codename" = "" -a "$release" = "" ]; then
+  codename=squeeze
+fi
+
+if [ "$release" = "" ]; then
+  case $codename in
+    squeeze)  release=6.0      ;;
+    *)        echo "$0: Unrecognized codename: $codename" >&2; exit 1;
+  esac
+elif [ "$codename" = "" ]; then
+  case $release in
+    5)  codename=squeeze   ;;
+    *)     echo "$0: Unrecognized release: $release" >&2; exit 1;
+  esac
+fi
+
+if [ "$distribution" = "" ]; then
+  case $codename in
+    squeeze)              distribution=debian ;;
+    *)     echo "$0: Unrecognized codename: $codename" >&2; exit 1;
+  esac
+fi
+
+# Required and default parameters
+true ${AWS_USER_ID:?} ${AWS_ACCESS_KEY_ID:?} ${AWS_SECRET_ACCESS_KEY:?} \
+     ${EC2_CERT:=$(echo /mnt/cert-*.pem)} \
+     ${EC2_PRIVATE_KEY:=$(echo /mnt/pk-*.pem)} \
+     ${locale:=en_US} ${charmap:=UTF-8} ${timezone:=UTC} \
+     ${location:=US} \
+     ${tools_version:=1.3-45758} \
+     ${builddir:=/mnt/build}
+#FIXME: tools_version ??
+
+
+if [ -z "$ebs" ]
+then
+  # We must be given a bucket and we set a default prefix if we're not
+  # building an EBS snapshot AMI.
+  true ${bucket:?} \
+       ${tag:=custom} \
+       ${prefix:=$distribution-$release-$codename-$tag-$(date +%Y%m%d)}
+
+  true ${size:=10240}
+else
+  # It would be more compact to test all of these using eval in a loop, but
+  # then it's not so easy to give a meaningful error message showing what
+  # command line option shouldn't have been given.
+  if [ -n "$bucket" ]
+  then
+      echo >&2 "$0: --ebs is incompatible with --bucket"
+      exit 1
+  fi
+  if [ -n "$tag" ]
+  then
+      echo >&2 "$0: --ebs is incompatible with --tag"
+      exit 1
+  fi
+  if [ -n "$size" ]
+  then
+      echo >&2 "$0: --ebs is incompatible with --size"
+      exit 1
+  fi
+  if [ -n "$prefix" ]
+  then
+      echo >&2 "$0: --ebs is incompatible with --prefix"
+      exit 1
+  fi
+  if [ -n "$bundle_vol_options" ]
+  then
+      echo >&2 "$0: --ebs is incompatible with --bundle-opts"
+      exit 1
+  fi
+fi
+
+packages="$packages udev psmisc lsb-release"
+                             
+if [ $(uname -m) = 'x86_64' ]; then
+  true ${bsarch:="amd64"}
+  bundlearch="x86_64"
+  export notlongext="64"
+else
+  true ${bsarch:="i386"}
+  bundlearch="i386"
+  export notlongext=""
+fi
+
+echo "Building AMI for $distribution $release $codename"
+echo "locale:       $locale"
+echo "charmap:      $charmap"
+echo "location:     $location"
+echo "timezone:     $timezone"
+if [ -z "$ebs" ]
+then
+  echo "image size:   ${size} MB"
+  echo "uploading to: $bucket/$prefix"
+fi
+echo "bundlearch:   $bundlearch"
+echo "bsarch:       $bsarch"
+
+set -e
+set -x
+
+# The good stuff starts here.
+
+if [ -z "$ebs" ]
+then
+  mkdir -p $builddir
+  cd $builddir
+  imagedir=$builddir/$distribution
+  mkdir -p $imagedir
+else
+  if [ ! -d "$builddir" ]
+  then
+    echo >&2 "Build directory '$builddir' is nonexistent."
+    echo >&2 "It should be a mounted EBS volume."
+  fi
+  imagedir=$builddir
+fi
+
+
+# Install packages on the builing system to make the rest of this script run smoothly.
+# FIXME: this JRE package is probably specific to ubuntu. 
+apt-get install -y binutils unzip debootstrap rsync ruby openssl curl ca-certificates libopenssl-ruby openjdk-6-jre-headless
+
+# To build kernel modules yourself, see:
+# http://alestic.com/2008/05/kernel-modules-2-6-21
+
+# FIXME: use some kins of bundle for the modules (and kernel below)
+modules=
+#if [ ! "$kernel" -a ! "$modules" ]; then
+#  if [ $bsarch = 'amd64' ]; then
+#    modules=http://alestic-downloads.s3.amazonaws.com/ec2-kernel-modules-2.6.21.7-2.fc8xen-ec2-x86_64-20090930.tar.gz
+#  elif [ $bsarch = 'i386' ]; then
+#    modules=http://alestic-downloads.s3.amazonaws.com/ec2-kernel-modules-2.6.21.7-2.fc8xen-ec2-i686-20090930.tar.gz
+#  else
+#    echo >&2 "$0: Unrecognized --arch $bsarch"
+#    exit 1
+#  fi
+#fi
+echo "modules:      $modules"
+echo "packages:     $packages"
+
+# Don't launch daemons on apt-get install
+mkdir -p $imagedir/usr/sbin/
+cat << EOF > $imagedir/usr/sbin/policy-rc.d
+#!/bin/sh
+exit 101
+EOF
+chmod 755 $imagedir/usr/sbin/policy-rc.d
+
+# Install AMI and API tools
+mkdir /mnt/tools
+curl -s -o /mnt/tools/ec2-ami-tools.zip http://s3.amazonaws.com/ec2-downloads/ec2-ami-tools.zip
+curl -s -o /mnt/tools/ec2-api-tools.zip http://s3.amazonaws.com/ec2-downloads/ec2-api-tools.zip
+unzip /mnt/tools/ec2-ami-tools.zip -d /mnt/tools/
+unzip /mnt/tools/ec2-api-tools.zip -d /mnt/tools/
+ln -s /mnt/tools/ec2-ami-tools-* /mnt/tools/ec2-ami-tools
+ln -s /mnt/tools/ec2-api-tools-* /mnt/tools/ec2-api-tools
+export EC2_HOME=/mnt/tools/ec2-api-tools
+export EC2_AMITOOL_HOME=/mnt/tools/ec2-ami-tools
+export EC2_APITOOL_HOME=/mnt/tools/ec2-api-tools
+export PATH=$PATH:${EC2_AMITOOL_HOME}/bin:${EC2_APITOOL_HOME}/bin
+
+# Bootstrap Ubuntu
+debootstrap --arch $bsarch $codename $imagedir
+
+chroot $imagedir mount -t proc none /proc
+chroot $imagedir mkdir -p /dev/pts
+chroot $imagedir mount -t devpts none /dev/pts
+
+chroot $imagedir apt-get -f install -y
+
+# Set locale
+chroot $imagedir apt-get install -y --force-yes locales # for Debian
+chroot $imagedir localedef -c --inputfile=$locale --charmap=$charmap $locale.$charmap
+echo "LANG=\"$locale.$charmap\""  >$imagedir/etc/default/locale
+
+# Set timezone
+echo $timezone >$imagedir/etc/timezone
+/bin/cp -f $imagedir/usr/share/zoneinfo/$timezone $imagedir/etc/localtime
+
+# Basic sources.list
+mv $imagedir/etc/apt/sources.list $imagedir/etc/apt/sources.list.orig || true
+cat <<EOF >$imagedir/etc/apt/sources.list
+deb http://http.us.debian.org/debian   $codename         main contrib non-free
+#deb http://non-us.debian.org/debian-non-US stable/non-US main contrib non-free
+deb http://security.debian.org         $codename/updates main contrib non-free
+EOF
+chroot $imagedir apt-get update
+
+# MAKEDEV is expected in /dev by some packages.
+ln -s /sbin/MAKEDEV $imagedir/dev/MAKEDEV
+
+# Upgrade/install packages
+chroot $imagedir apt-get -y upgrade
+export DEBIAN_FRONTEND=noninteractive
+chroot $imagedir apt-get install -y $packages
+chroot $imagedir apt-get remove -y apparmor apparmor-utils || true
+unset DEBIAN_FRONTEND
+
+# Install kernel modules
+#for module in $modules; do
+#  curl -s $module | tar xzC $imagedir
+#done
+# FIXME: use some kind of bundle for i386 and amd64
+rsync -a /lib/modules/$(uname -r) $imagedir/lib/modules
+
+# This kernel module has historically been loaded; keeping the tradition.
+echo "xfs" >> $imagedir/etc/modules
+
+chown -R root.root $imagedir/lib/modules
+for module_version in $(cd $imagedir/lib/modules; ls); do
+  chroot $imagedir depmod -a $module_version
+done
+
+# Install PvGrub
+mkdir -p $imagedir/boot/grub
+chroot $imagedir apt-get install ucf
+curl -s -o $imagedir/tmp/grub-legacy-ec2.deb http://ch.archive.ubuntu.com/ubuntu/pool/main/c/cloud-init/grub-legacy-ec2_0.5.10-0ubuntu1.5_all.deb
+chroot $imagedir dpkg -i /tmp/grub-legacy-ec2.deb
+
+# Setup kernel and boot
+# FIXME: use some kind of bundle for these things we rsync
+rsync /boot/* $imagedir/boot/
+sed -i 's!/dev/hda1!/dev/sda1!' $imagedir/boot/grub/menu.lst
+chroot $imagedir /usr/sbin/update-grub-legacy-ec2
+
+# Xen expects a single tty1
+/bin/rm -f $imagedir/etc/event.d/tty[2-6]
+
+# Security
+chroot $imagedir shadowconfig on
+chroot $imagedir passwd -d root
+perl -pi.orig -e 's/#PasswordAuthentication yes/PasswordAuthentication no/' \
+  $imagedir/etc/ssh/sshd_config
+
+# Basic networking
+cat <<'EOF' >$imagedir/etc/network/interfaces
+auto lo
+iface lo inet loopback
+
+auto eth0
+iface eth0 inet dhcp
+EOF
+
+cat <<'EOF' >$imagedir/etc/hosts
+127.0.0.1 localhost.localdomain localhost
+
+# The following lines are desirable for IPv6 capable hosts
+::1 ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+ff02::3 ip6-allhosts
+EOF
+
+cat <<'EOF' >>$imagedir/etc/ssh/sshd_config
+UseDNS no
+EOF
+
+# FIXME: how essential it this ? The patched file doesn't exist probably
+# because of a package we removed.
+## Make sure the new image doesn't try to remember a hardcoded mac address.
+#chroot $imagedir patch -d /usr/lib/site_ruby/ec2/platform/linux <<'EOF'
+#--- image.rb.orig	2008-11-27 04:58:36.964214178 -0800
+#+++ image.rb	2008-11-27 05:00:25.095464580 -0800
+#@@ -26,7 +26,9 @@
+#       # Symbolic links are preserved.      
+#       class Image
+#         IMG_MNT = '/mnt/img-mnt'
+#-        EXCLUDES= ['/dev', '/media', '/mnt', '/proc', '/sys']
+#+        EXCLUDES= ['/dev', '/media', '/mnt', '/proc', '/sys',
+#+                   '/etc/udev/rules.d/70-persistent-net.rules',
+#+                   '/etc/udev/rules.d/z25_persistent-net.rules' ]
+#         DEFAULT_FSTAB = EC2::Platform::Linux::Fstab::DEFAULT      
+#         LEGACY_FSTAB  = EC2::Platform::Linux::Fstab::LEGACY
+#       
+#EOF
+
+# Download and install startup scripts.
+install_init(){
+  script=$1
+  startpriority=$2
+  startlevels=$3
+  stoppriority=$4
+  stoplevels=$5
+  curl -s -o $imagedir/etc/init.d/$script $svnpath/trunk/etc/init.d/$script
+  chmod 755  $imagedir/etc/init.d/$script
+  for level in $startlevels; do
+    ln -s ../init.d/$script $imagedir/etc/rc$level.d/S$startpriority$script
+  done
+  for level in $stoplevels; do
+    ln -s ../init.d/$script $imagedir/etc/rc$level.d/K$stoppriority$script
+  done
+}
+
+install_init ec2-mkdir-tmp            36 "S"
+install_init ec2-ssh-host-key-gen     60 "S"
+install_init ec2-get-credentials      70 "2 3 4 5"
+if [ ! $no_run_user_data ]; then
+  install_init ec2-run-user-data      71 "2 3 4 5"
+fi
+if [ "$rightscale" ]; then
+  install_init rightscale-init        99 "2 3 4 5" 09 "0 1 6"
+fi
+
+# Inside Xen, CMOS clock is irrelevant, so save seconds at boot
+/bin/rm -f $imagedir/etc/rc?.d/*hwclock*
+
+# We're missing the apparmor kernel module for now so avoid boot warnings
+/bin/rm -f $imagedir/etc/rc?.d/*apparmor
+
+# Export build parameters so they are available in external scripts
+export distribution release codename timezone locale charmap size \
+  scripts packages modules desktop builddir imagedir bundlearch \
+  AWS_USER_ID AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY EC2_PRIVATE_KEY EC2_CERT
+
+if [ -z "$ebs" ]
+then
+  export tag bucket prefix
+fi
+
+# Invoke external scripts/commands if requested
+export DEBIAN_FRONTEND=noninteractive
+for script in "${scripts[@]}"; do
+  cd "$originaldir"
+  status=
+  if [ -x "$script" ]; then
+    "$script"
+    status=$?
+  elif [ -f "$script" ]; then
+    /bin/bash "$script"
+    status=$?
+  else
+    eval $script
+  fi
+
+  if [ -n "$status" -a "$status" -ne 0 ]; then
+    echo "Execution of '$script' failed with status $status" >&2
+    exit $status
+  fi
+done
+unset DEBIAN_FRONTEND
+cd $builddir
+
+# cleanup
+#if [ "$codename" != "dapper" -a "$codename" != "etch" ]; then
+#  chroot $imagedir apt-get -y autoremove --purge patch alien
+#fi
+
+chroot $imagedir apt-get clean
+rm -rf $imagedir/usr/sbin/policy-rc.d         \
+       $imagedir/var/log/{bootstrap,dpkg}.log \
+       $imagedir/var/cache/apt/*.bin          \
+       $imagedir/var/lib/apt/lists            \
+       $imagedir/tmp/*                        \
+       $imagedir/root/.bash_history
+mkdir -p $imagedir/var/lib/apt/lists/partial
+
+
+if [ -z "$ebs" ]
+then
+  # Bundle & upload to S3
+#  cp $EC2_PRIVATE_KEY $imagedir/tmp/pk.pem
+#  cp $EC2_CERT        $imagedir/tmp/cert.pem
+
+  # Special AKI for PvGrub
+  aki="aki-4feec43b"
+
+  ec2-bundle-vol                          \
+    -v $imagedir                          \
+    -r $bundlearch                        \
+    --kernel $aki                         \
+    -d /tmp                               \
+    -p $prefix                            \
+    -u $AWS_USER_ID                       \
+    -k $EC2_PRIVATE_KEY                   \
+    -c $EC2_CERT                          \
+    -s $size                              \
+    -e /tmp                               \
+    --generate-fstab                      \
+    $bundle_vol_options
+
+  ec2-upload-bundle                       \
+    --retry                               \
+    -b $bucket                            \
+    -m /tmp/$prefix.manifest.xml \
+    -a $AWS_ACCESS_KEY_ID                 \
+    -s $AWS_SECRET_ACCESS_KEY             \
+    --location $location 
+
+  set +x
+  cat <<EOF
+
+Now you might want to run this command:
+  ec2-register --name "$bucket/$prefix" $bucket/$prefix.manifest.xml
+
+EOF
+else
+  fstab=$builddir/etc/fstab
+  mount_entry=`mount | grep $builddir`
+  if [ -z "$mount_entry" ]
+  then
+    echo >&2 "Could not determine $builddir file system type for $fstab"
+    echo >&2 "You'll need to manually create $fstab"
+    exit 1
+  fi
+
+  type=`echo $mount_entry | cut -f5 -d' '`
+  cat >$fstab <<EOF
+/dev/sda1 /     $type    defaults 1 1
+/dev/sda3 swap  swap    defaults 0 0
+none      /proc proc    defaults 0 0
+none      /sys  sysfs   defaults 0 0
+EOF
+
+  set +x
+  cat <<EOF
+
+You now need to:
+
+ 1. umount $builddir
+ 2. detach the EBS volume (ec2-detach-volume)
+ 3. create an EBS snapshot AMI (ec2-create-snapshot)
+ 4. (optional) delete the volume (ec2-delete-volume)
+ 5. register the snapshot as an AMI (ec2-register)
+
+You can then use ec2-run-instances with your new AMI.
+
+EOF
+
+fi
+
+umount -l $imagedir/dev/pts
+umount -l $imagedir/proc || true
