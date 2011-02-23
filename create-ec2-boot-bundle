@@ -6,7 +6,20 @@
 # ec2debian-build-ami. The bundles contain the content of /boot (including
 # the kernel and grub configuration) and the kernel modules.
 
-bundledir=$(mktemp)
+while [ $# -gt 0 ]; do
+  case $1 in
+    --bucket)      bucket=$2;                           shift 2 ;;
+    --bucketpath)  bucketpath=$2;                       shift 2 ;;
+    --access-key)  AWS_ACCESS_KEY_ID=$2;                shift 2 ;;
+    --secret-key)  AWS_SECRET_ACCESS_KEY=$2;            shift 2 ;;
+    *)             echo "$0: Unrecognized option: $1" >&2; exit 1;
+  esac
+done
+
+# Required and default parameters
+true ${bucket:?} ${AWS_ACCESS_KEY_ID:?} ${AWS_SECRET_ACCESS_KEY:?}
+
+bundledir=$(mktemp -d)
 
 if [ $(uname -m) = 'x86_64' ]; then
   bundlearch="x86_64"
@@ -14,11 +27,23 @@ else
   bundlearch="i386"
 fi
 
+# Install s3cmd command (this is obviously ubuntu specific)
+apt-get install s3cmd
 
-rsync -a /boot $bundledir
+bundlefile=/tmp/ec2-boot-bundle-$bundlearch-$(date +%Y%m%d).tar.bz2
+
+mkdir -p $bundledir/boot
+rsync -a /boot/System.map-$(uname -r) /boot/abi-$(uname -r) /boot/config-$(uname -r) /boot/initrd.img-$(uname -r) /boot/vmcoreinfo-$(uname -r) /boot/vmlinuz-$(uname -r) $bundledir/boot/
+rsync -a /boot/grub $bundledir/boot
 
 mkdir -p $bundledir/lib/modules
 rsync -a /lib/modules/$(uname -r) $bundledir/lib/modules
 
-tar cvjf /tmp/ec2-boot-bundle-$bundlearch-$(date +%Y%m%d).tar.bz2 $bundledir
+tar cjf $bundlefile -C $bundledir boot lib
 
+cat > ~/.s3cfg << EOF
+access_key = $AWS_ACCESS_KEY_ID
+secret_key = $AWS_SECRET_ACCESS_KEY_ID
+EOF
+
+s3cmd --acl-public put $bundlefile s3://$bucket/$bucketpath/
