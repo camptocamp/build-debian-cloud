@@ -33,6 +33,7 @@
 #   --rightscale          - Include RightScale integration support
 #   --builddir DIR        - Build directory [default: /mnt/build]
 #   --location US/EU      - AWS location [default: US]
+#   --region REGION       - AWS region [default: us-east-1]
 #   --ec2-ami-tools-version VER - EC2 AMI tools version (e.g., "1.3.xxxxxx")
 #
 #   The following options are only for S3-based AMIS (not using --ebs):
@@ -398,6 +399,7 @@ while [ $# -gt 0 ]; do
     --builddir)    builddir=$2;                         shift 2 ;;
     --bundle-opts) bundle_vol_options=$2;               shift 2 ;;
     --location)    location=$2;                         shift 2 ;;
+    --region)      region=$2;                           shift 2 ;;
     --ec2-ami-tools-version) tools_version=$2;          shift 2 ;;
     --ebs)         ebs=1;                               shift ;;
     *)             echo "$0: Unrecognized option: $1" >&2; exit 1;
@@ -432,7 +434,7 @@ true ${AWS_USER_ID:?} ${AWS_ACCESS_KEY_ID:?} ${AWS_SECRET_ACCESS_KEY:?} \
      ${EC2_CERT:=$(echo /mnt/cert-*.pem)} \
      ${EC2_PRIVATE_KEY:=$(echo /mnt/pk-*.pem)} \
      ${locale:=en_US} ${charmap:=UTF-8} ${timezone:=UTC} \
-     ${location:=US} \
+     ${location:=US} ${region:=us-east-1} \
      ${tools_version:=1.3-45758} \
      ${builddir:=/mnt/build}
 #FIXME: tools_version ??
@@ -494,6 +496,7 @@ echo "Building AMI for $distribution $release $codename"
 echo "locale:       $locale"
 echo "charmap:      $charmap"
 echo "location:     $location"
+echo "region:       $region"
 echo "timezone:     $timezone"
 if [ -z "$ebs" ]
 then
@@ -793,13 +796,11 @@ then
     -s $AWS_SECRET_ACCESS_KEY             \
     --location $location 
 
-  set +x
-  cat <<EOF
+  ec2-register                            \
+    --name "$bucket/$prefix"              \
+    --region $region                      \
+    $bucket/$prefix.manifest.xml
 
-Now you might want to run this command:
-  ec2-register --name "$bucket/$prefix" $bucket/$prefix.manifest.xml
-
-EOF
 else
   fstab=$builddir/etc/fstab
   mount_entry=`mount | grep $builddir`
