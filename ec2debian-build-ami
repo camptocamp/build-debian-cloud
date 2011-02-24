@@ -531,6 +531,8 @@ fi
 # FIXME: this JRE package is probably specific to ubuntu. 
 apt-get install -y binutils unzip debootstrap rsync ruby openssl curl ca-certificates libopenssl-ruby openjdk-6-jre-headless
 
+export JAVA_HOME=/usr/lib/jvm/java-6-openjdk/
+
 # To build kernel modules yourself, see:
 # http://alestic.com/2008/05/kernel-modules-2-6-21
 
