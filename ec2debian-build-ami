@@ -762,8 +762,12 @@ then
 #  cp $EC2_PRIVATE_KEY $imagedir/tmp/pk.pem
 #  cp $EC2_CERT        $imagedir/tmp/cert.pem
 
-  # Special AKI for PvGrub
-  aki="aki-4feec43b"
+  # Special AKIs for PvGrub
+  if [ $bsarch = 'amd64' ]; then
+    aki="aki-4feec43b"
+  elif [ $bsarch = 'i386' ]; then
+    aki="aki-4deec439"
+  fi
 
   ec2-bundle-vol                          \
     -v $imagedir                          \
