@@ -21,16 +21,19 @@ true ${bucket:?} ${AWS_ACCESS_KEY_ID:?} ${AWS_SECRET_ACCESS_KEY:?}
 
 bundledir=$(mktemp -d)
 
+bundlefile=/tmp/ec2-boot-bundle-$bundlearch-$(date +%Y%m%d).tar.bz2
+
 if [ $(uname -m) = 'x86_64' ]; then
   bundlearch="x86_64"
 else
   bundlearch="i386"
 fi
 
+set -e
+set -x
+
 # Install s3cmd command (this is obviously ubuntu specific)
 apt-get install s3cmd
-
-bundlefile=/tmp/ec2-boot-bundle-$bundlearch-$(date +%Y%m%d).tar.bz2
 
 mkdir -p $bundledir/boot
 rsync -a /boot/System.map-$(uname -r) /boot/abi-$(uname -r) /boot/config-$(uname -r) /boot/initrd.img-$(uname -r) /boot/vmcoreinfo-$(uname -r) /boot/vmlinuz-$(uname -r) $bundledir/boot/
