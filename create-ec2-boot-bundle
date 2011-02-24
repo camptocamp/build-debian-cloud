@@ -43,7 +43,7 @@ tar cjf $bundlefile -C $bundledir boot lib
 
 cat > ~/.s3cfg << EOF
 access_key = $AWS_ACCESS_KEY_ID
-secret_key = $AWS_SECRET_ACCESS_KEY_ID
+secret_key = $AWS_SECRET_ACCESS_KEY
 EOF
 
 if [ -n "$bucketpath" ]; then
