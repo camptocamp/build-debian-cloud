@@ -533,9 +533,9 @@ apt-get install -y binutils unzip debootstrap rsync ruby openssl curl ca-certifi
 
 if [ ! "$kernel" -a ! "$modules" ]; then
   if [ $bsarch = 'amd64' ]; then
-    modules=http://camptocamp.s3.amazonaws.com/ec2-boot/ec2-boot-bundle-x86_64-20110223.tar.bz2
+    modules=http://camptocamp.s3.amazonaws.com/ec2boot/ec2-boot-bundle-x86_64-20110224.tar.bz2
   elif [ $bsarch = 'i386' ]; then
-    modules=http://camptocamp.s3.amazonaws.com/ec2-boot/ec2-boot-bundle-i386-20110223.tar.bz2
+    modules=http://camptocamp.s3.amazonaws.com/ec2boot/ec2-boot-bundle-i386-20110224.tar.bz2
   else
     echo >&2 "$0: Unrecognized --arch $bsarch"
     exit 1
