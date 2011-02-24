@@ -46,4 +46,8 @@ access_key = $AWS_ACCESS_KEY_ID
 secret_key = $AWS_SECRET_ACCESS_KEY_ID
 EOF
 
-s3cmd --acl-public put $bundlefile s3://$bucket/$bucketpath/
+if [ -n "$bucketpath" ]; then
+  bucketpath=$bucketpath/
+fi
+
+s3cmd --acl-public put $bundlefile s3://$bucket/$bucketpath
