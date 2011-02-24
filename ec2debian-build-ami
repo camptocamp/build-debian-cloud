@@ -558,13 +558,15 @@ EOF
 chmod 755 $imagedir/usr/sbin/policy-rc.d
 
 # Install AMI and API tools
-mkdir /mnt/tools
-curl -s -o /mnt/tools/ec2-ami-tools.zip http://s3.amazonaws.com/ec2-downloads/ec2-ami-tools.zip
-curl -s -o /mnt/tools/ec2-api-tools.zip http://s3.amazonaws.com/ec2-downloads/ec2-api-tools.zip
-unzip /mnt/tools/ec2-ami-tools.zip -d /mnt/tools/
-unzip /mnt/tools/ec2-api-tools.zip -d /mnt/tools/
-ln -s /mnt/tools/ec2-ami-tools-* /mnt/tools/ec2-ami-tools
-ln -s /mnt/tools/ec2-api-tools-* /mnt/tools/ec2-api-tools
+if [ ! -d /mnt/tools ]; then
+  mkdir /mnt/tools
+  curl -s -o /mnt/tools/ec2-ami-tools.zip http://s3.amazonaws.com/ec2-downloads/ec2-ami-tools.zip
+  curl -s -o /mnt/tools/ec2-api-tools.zip http://s3.amazonaws.com/ec2-downloads/ec2-api-tools.zip
+  unzip /mnt/tools/ec2-ami-tools.zip -d /mnt/tools/
+  unzip /mnt/tools/ec2-api-tools.zip -d /mnt/tools/
+  ln -s /mnt/tools/ec2-ami-tools-* /mnt/tools/ec2-ami-tools
+  ln -s /mnt/tools/ec2-api-tools-* /mnt/tools/ec2-api-tools
+fi
 export EC2_HOME=/mnt/tools/ec2-api-tools
 export EC2_AMITOOL_HOME=/mnt/tools/ec2-ami-tools
 export EC2_APITOOL_HOME=/mnt/tools/ec2-api-tools
