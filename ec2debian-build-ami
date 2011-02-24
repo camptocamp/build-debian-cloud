@@ -619,7 +619,7 @@ unset DEBIAN_FRONTEND
 for module in $modules; do
   curl -s $module | tar xjC $imagedir
 done
-sed -i 's!/dev/hda1!/dev/sda1!' $imagedir/boot/grub/menu.lst
+sed -i 's!kopt=root=LABEL=uec-rootfs ro!kopt=root=/dev/sda1 ro!' $imagedir/boot/grub/menu.lst
 
 # This kernel module has historically been loaded; keeping the tradition.
 echo "xfs" >> $imagedir/etc/modules
