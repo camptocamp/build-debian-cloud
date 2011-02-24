@@ -615,6 +615,15 @@ chroot $imagedir apt-get install -y $packages
 chroot $imagedir apt-get remove -y apparmor apparmor-utils || true
 unset DEBIAN_FRONTEND
 
+# Install PvGrub
+mkdir -p $imagedir/boot/grub
+curl -s -o $imagedir/tmp/grub-legacy-ec2.deb http://ch.archive.ubuntu.com/ubuntu/pool/main/c/cloud-init/grub-legacy-ec2_0.5.10-0ubuntu1.5_all.deb
+export DEBIAN_FRONTEND=noninteractive
+chroot $imagedir apt-get install ucf
+chroot $imagedir dpkg -i /tmp/grub-legacy-ec2.deb
+unset DEBIAN_FRONTEND
+chroot $imagedir /usr/sbin/update-grub-legacy-ec2
+
 # Install kernel, kernel modules and grub configuration
 for module in $modules; do
   curl -s $module | tar xjC $imagedir
@@ -628,15 +637,6 @@ chown -R root.root $imagedir/lib/modules
 for module_version in $(cd $imagedir/lib/modules; ls); do
   chroot $imagedir depmod -a $module_version
 done
-
-# Install PvGrub
-mkdir -p $imagedir/boot/grub
-curl -s -o $imagedir/tmp/grub-legacy-ec2.deb http://ch.archive.ubuntu.com/ubuntu/pool/main/c/cloud-init/grub-legacy-ec2_0.5.10-0ubuntu1.5_all.deb
-export DEBIAN_FRONTEND=noninteractive
-chroot $imagedir apt-get install ucf
-chroot $imagedir dpkg -i /tmp/grub-legacy-ec2.deb
-unset DEBIAN_FRONTEND
-chroot $imagedir /usr/sbin/update-grub-legacy-ec2
 
 # Xen expects a single tty1
 /bin/rm -f $imagedir/etc/event.d/tty[2-6]
