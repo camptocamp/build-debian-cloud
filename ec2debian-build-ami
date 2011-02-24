@@ -636,6 +636,7 @@ export DEBIAN_FRONTEND=noninteractive
 chroot $imagedir apt-get install ucf
 chroot $imagedir dpkg -i /tmp/grub-legacy-ec2.deb
 unset DEBIAN_FRONTEND
+chroot $imagedir /usr/sbin/update-grub-legacy-ec2
 
 # Xen expects a single tty1
 /bin/rm -f $imagedir/etc/event.d/tty[2-6]
