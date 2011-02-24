@@ -439,6 +439,12 @@ true ${AWS_USER_ID:?} ${AWS_ACCESS_KEY_ID:?} ${AWS_SECRET_ACCESS_KEY:?} \
      ${builddir:=/mnt/build}
 #FIXME: tools_version ??
 
+if [ ! -f $EC2_CERT ]; then
+  echo "$0: AWS certificate file not found: $EC2_CERT" >&2; exit 1;
+fi
+if [ ! -f $EC2_PRIVATE_KEY ]; then
+  echo "$0: AWS private key file not found: $EC2_PRIVATE_KEY" >&2; exit 1;
+fi
 
 if [ -z "$ebs" ]
 then
