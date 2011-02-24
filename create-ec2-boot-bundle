@@ -21,15 +21,16 @@ true ${bucket:?} ${AWS_ACCESS_KEY_ID:?} ${AWS_SECRET_ACCESS_KEY:?}
 
 bundledir=$(mktemp -d)
 
-bundlefile=/tmp/ec2-boot-bundle-$bundlearch-$(date +%Y%m%d).tar.bz2
-
 if [ $(uname -m) = 'x86_64' ]; then
   bundlearch="x86_64"
 else
   bundlearch="i386"
 fi
 
+bundlefile=/tmp/ec2-boot-bundle-$bundlearch-$(date +%Y%m%d).tar.bz2
+
 kernelname=$(uname -r)
+
 
 set -e
 set -x
