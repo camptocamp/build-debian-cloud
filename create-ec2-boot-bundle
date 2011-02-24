@@ -29,6 +29,8 @@ else
   bundlearch="i386"
 fi
 
+kernelname=$(uname -r)
+
 set -e
 set -x
 
@@ -36,11 +38,11 @@ set -x
 apt-get install s3cmd
 
 mkdir -p $bundledir/boot
-rsync -a /boot/System.map-$(uname -r) /boot/abi-$(uname -r) /boot/config-$(uname -r) /boot/initrd.img-$(uname -r) /boot/vmcoreinfo-$(uname -r) /boot/vmlinuz-$(uname -r) $bundledir/boot/
+rsync -a /boot/System.map-$kernelname /boot/abi-$kernelname /boot/config-$kernelname /boot/initrd.img-$kernelname /boot/vmcoreinfo-$kernelname /boot/vmlinuz-$kernelname $bundledir/boot/
 rsync -a /boot/grub $bundledir/boot
 
 mkdir -p $bundledir/lib/modules
-rsync -a /lib/modules/$(uname -r) $bundledir/lib/modules
+rsync -a /lib/modules/$kernelname $bundledir/lib/modules
 
 tar cjf $bundlefile -C $bundledir boot lib
 
