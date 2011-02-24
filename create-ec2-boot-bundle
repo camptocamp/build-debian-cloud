@@ -51,3 +51,6 @@ if [ -n "$bucketpath" ]; then
 fi
 
 s3cmd --acl-public put $bundlefile s3://$bucket/$bucketpath
+
+rm -rf $bundledir
+
