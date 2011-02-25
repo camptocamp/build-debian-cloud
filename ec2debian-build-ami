@@ -371,7 +371,7 @@ svnpath=http://ec2ubuntu.googlecode.com/svn-history/r183
 originaldir=$(/bin/pwd)
 
 #packages="openssh-server rsync ruby openssl curl ca-certificates libopenssl-ruby patch"
-packages="libc6-xen openssh-server"
+packages="libc6-xen openssh-server curl less"
 
 while [ $# -gt 0 ]; do
   case $1 in
