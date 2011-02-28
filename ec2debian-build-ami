@@ -369,7 +369,7 @@
 originaldir=$(/bin/pwd)
 
 #packages="openssh-server rsync ruby openssl curl ca-certificates libopenssl-ruby patch"
-packages="libc6-xen openssh-server curl less"
+packages="openssh-server curl less"
 
 while [ $# -gt 0 ]; do
   case $1 in
@@ -544,6 +544,7 @@ if [ ! "$kernel" -a ! "$modules" ]; then
     modules=http://camptocamp.s3.amazonaws.com/ec2boot/ec2-boot-bundle-x86_64-20110224.tar.bz2
   elif [ $bsarch = 'i386' ]; then
     modules=http://camptocamp.s3.amazonaws.com/ec2boot/ec2-boot-bundle-i386-20110224.tar.bz2
+    packages="$packages libc6-xen"
   else
     echo >&2 "$0: Unrecognized --arch $bsarch"
     exit 1
