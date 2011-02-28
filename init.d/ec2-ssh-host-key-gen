@@ -1,7 +1,7 @@
 #!/bin/sh
 ### BEGIN INIT INFO
 # Provides:       ec2-ssh-host-key-gen
-# Required-Start: 
+# Required-Start: networking
 # Required-Stop:  
 # Should-Start:   
 # Should-Stop:    
