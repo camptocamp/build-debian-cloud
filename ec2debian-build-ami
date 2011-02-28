@@ -30,7 +30,6 @@
 #   --package NAME        - Additional Ubuntu package to install
 #   --script FILE         - External script/command to run before bundle
 #   --modules "URL1 URL2" - Kernel modules to download and install
-#   --rightscale          - Include RightScale integration support
 #   --builddir DIR        - Build directory [default: /mnt/build]
 #   --location US/EU      - AWS location [default: US]
 #   --region REGION       - AWS region [default: us-east-1]
@@ -367,7 +366,6 @@
 #     others.
 #
 
-svnpath=http://ec2ubuntu.googlecode.com/svn-history/r183
 originaldir=$(/bin/pwd)
 
 #packages="openssh-server rsync ruby openssl curl ca-certificates libopenssl-ruby patch"
@@ -395,7 +393,6 @@ while [ $# -gt 0 ]; do
     --script)      scripts=("${scripts[@]}" "$2");      shift 2 ;;
     --package)     packages="$packages $2";             shift 2 ;;
     --modules)     modules=$2;                          shift 2 ;;
-    --rightscale)  rightscale=1;                        shift ;;
     --builddir)    builddir=$2;                         shift 2 ;;
     --bundle-opts) bundle_vol_options=$2;               shift 2 ;;
     --location)    location=$2;                         shift 2 ;;
@@ -692,30 +689,19 @@ EOF
 #EOF
 
 # Download and install startup scripts.
+scripts_url=https://github.com/camptocamp/ec2debian-build-ami/raw/master/init.d
 install_init(){
   script=$1
-  startpriority=$2
-  startlevels=$3
-  stoppriority=$4
-  stoplevels=$5
-  curl -s -o $imagedir/etc/init.d/$script $svnpath/trunk/etc/init.d/$script
+  curl -s -o $imagedir/etc/init.d/$script $scripts_url/$script
   chmod 755  $imagedir/etc/init.d/$script
-  for level in $startlevels; do
-    ln -s ../init.d/$script $imagedir/etc/rc$level.d/S$startpriority$script
-  done
-  for level in $stoplevels; do
-    ln -s ../init.d/$script $imagedir/etc/rc$level.d/K$stoppriority$script
-  done
+  chroot $imagedir insserv -d $script
 }
 
-install_init ec2-mkdir-tmp            36 "S"
-install_init ec2-ssh-host-key-gen     60 "S"
-install_init ec2-get-credentials      70 "2 3 4 5"
+install_init ec2-mkdir-tmp
+install_init ec2-ssh-host-key-gen
+install_init ec2-get-credentials
 if [ ! $no_run_user_data ]; then
-  install_init ec2-run-user-data      71 "2 3 4 5"
-fi
-if [ "$rightscale" ]; then
-  install_init rightscale-init        99 "2 3 4 5" 09 "0 1 6"
+  install_init ec2-run-user-data
 fi
 
 # Inside Xen, CMOS clock is irrelevant, so save seconds at boot
