@@ -1,0 +1,52 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:       ec2-ssh-host-key-gen
+# Required-Start: 
+# Required-Stop:  
+# Should-Start:   
+# Should-Stop:    
+# Default-Start:  S
+# Default-Stop:   
+# Description:    Generate new ssh host keys on first boot
+### END INIT INFO
+#
+# ec2-ssh-host-key-gen - Generate new ssh host keys on first boot
+#
+# Re-generates the ssh host keys on every new instance (i.e., new AMI).
+# If you want to keep the same ssh host keys for rebundled AMIs,
+# then disable this before rebundling using a command like:
+#   rm -f /etc/rc?.d/S*ec2-ssh-host-key-gen
+#
+
+prog=$(basename $0)
+curl="curl --retry 3 --silent --show-error --fail"
+instance_data_url=http://169.254.169.254/2008-02-01
+
+# Wait for the meta-data to be available
+perl -MIO::Socket::INET -e '
+ until(new IO::Socket::INET("169.254.169.254:80")){print"Waiting for meta-data...\n";sleep 1}
+' | logger -st $prog
+
+# Exit if we have already run on this instance (e.g., previous boot).
+ami_id=$($curl $instance_data_url/meta-data/ami-id)
+been_run_file=/var/ec2/$prog.$ami_id
+mkdir -p $(dirname $been_run_file)
+if [ -f $been_run_file ]; then
+  logger -st $prog < $been_run_file
+  exit
+fi
+
+# Re-generate the ssh host keys
+rm -f /etc/ssh/ssh_host_*_key*
+ssh-keygen -f /etc/ssh/ssh_host_rsa_key -t rsa -C 'host' -N ''
+ssh-keygen -f /etc/ssh/ssh_host_dsa_key -t dsa -C 'host' -N ''
+
+# This allows user to get host keys securely through console log
+echo "-----BEGIN SSH HOST KEY FINGERPRINTS-----"  | logger -st "ec2" 
+ssh-keygen -l -f /etc/ssh/ssh_host_key.pub        | logger -st "ec2" 
+ssh-keygen -l -f /etc/ssh/ssh_host_rsa_key.pub    | logger -st "ec2"
+ssh-keygen -l -f /etc/ssh/ssh_host_dsa_key.pub    | logger -st "ec2"
+echo "-----END SSH HOST KEY FINGERPRINTS-----"    | logger -st "ec2" 
+
+# Don't run again on this instance
+echo "$prog has already been run on this instance" > $been_run_file

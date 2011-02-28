@@ -1,0 +1,17 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:       ec2-mkdir-tmp
+# Required-Start: 
+# Required-Stop:  
+# Should-Start:   
+# Should-Stop:    
+# Default-Start:  S
+# Default-Stop:   
+# Description:    Create /tmp if missing
+### END INIT INFO
+#
+# ec2-mkdir-tmp Create /tmp if missing (as it's nice to bundle without it).
+#
+
+mkdir -p    /tmp
+chmod 01777 /tmp
