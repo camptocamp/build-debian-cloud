@@ -403,6 +403,16 @@ while [ $# -gt 0 ]; do
   esac
 done
 
+if [ $(uname -m) = 'x86_64' ]; then
+  true ${bsarch:="amd64"}
+  bundlearch="x86_64"
+  export notlongext="64"
+else
+  true ${bsarch:="i386"}
+  bundlearch="i386"
+  export notlongext=""
+fi
+
 if [ "$codename" = "" -a "$release" = "" ]; then
   codename=squeeze
 fi
@@ -449,7 +459,7 @@ then
   # building an EBS snapshot AMI.
   true ${bucket:?} \
        ${tag:=custom} \
-       ${prefix:=$distribution-$release-$codename-$tag-$(date +%Y%m%d)}
+       ${prefix:=$distribution-$release-$codename-$bsarch-$tag-$(date +%Y%m%d)}
 
   true ${size:=10240}
 else
@@ -485,16 +495,6 @@ fi
 
 packages="$packages udev psmisc lsb-release"
                              
-if [ $(uname -m) = 'x86_64' ]; then
-  true ${bsarch:="amd64"}
-  bundlearch="x86_64"
-  export notlongext="64"
-else
-  true ${bsarch:="i386"}
-  bundlearch="i386"
-  export notlongext=""
-fi
-
 echo "Building AMI for $distribution $release $codename"
 echo "locale:       $locale"
 echo "charmap:      $charmap"
