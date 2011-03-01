@@ -670,6 +670,12 @@ cat <<'EOF' >>$imagedir/etc/ssh/sshd_config
 UseDNS no
 EOF
 
+rm $imagedir /etc/hostname
+
+chroot $imagedir apt-get -y remove --purge isc-dhcp-client isc-dhcp-common
+chroot $imagedir apt-get -y install dhcpcd
+
+
 # FIXME: how essential it this ? The patched file doesn't exist probably
 # because of a package we removed.
 ## Make sure the new image doesn't try to remember a hardcoded mac address.
