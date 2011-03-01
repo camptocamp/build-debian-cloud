@@ -670,7 +670,7 @@ cat <<'EOF' >>$imagedir/etc/ssh/sshd_config
 UseDNS no
 EOF
 
-rm $imagedir /etc/hostname
+/bin/rm -f $imagedir/etc/hostname
 
 chroot $imagedir apt-get -y remove --purge isc-dhcp-client isc-dhcp-common
 chroot $imagedir apt-get -y install dhcpcd
