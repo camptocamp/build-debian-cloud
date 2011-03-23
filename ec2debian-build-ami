@@ -35,6 +35,7 @@
 #   --region REGION       - AWS region [default: us-east-1]
 #   --upload2all-regions  - Upload in all regions, use ec2-migrate-manifest
 #   --no-build-chroot     - Upload in all regions, use ec2-migrate-manifest
+#   --description         - The description of the AMI
 #   --ec2-ami-tools-version VER - EC2 AMI tools version (e.g., "1.3.xxxxxx")
 #
 #   The following options are only for S3-based AMIS (not using --ebs):
@@ -439,6 +440,7 @@ while [ $# -gt 0 ]; do
     --region)      region=$2;                           shift 2 ;;
     --upload2all-regions) upload2all_regions=1;		shift ;;
     --no-build-chroot) no_build_chroot=1;		shift ;;
+    --description) description=$2;                      shift 2 ;;
     --ec2-ami-tools-version) tools_version=$2;          shift 2 ;;
     --ebs)         ebs=1;                               shift ;;
     *)             echo "$0: Unrecognized option: $1" >&2; exit 1;
@@ -761,7 +763,7 @@ fi
 /bin/rm -f $imagedir/etc/rc?.d/*apparmor
 
 # Export build parameters so they are available in external scripts
-export regions_aki distribution release codename timezone locale charmap size \
+export regions_aki distribution description release codename timezone locale charmap size \
   scripts packages modules desktop builddir imagedir bundlearch \
   AWS_USER_ID AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY EC2_PRIVATE_KEY EC2_CERT
 
@@ -839,31 +841,32 @@ then
       location=$(echo $i |cut -d ';' -f2)
       aki=$(echo $i |cut -d ';' -f3)
 
-      ec2-migrate-manifest              \
-        -m /tmp/$prefix.manifest.xml    \
-        -a $AWS_ACCESS_KEY_ID           \
-        -s $AWS_SECRET_ACCESS_KEY       \
-        -c $EC2_CERT                    \
-        -k $EC2_PRIVATE_KEY             \
-        --region $region                \
+      ec2-migrate-manifest                \
+        -m /tmp/$prefix.manifest.xml      \
+        -a $AWS_ACCESS_KEY_ID             \
+        -s $AWS_SECRET_ACCESS_KEY         \
+        -c $EC2_CERT                      \
+        -k $EC2_PRIVATE_KEY               \
+        --region $region                  \
         --kernel $aki
       
       rm /tmp/$prefix.manifest.xml.bak
       
-      ec2-upload-bundle                 \
-        --batch                         \
-        --retry                         \
-        -b $bucket-$region              \
-        -m /tmp/$prefix.manifest.xml    \
-        -a $AWS_ACCESS_KEY_ID           \
-        -s $AWS_SECRET_ACCESS_KEY       \
+      ec2-upload-bundle                   \
+        --batch                           \
+        --retry                           \
+        -b $bucket-$region                \
+        -m /tmp/$prefix.manifest.xml      \
+        -a $AWS_ACCESS_KEY_ID             \
+        -s $AWS_SECRET_ACCESS_KEY         \
         --location $location
       
-      ec2-register                      \
-        -K $EC2_PRIVATE_KEY             \
-        -C $EC2_CERT                    \
-        --name $bucket-$region/$prefix  \
-        --region $region                \
+      ec2-register                        \
+        -K $EC2_PRIVATE_KEY               \
+        -C $EC2_CERT                      \
+        --description "$description"      \
+        --name "$bucket-$region/$prefix"  \
+        --region $region                  \
         $bucket-$region/$prefix.manifest.xml
 
     done
@@ -879,6 +882,7 @@ then
       --location $location 
 
     ec2-register                            \
+      --description "$description"          \
       --name "$bucket/$prefix"              \
       --region $region                      \
       $bucket/$prefix.manifest.xml
