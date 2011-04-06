@@ -470,7 +470,7 @@ if [ "$release" = "" ]; then
   esac
 elif [ "$codename" = "" ]; then
   case $release in
-    5)  codename=squeeze   ;;
+    6.0)  codename=squeeze   ;;
     *)     echo "$0: Unrecognized release: $release" >&2; exit 1;
   esac
 fi
