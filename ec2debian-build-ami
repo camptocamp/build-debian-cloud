@@ -89,6 +89,10 @@
 #   http://groups.google.com/group/ec2ubuntu
 #
 # History:
+#   2011-04-06 Frederic Junod <frederic.junod@camptocamp.com>
+#   - Fixed command line options documentation: only debian squeeze is supported
+#   - Fixed squeeze release number (replaced 5 with 6.0)
+#
 #   2011-03-23 Mathieu Bornoz <mathieu.bornoz@camptocamp.com>
 #   - Use custom ec2-ami-tools with ext4 support
 #   - Added upload2all-regions option (use ec2-migration-manifest)
