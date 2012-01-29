@@ -748,7 +748,7 @@ chroot $imagedir apt-get -y install dhcpcd
 scripts_url=https://github.com/camptocamp/ec2debian-build-ami/raw/master/init.d
 install_init(){
   script=$1
-  curl -s -o $imagedir/etc/init.d/$script $scripts_url/$script
+  curl -sL -o $imagedir/etc/init.d/$script $scripts_url/$script
   chmod 755  $imagedir/etc/init.d/$script
   chroot $imagedir insserv -d $script
 }
