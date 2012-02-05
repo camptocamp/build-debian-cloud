@@ -483,6 +483,7 @@ done
 unset DEBIAN_FRONTEND
 cd $builddir
 
+chroot $imagedir apt-get autoremove --purge
 chroot $imagedir apt-get clean
 rm -rf $imagedir/usr/sbin/policy-rc.d         \
        $imagedir/var/log/{bootstrap,dpkg}.log \
