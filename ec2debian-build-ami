@@ -114,7 +114,6 @@ regions_aki_x86_64=(
 
 originaldir=$(/bin/pwd)
 
-#packages="openssh-server rsync ruby openssl curl ca-certificates libopenssl-ruby patch"
 packages="openssh-server curl less"
 
 while [ $# -gt 0 ]; do
