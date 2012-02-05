@@ -1,0 +1,6 @@
+#!/bin/bash
+# Upgrade/install packages
+chroot $imagedir apt-get -y upgrade
+export DEBIAN_FRONTEND=noninteractive
+chroot $imagedir apt-get install -y $packages
+unset DEBIAN_FRONTEND

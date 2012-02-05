@@ -1,0 +1,19 @@
+#!/bin/bash
+# Download and install startup scripts.
+scripts_url=https://github.com/camptocamp/ec2debian-build-ami/raw/master/init.d
+install_init(){
+  script=$1
+  curl -sL -o $imagedir/etc/init.d/$script $scripts_url/$script
+  chmod 755  $imagedir/etc/init.d/$script
+  chroot $imagedir insserv -d $script
+}
+
+install_init ec2-mkdir-tmp
+install_init ec2-ssh-host-key-gen
+install_init ec2-get-credentials
+if [ ! $no_run_user_data ]; then
+  install_init ec2-run-user-data
+fi
+
+# Inside Xen, CMOS clock is irrelevant, so save seconds at boot
+/bin/rm -f $imagedir/etc/rc?.d/*hwclock*

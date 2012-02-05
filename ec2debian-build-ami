@@ -276,12 +276,9 @@ else
   imagedir=$builddir
 fi
 
+source $scriptdir/tasks/host-dependencies
 
-# Install packages on the builing system to make the rest of this script run smoothly.
-# FIXME: this JRE package is probably specific to ubuntu. 
-apt-get install -y bzip2 binutils unzip debootstrap rsync ruby openssl curl ca-certificates libopenssl-ruby openjdk-6-jre-headless
-
-export JAVA_HOME=/usr/lib/jvm/java-6-openjdk/
+source $scriptdir/tasks/aws-tools
 
 # To build kernel modules yourself, see:
 # http://alestic.com/2008/05/kernel-modules-2-6-21
@@ -309,24 +306,8 @@ exit 101
 EOF
 chmod 755 $imagedir/usr/sbin/policy-rc.d
 
-# Install AMI and API tools
-if [ ! -d /mnt/tools ]; then
-  mkdir /mnt/tools
-  curl -s -o /mnt/tools/ec2-ami-tools.zip http://s3.amazonaws.com/ec2-downloads/ec2-ami-tools.zip
-  curl -s -o /mnt/tools/ec2-api-tools.zip http://s3.amazonaws.com/ec2-downloads/ec2-api-tools.zip
-  unzip /mnt/tools/ec2-ami-tools.zip -d /mnt/tools/
-  unzip /mnt/tools/ec2-api-tools.zip -d /mnt/tools/
-  ln -s /mnt/tools/ec2-ami-tools-* /mnt/tools/ec2-ami-tools
-  ln -s /mnt/tools/ec2-api-tools-* /mnt/tools/ec2-api-tools
-fi
-export EC2_HOME=/mnt/tools/ec2-api-tools
-export EC2_AMITOOL_HOME=/mnt/tools/ec2-ami-tools
-export EC2_APITOOL_HOME=/mnt/tools/ec2-api-tools
-export PATH=$PATH:${EC2_AMITOOL_HOME}/bin:${EC2_APITOOL_HOME}/bin
-
+# Bootstrap
 if [ ! $no_build_chroot ]; then
-
-# Bootstrap Ubuntu
 debootstrap --arch $bsarch $codename $imagedir $bootstrap_mirror
 
 chroot $imagedir mount -t proc none /proc
@@ -344,36 +325,14 @@ echo "LANG=\"$locale.$charmap\""  >$imagedir/etc/default/locale
 echo $timezone >$imagedir/etc/timezone
 /bin/cp -f $imagedir/usr/share/zoneinfo/$timezone $imagedir/etc/localtime
 
-# Basic sources.list
-mv $imagedir/etc/apt/sources.list $imagedir/etc/apt/sources.list.orig || true
-cat <<EOF >$imagedir/etc/apt/sources.list
-deb http://security.debian.org/       $codename/updates main contrib non-free
-deb-src http://security.debian.org/   $codename/updates main contrib non-free
-deb http://ftp.debian.org/debian/     $codename         main contrib non-free
-deb-src http://ftp.debian.org/debian/ $codename         main contrib non-free
-EOF
-chroot $imagedir apt-get update
+source $scriptdir/tasks/apt-sources
 
 # MAKEDEV is expected in /dev by some packages.
 ln -s /sbin/MAKEDEV $imagedir/dev/MAKEDEV
 
-# Upgrade/install packages
-chroot $imagedir apt-get -y upgrade
-export DEBIAN_FRONTEND=noninteractive
-chroot $imagedir apt-get install -y $packages
-unset DEBIAN_FRONTEND
+source $scriptdir/tasks/packages
 
-# Install the menu.lst for PvGrub
-mkdir -p $imagedir/boot/grub
-cat <<'EOF' >$imagedir/boot/grub/menu.lst
-default 0
-timeout 1
-
-title 2.6.32-5-xen-amd64
-root (hd0)
-kernel /boot/vmlinuz-2.6.32-5-xen-amd64 root=/dev/xvda1 ro
-initrd /boot/initrd.img-2.6.32-5-xen-amd64
-EOF
+source $scriptdir/tasks/grub
 
 # Install kernel and kernel modules
 for module in $modules; do
@@ -399,213 +358,23 @@ cat <<'EOF' >>$imagedir/etc/ssh/sshd_config
 UseDNS no
 EOF
 
-# Basic networking
-cat <<'EOF' >$imagedir/etc/network/interfaces
-auto lo
-iface lo inet loopback
+source $scriptdir/tasks/networking
 
-auto eth0
-iface eth0 inet dhcp
-EOF
+source $scriptdir/tasks/startup-scripts
 
-cat <<'EOF' >$imagedir/etc/hosts
-127.0.0.1 localhost.localdomain localhost
+source $scriptdir/tasks/external-scripts
 
-# The following lines are desirable for IPv6 capable hosts
-::1 ip6-localhost ip6-loopback
-fe00::0 ip6-localnet
-ff00::0 ip6-mcastprefix
-ff02::1 ip6-allnodes
-ff02::2 ip6-allrouters
-ff02::3 ip6-allhosts
-EOF
+source $scriptdir/tasks/cleanup
 
-/bin/rm -f $imagedir/etc/hostname
-
-chroot $imagedir apt-get -y remove --purge isc-dhcp-client isc-dhcp-common
-chroot $imagedir apt-get -y install dhcpcd
-
-# let the DHCP client manage /etc/resolv.conf
-sed -i -e "s/^#*SET_DNS=.*/SET_DNS='yes'/" $imagedir/etc/default/dhcpcd
-
-# Download and install startup scripts.
-scripts_url=https://github.com/camptocamp/ec2debian-build-ami/raw/master/init.d
-install_init(){
-  script=$1
-  curl -sL -o $imagedir/etc/init.d/$script $scripts_url/$script
-  chmod 755  $imagedir/etc/init.d/$script
-  chroot $imagedir insserv -d $script
-}
-
-install_init ec2-mkdir-tmp
-install_init ec2-ssh-host-key-gen
-install_init ec2-get-credentials
-if [ ! $no_run_user_data ]; then
-  install_init ec2-run-user-data
-fi
-
-# Inside Xen, CMOS clock is irrelevant, so save seconds at boot
-/bin/rm -f $imagedir/etc/rc?.d/*hwclock*
-
-# Export build parameters so they are available in external scripts
-export regions_aki distribution description release codename timezone locale charmap size \
-  scripts packages modules desktop builddir imagedir bundlearch \
-  AWS_USER_ID AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY EC2_PRIVATE_KEY EC2_CERT
-
-if [ -z "$ebs" ]
-then
-  export tag bucket prefix
-fi
-
-# Invoke external scripts/commands if requested
-export DEBIAN_FRONTEND=noninteractive
-for script in "${scripts[@]}"; do
-  cd "$originaldir"
-  status=
-  if [ -x "$script" ]; then
-    "$script"
-    status=$?
-  elif [ -f "$script" ]; then
-    /bin/bash "$script"
-    status=$?
-  else
-    eval $script
-  fi
-
-  if [ -n "$status" -a "$status" -ne 0 ]; then
-    echo "Execution of '$script' failed with status $status" >&2
-    exit $status
-  fi
-done
-unset DEBIAN_FRONTEND
-cd $builddir
-
-chroot $imagedir apt-get autoremove --purge
-chroot $imagedir apt-get clean
-rm -rf $imagedir/usr/sbin/policy-rc.d         \
-       $imagedir/var/log/{bootstrap,dpkg}.log \
-       $imagedir/var/cache/apt/*.bin          \
-       $imagedir/var/lib/apt/lists            \
-       $imagedir/tmp/*                        \
-       $imagedir/root/.bash_history
 mkdir -p $imagedir/var/lib/apt/lists/partial
 
 fi
 
 if [ -z "$ebs" ]
 then
-  # Bundle & upload to S3
-#  cp $EC2_PRIVATE_KEY $imagedir/tmp/pk.pem
-#  cp $EC2_CERT        $imagedir/tmp/cert.pem
-
-  # Special AKIs for PvGrub
-  if [ $bsarch = 'amd64' ]; then
-    aki="aki-4feec43b"
-  elif [ $bsarch = 'i386' ]; then
-    aki="aki-4deec439"
-  fi
-
-  ec2-bundle-vol                          \
-    -v $imagedir                          \
-    -r $bundlearch                        \
-    --kernel $aki                         \
-    -d /tmp                               \
-    -p $prefix                            \
-    -u $AWS_USER_ID                       \
-    -k $EC2_PRIVATE_KEY                   \
-    -c $EC2_CERT                          \
-    -s $size                              \
-    -e /tmp                               \
-    --generate-fstab                      \
-    $bundle_vol_options
-
-  if [ $upload2all_regions ]; then
-
-    for i in ${regions_aki[@]}; do
-
-      region=$(echo $i |cut -d ';' -f1)
-      location=$(echo $i |cut -d ';' -f2)
-      aki=$(echo $i |cut -d ';' -f3)
-
-      ec2-migrate-manifest                \
-        -m /tmp/$prefix.manifest.xml      \
-        -a $AWS_ACCESS_KEY_ID             \
-        -s $AWS_SECRET_ACCESS_KEY         \
-        -c $EC2_CERT                      \
-        -k $EC2_PRIVATE_KEY               \
-        --region $region                  \
-        --kernel $aki
-      
-      rm /tmp/$prefix.manifest.xml.bak
-      
-      ec2-upload-bundle                   \
-        --batch                           \
-        --retry                           \
-        -b $bucket-$region                \
-        -m /tmp/$prefix.manifest.xml      \
-        -a $AWS_ACCESS_KEY_ID             \
-        -s $AWS_SECRET_ACCESS_KEY         \
-        --location $location
-      
-      ec2-register                        \
-        -K $EC2_PRIVATE_KEY               \
-        -C $EC2_CERT                      \
-        --description "$description"      \
-        --name "$bucket-$region/$prefix"  \
-        --region $region                  \
-        $bucket-$region/$prefix.manifest.xml
-
-    done
-
-  else
-
-    ec2-upload-bundle                       \
-      --retry                               \
-      -b $bucket                            \
-      -m /tmp/$prefix.manifest.xml          \
-      -a $AWS_ACCESS_KEY_ID                 \
-      -s $AWS_SECRET_ACCESS_KEY
-
-    ec2-register                            \
-      --description "$description"          \
-      --name "$bucket/$prefix"              \
-      --region $region                      \
-      $bucket/$prefix.manifest.xml
-
-  fi
-
+	source $scriptdir/tasks/s3-upload
 else
-  fstab=$builddir/etc/fstab
-  mount_entry=`mount | grep $builddir`
-  if [ -z "$mount_entry" ]
-  then
-    echo >&2 "Could not determine $builddir file system type for $fstab"
-    echo >&2 "You'll need to manually create $fstab"
-    exit 1
-  fi
-
-  type=`echo $mount_entry | cut -f5 -d' '`
-  cat >$fstab <<EOF
-/dev/xvda1 /     $type    defaults 1 1
-/dev/xvda3 swap  swap    defaults 0 0
-none      /proc proc    defaults 0 0
-none      /sys  sysfs   defaults 0 0
-EOF
-
-  cat <<EOF
-
-You now need to:
-
- 1. umount $builddir
- 2. detach the EBS volume (ec2-detach-volume)
- 3. create an EBS snapshot AMI (ec2-create-snapshot)
- 4. (optional) delete the volume (ec2-delete-volume)
- 5. register the snapshot as an AMI (ec2-register)
-
-You can then use ec2-run-instances with your new AMI.
-
-EOF
-
+	source $scriptdir/tasks/ebs-upload
 fi
 
 umount -l $imagedir/dev/pts

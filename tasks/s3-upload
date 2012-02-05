@@ -1,0 +1,77 @@
+#!/bin/bash
+# Bundle & upload to S3
+# Special AKIs for PvGrub
+if [ $bsarch = 'amd64' ]; then
+  aki="aki-4feec43b"
+elif [ $bsarch = 'i386' ]; then
+  aki="aki-4deec439"
+fi
+
+ec2-bundle-vol                          \
+  -v $imagedir                          \
+  -r $bundlearch                        \
+  --kernel $aki                         \
+  -d /tmp                               \
+  -p $prefix                            \
+  -u $AWS_USER_ID                       \
+  -k $EC2_PRIVATE_KEY                   \
+  -c $EC2_CERT                          \
+  -s $size                              \
+  -e /tmp                               \
+  --generate-fstab                      \
+  $bundle_vol_options
+
+if [ $upload2all_regions ]; then
+
+  for i in ${regions_aki[@]}; do
+
+    region=$(echo $i |cut -d ';' -f1)
+    location=$(echo $i |cut -d ';' -f2)
+    aki=$(echo $i |cut -d ';' -f3)
+
+    ec2-migrate-manifest                \
+      -m /tmp/$prefix.manifest.xml      \
+      -a $AWS_ACCESS_KEY_ID             \
+      -s $AWS_SECRET_ACCESS_KEY         \
+      -c $EC2_CERT                      \
+      -k $EC2_PRIVATE_KEY               \
+      --region $region                  \
+      --kernel $aki
+    
+    rm /tmp/$prefix.manifest.xml.bak
+    
+    ec2-upload-bundle                   \
+      --batch                           \
+      --retry                           \
+      -b $bucket-$region                \
+      -m /tmp/$prefix.manifest.xml      \
+      -a $AWS_ACCESS_KEY_ID             \
+      -s $AWS_SECRET_ACCESS_KEY         \
+      --location $location
+    
+    ec2-register                        \
+      -K $EC2_PRIVATE_KEY               \
+      -C $EC2_CERT                      \
+      --description "$description"      \
+      --name "$bucket-$region/$prefix"  \
+      --region $region                  \
+      $bucket-$region/$prefix.manifest.xml
+
+  done
+
+else
+
+  ec2-upload-bundle                       \
+    --retry                               \
+    -b $bucket                            \
+    -m /tmp/$prefix.manifest.xml          \
+    -a $AWS_ACCESS_KEY_ID                 \
+    -s $AWS_SECRET_ACCESS_KEY
+
+  ec2-register                            \
+    --description "$description"          \
+    --name "$bucket/$prefix"              \
+    --region $region                      \
+    $bucket/$prefix.manifest.xml
+
+fi

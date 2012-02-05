@@ -1,0 +1,6 @@
+#!/bin/bash
+# Install packages on the builing system to make the rest of this script run smoothly.
+# FIXME: this JRE package is probably specific to ubuntu. 
+apt-get install -y bzip2 binutils unzip debootstrap rsync ruby openssl curl ca-certificates libopenssl-ruby openjdk-6-jre-headless
+
+export JAVA_HOME=/usr/lib/jvm/java-6-openjdk/

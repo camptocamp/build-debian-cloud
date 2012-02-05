@@ -1,0 +1,9 @@
+#!/bin/bash
+chroot $imagedir apt-get autoremove --purge
+chroot $imagedir apt-get clean
+rm -rf $imagedir/usr/sbin/policy-rc.d         \
+       $imagedir/var/log/{bootstrap,dpkg}.log \
+       $imagedir/var/cache/apt/*.bin          \
+       $imagedir/var/lib/apt/lists            \
+       $imagedir/tmp/*                        \
+       $imagedir/root/.bash_history

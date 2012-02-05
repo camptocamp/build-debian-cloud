@@ -1,0 +1,12 @@
+#!/bin/bash
+# Install the menu.lst for PvGrub
+mkdir -p $imagedir/boot/grub
+cat <<'EOF' >$imagedir/boot/grub/menu.lst
+default 0
+timeout 1
+
+title 2.6.32-5-xen-amd64
+root (hd0)
+kernel /boot/vmlinuz-2.6.32-5-xen-amd64 root=/dev/xvda1 ro
+initrd /boot/initrd.img-2.6.32-5-xen-amd64
+EOF

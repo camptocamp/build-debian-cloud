@@ -1,0 +1,31 @@
+#!/bin/bash
+fstab=$builddir/etc/fstab
+mount_entry=`mount | grep $builddir`
+if [ -z "$mount_entry" ]
+then
+  echo >&2 "Could not determine $builddir file system type for $fstab"
+  echo >&2 "You'll need to manually create $fstab"
+  exit 1
+fi
+
+type=`echo $mount_entry | cut -f5 -d' '`
+cat >$fstab <<EOF
+/dev/xvda1 /     $type    defaults 1 1
+/dev/xvda3 swap  swap    defaults 0 0
+none      /proc proc    defaults 0 0
+none      /sys  sysfs   defaults 0 0
+EOF
+
+cat <<EOF
+
+You now need to:
+
+ 1. umount $builddir
+ 2. detach the EBS volume (ec2-detach-volume)
+ 3. create an EBS snapshot AMI (ec2-create-snapshot)
+ 4. (optional) delete the volume (ec2-delete-volume)
+ 5. register the snapshot as an AMI (ec2-register)
+
+You can then use ec2-run-instances with your new AMI.
+
+EOF
