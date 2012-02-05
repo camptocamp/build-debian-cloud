@@ -398,6 +398,9 @@ done
 chroot $imagedir shadowconfig on
 chroot $imagedir passwd -d root
 sed -i -e 's/^#PasswordAuthentication yes/PasswordAuthentication no/' $imagedir/etc/ssh/sshd_config
+cat <<'EOF' >>$imagedir/etc/ssh/sshd_config
+UseDNS no
+EOF
 
 # Basic networking
 cat <<'EOF' >$imagedir/etc/network/interfaces
@@ -418,10 +421,6 @@ ff00::0 ip6-mcastprefix
 ff02::1 ip6-allnodes
 ff02::2 ip6-allrouters
 ff02::3 ip6-allhosts
-EOF
-
-cat <<'EOF' >>$imagedir/etc/ssh/sshd_config
-UseDNS no
 EOF
 
 /bin/rm -f $imagedir/etc/hostname
