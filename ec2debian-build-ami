@@ -258,6 +258,7 @@ fi
 echo "bundlearch:   $bundlearch"
 echo "bsarch:       $bsarch"
 
+# Stop execution if any command fails
 set -e
 set -x
 
