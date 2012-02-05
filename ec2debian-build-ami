@@ -90,6 +90,8 @@
 #   http://groups.google.com/group/ec2ubuntu
 #
 
+scriptdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 #
 # FORMAT: region;location;aki
 #
