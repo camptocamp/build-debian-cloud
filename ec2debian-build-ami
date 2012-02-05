@@ -35,7 +35,6 @@
 #   --location US/EU      - AWS location [default: US]
 #   --region REGION       - AWS region [default: us-east-1]
 #   --upload2all-regions  - Upload in all regions, use ec2-migrate-manifest
-#   --no-build-chroot     - Upload in all regions, use ec2-migrate-manifest
 #   --description         - The description of the AMI
 #
 #   The following options are only for S3-based AMIS (not using --ebs):
@@ -145,7 +144,6 @@ while [ $# -gt 0 ]; do
     --location)    location=$2;                         shift 2 ;;
     --region)      region=$2;                           shift 2 ;;
     --upload2all-regions) upload2all_regions=1;         shift ;;
-    --no-build-chroot) no_build_chroot=1;               shift ;;
     --description) description=$2;                      shift 2 ;;
     --ebs)         ebs=1;                               shift ;;
     *)             echo "$0: Unrecognized option: $1" >&2; exit 1;
@@ -307,7 +305,6 @@ EOF
 chmod 755 $imagedir/usr/sbin/policy-rc.d
 
 # Bootstrap
-if [ ! $no_build_chroot ]; then
 debootstrap --arch $bsarch $codename $imagedir $bootstrap_mirror
 
 chroot $imagedir mount -t proc none /proc
@@ -367,8 +364,6 @@ source $scriptdir/tasks/external-scripts
 source $scriptdir/tasks/cleanup
 
 mkdir -p $imagedir/var/lib/apt/lists/partial
-
-fi
 
 if [ -z "$ebs" ]
 then
