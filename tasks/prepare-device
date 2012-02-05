@@ -12,6 +12,11 @@ else
 		source $scriptdir/tasks/create-volume
 	else
 		echo "Using the volume already mounted on $builddir"
+		if [ -z "$volume_id" ]; then
+			echo "You must specify the volume ID when you want to mount it yourself." >&2
+			echo "Otherwise creating the snapshot later on will not be possible." >&2
+			exit
+		fi
 	fi
 	imagedir=$builddir
 fi
