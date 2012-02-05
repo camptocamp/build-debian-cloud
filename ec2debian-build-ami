@@ -89,7 +89,9 @@
 #   http://groups.google.com/group/ec2ubuntu
 #
 
+# Rember various paths
 scriptdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+originaldir=$(/bin/pwd)
 
 #
 # FORMAT: region;location;aki
@@ -112,8 +114,6 @@ regions_aki_x86_64=(
  "ap-southeast-1;ap-southeast-1;aki-11d5aa43"
  "ap-northeast-1;ap-northeast-1;aki-d409a2d5"
 )
-
-originaldir=$(/bin/pwd)
 
 packages="openssh-server curl less"
 
