@@ -315,7 +315,7 @@ chmod 755 $imagedir/usr/sbin/policy-rc.d
 # Install AMI and API tools
 if [ ! -d /mnt/tools ]; then
   mkdir /mnt/tools
-  curl -s -o /mnt/tools/ec2-ami-tools.zip https://camptocamp.s3.amazonaws.com/ec2-ami-tools.zip
+  curl -s -o /mnt/tools/ec2-ami-tools.zip http://s3.amazonaws.com/ec2-downloads/ec2-ami-tools.zip
   curl -s -o /mnt/tools/ec2-api-tools.zip http://s3.amazonaws.com/ec2-downloads/ec2-api-tools.zip
   unzip /mnt/tools/ec2-ami-tools.zip -d /mnt/tools/
   unzip /mnt/tools/ec2-api-tools.zip -d /mnt/tools/
