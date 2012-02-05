@@ -1,0 +1,17 @@
+#!/bin/bash
+if [ -z "$ebs" ]; then
+	mkdir -p $builddir
+	cd $builddir
+	imagedir=$builddir/$distribution
+	mkdir -p $imagedir
+else
+	if [ ! -d "$builddir" ]; then
+		mkdir -p $builddir
+		source $scriptdir/tasks/create-volume
+  elif [ -z "`mount | grep "$builddir"`" ]; then
+		source $scriptdir/tasks/create-volume
+	else
+		echo "Using the volume already mounted on $builddir"
+	fi
+	imagedir=$builddir
+fi

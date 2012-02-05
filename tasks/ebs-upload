@@ -16,16 +16,22 @@ none      /proc proc    defaults 0 0
 none      /sys  sysfs   defaults 0 0
 EOF
 
-cat <<EOF
+if [ $bsarch = 'amd64' ]; then
+  aki="aki-4feec43b"
+elif [ $bsarch = 'i386' ]; then
+  aki="aki-4deec439"
+fi
 
-You now need to:
+snapshot=`ec2-create-snapshot $volume_id`
+snapshot_id=`echo $snapshot | awk '{print $2}'`
+snapshot_status=`echo $snapshot | awk '{print $4}'`
+while [ "$snapshot_status" != "completed" ]
+do
+	echo "Waiting for snapshot to be completed"
+	sleep 5
+	snapshot_status=`ec2-describe-snapshots | grep $snapshot_id | awk '{print $4}'`
+done
+ami_name="$distribution-$codename-$bsarch-$(date +%Y%m%d)"
+ami_id=`ec2-register --architecture "$bundlearch" --name "$ami_name" --description "$description" --kernel "$aki" --snapshot "$snapshot_id" | awk '{print $2}'`
 
- 1. umount $builddir
- 2. detach the EBS volume (ec2-detach-volume)
- 3. create an EBS snapshot AMI (ec2-create-snapshot)
- 4. (optional) delete the volume (ec2-delete-volume)
- 5. register the snapshot as an AMI (ec2-register)
-
-You can then use ec2-run-instances with your new AMI.
-
-EOF
+echo "Your AMI has been created with the ID $ami_id"

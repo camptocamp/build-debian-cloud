@@ -14,6 +14,7 @@
 # Command line options:
 #
 #   --ebs                 - Build an EBS boot AMI (defaults to S3 based AMI)
+#   --volume-id           - The EBS volume to use. Will mount automatically.
 #   --user ID             - Defaults to $AWS_USER_ID
 #   --access-key ID       - Defaults to $AWS_ACCESS_KEY_ID
 #   --secret-key ID       - Defaults to $AWS_SECRET_ACCESS_KEY_ID
@@ -146,6 +147,7 @@ while [ $# -gt 0 ]; do
     --upload2all-regions) upload2all_regions=1;         shift ;;
     --description) description=$2;                      shift 2 ;;
     --ebs)         ebs=1;                               shift ;;
+    --volume-id)   volume_id=$2;                        shift 2 ;;
     *)             echo "$0: Unrecognized option: $1" >&2; exit 1;
   esac
 done
@@ -258,21 +260,7 @@ echo "bsarch:       $bsarch"
 set -e
 
 # The good stuff starts here.
-
-if [ -z "$ebs" ]
-then
-  mkdir -p $builddir
-  cd $builddir
-  imagedir=$builddir/$distribution
-  mkdir -p $imagedir
-else
-  if [ ! -d "$builddir" ]
-  then
-    echo >&2 "Build directory '$builddir' is nonexistent."
-    echo >&2 "It should be a mounted EBS volume."
-  fi
-  imagedir=$builddir
-fi
+source $scriptdir/tasks/prepare-device
 
 source $scriptdir/tasks/host-dependencies
 
