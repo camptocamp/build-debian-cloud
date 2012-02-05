@@ -428,6 +428,9 @@ EOF
 chroot $imagedir apt-get -y remove --purge isc-dhcp-client isc-dhcp-common
 chroot $imagedir apt-get -y install dhcpcd
 
+# let the DHCP client manage /etc/resolv.conf
+sed -i -e "s/^#*SET_DNS=.*/SET_DNS='yes'/" $imagedir/etc/default/dhcpcd
+
 # Download and install startup scripts.
 scripts_url=https://github.com/camptocamp/ec2debian-build-ami/raw/master/init.d
 install_init(){
