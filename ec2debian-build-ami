@@ -37,7 +37,6 @@
 #   --upload2all-regions  - Upload in all regions, use ec2-migrate-manifest
 #   --no-build-chroot     - Upload in all regions, use ec2-migrate-manifest
 #   --description         - The description of the AMI
-#   --ec2-ami-tools-version VER - EC2 AMI tools version (e.g., "1.3.xxxxxx")
 #
 #   The following options are only for S3-based AMIS (not using --ebs):
 #
@@ -145,10 +144,9 @@ while [ $# -gt 0 ]; do
     --bundle-opts) bundle_vol_options=$2;               shift 2 ;;
     --location)    location=$2;                         shift 2 ;;
     --region)      region=$2;                           shift 2 ;;
-    --upload2all-regions) upload2all_regions=1;		shift ;;
-    --no-build-chroot) no_build_chroot=1;		shift ;;
+    --upload2all-regions) upload2all_regions=1;         shift ;;
+    --no-build-chroot) no_build_chroot=1;               shift ;;
     --description) description=$2;                      shift 2 ;;
-    --ec2-ami-tools-version) tools_version=$2;          shift 2 ;;
     --ebs)         ebs=1;                               shift ;;
     *)             echo "$0: Unrecognized option: $1" >&2; exit 1;
   esac
@@ -172,20 +170,20 @@ fi
 
 if [ "$release" = "" ]; then
   case $codename in
-    squeeze)  release=6.0      ;;
-    *)        echo "$0: Unrecognized codename: $codename" >&2; exit 1;
+    squeeze) release=6.0 ;;
+    *)       echo "$0: Unrecognized codename: $codename" >&2; exit 1;
   esac
 elif [ "$codename" = "" ]; then
   case $release in
-    6.0)  codename=squeeze   ;;
-    *)     echo "$0: Unrecognized release: $release" >&2; exit 1;
+    6.0) codename=squeeze ;;
+    *)   echo "$0: Unrecognized release: $release" >&2; exit 1;
   esac
 fi
 
 if [ "$distribution" = "" ]; then
   case $codename in
-    squeeze)              distribution=debian ;;
-    *)     echo "$0: Unrecognized codename: $codename" >&2; exit 1;
+    squeeze) distribution=debian ;;
+    *)       echo "$0: Unrecognized codename: $codename" >&2; exit 1;
   esac
 fi
 
@@ -196,9 +194,7 @@ true ${AWS_USER_ID:?} ${AWS_ACCESS_KEY_ID:?} ${AWS_SECRET_ACCESS_KEY:?} \
      ${bootstrap_mirror:=http://ftp.us.debian.org/debian/} \
      ${locale:=en_US} ${charmap:=UTF-8} ${timezone:=UTC} \
      ${location:=US} ${region:=us-east-1} \
-     ${tools_version:=1.3-45758} \
      ${builddir:=/mnt/build}
-#FIXME: tools_version ??
 
 if [ ! -f $EC2_CERT ]; then
   echo "$0: AWS certificate file not found: $EC2_CERT" >&2; exit 1;
