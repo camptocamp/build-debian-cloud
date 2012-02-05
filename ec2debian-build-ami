@@ -291,10 +291,11 @@ export JAVA_HOME=/usr/lib/jvm/java-6-openjdk/
 
 if [ ! "$kernel" -a ! "$modules" ]; then
   if [ $bsarch = 'amd64' ]; then
-    modules=http://camptocamp.s3.amazonaws.com/ec2boot/ec2-boot-bundle-x86_64-20110322.tar.bz2
+    modules=
+    packages="$packages linux-image-xen-amd64"
   elif [ $bsarch = 'i386' ]; then
-    modules=http://camptocamp.s3.amazonaws.com/ec2boot/ec2-boot-bundle-i386-20110322.tar.bz2
-    packages="$packages libc6-xen"
+    modules=
+    packages="$packages linux-image-xen-686"
   else
     echo >&2 "$0: Unrecognized --arch $bsarch"
     exit 1
