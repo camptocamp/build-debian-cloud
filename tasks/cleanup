@@ -7,3 +7,4 @@ rm -rf $imagedir/usr/sbin/policy-rc.d         \
        $imagedir/var/lib/apt/lists            \
        $imagedir/tmp/*                        \
        $imagedir/root/.bash_history
+       
