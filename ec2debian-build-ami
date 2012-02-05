@@ -350,9 +350,10 @@ echo $timezone >$imagedir/etc/timezone
 # Basic sources.list
 mv $imagedir/etc/apt/sources.list $imagedir/etc/apt/sources.list.orig || true
 cat <<EOF >$imagedir/etc/apt/sources.list
-deb http://http.us.debian.org/debian   $codename         main contrib non-free
-#deb http://non-us.debian.org/debian-non-US stable/non-US main contrib non-free
-deb http://security.debian.org         $codename/updates main contrib non-free
+deb http://security.debian.org/       $codename/updates main contrib non-free
+deb-src http://security.debian.org/   $codename/updates main contrib non-free
+deb http://ftp.debian.org/debian/     $codename         main contrib non-free
+deb-src http://ftp.debian.org/debian/ $codename         main contrib non-free
 EOF
 chroot $imagedir apt-get update
 
