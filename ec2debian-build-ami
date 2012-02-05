@@ -260,7 +260,6 @@ echo "bsarch:       $bsarch"
 
 # Stop execution if any command fails
 set -e
-set -x
 
 # The good stuff starts here.
 
@@ -595,7 +594,6 @@ none      /proc proc    defaults 0 0
 none      /sys  sysfs   defaults 0 0
 EOF
 
-  set +x
   cat <<EOF
 
 You now need to:
