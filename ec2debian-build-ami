@@ -588,8 +588,8 @@ else
 
   type=`echo $mount_entry | cut -f5 -d' '`
   cat >$fstab <<EOF
-/dev/sda1 /     $type    defaults 1 1
-/dev/sda3 swap  swap    defaults 0 0
+/dev/xvda1 /     $type    defaults 1 1
+/dev/xvda3 swap  swap    defaults 0 0
 none      /proc proc    defaults 0 0
 none      /sys  sysfs   defaults 0 0
 EOF
