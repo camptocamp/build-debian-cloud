@@ -1,11 +1,10 @@
 #!/bin/bash
 # Download and install startup scripts.
-scripts_url=https://github.com/camptocamp/ec2debian-build-ami/raw/master/init.d
 install_init(){
-  script=$1
-  curl -sL -o $imagedir/etc/init.d/$script $scripts_url/$script
-  chmod 755  $imagedir/etc/init.d/$script
-  chroot $imagedir insserv -d $script
+	script=$1
+	cp $scriptdir/init.d/$script $imagedir/etc/init.d/$script
+	chmod 755  $imagedir/etc/init.d/$script
+	chroot $imagedir insserv -d $script
 }
 
 install_init ec2-mkdir-tmp
