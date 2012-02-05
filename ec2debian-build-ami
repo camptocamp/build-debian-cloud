@@ -361,7 +361,6 @@ ln -s /sbin/MAKEDEV $imagedir/dev/MAKEDEV
 chroot $imagedir apt-get -y upgrade
 export DEBIAN_FRONTEND=noninteractive
 chroot $imagedir apt-get install -y $packages
-chroot $imagedir apt-get remove -y apparmor apparmor-utils || true
 unset DEBIAN_FRONTEND
 
 # Install PvGrub
@@ -444,9 +443,6 @@ fi
 
 # Inside Xen, CMOS clock is irrelevant, so save seconds at boot
 /bin/rm -f $imagedir/etc/rc?.d/*hwclock*
-
-# We're missing the apparmor kernel module for now so avoid boot warnings
-/bin/rm -f $imagedir/etc/rc?.d/*apparmor
 
 # Export build parameters so they are available in external scripts
 export regions_aki distribution description release codename timezone locale charmap size \
