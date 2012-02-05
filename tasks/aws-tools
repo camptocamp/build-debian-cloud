@@ -1,15 +1,16 @@
 #!/bin/bash
 # Install AMI and API tools
-if [ ! -d /mnt/tools ]; then
-  mkdir /mnt/tools
-  curl -s -o /mnt/tools/ec2-ami-tools.zip http://s3.amazonaws.com/ec2-downloads/ec2-ami-tools.zip
-  curl -s -o /mnt/tools/ec2-api-tools.zip http://s3.amazonaws.com/ec2-downloads/ec2-api-tools.zip
-  unzip /mnt/tools/ec2-ami-tools.zip -d /mnt/tools/
-  unzip /mnt/tools/ec2-api-tools.zip -d /mnt/tools/
-  ln -s /mnt/tools/ec2-ami-tools-* /mnt/tools/ec2-ami-tools
-  ln -s /mnt/tools/ec2-api-tools-* /mnt/tools/ec2-api-tools
+if [ ! -d $scriptdir/ec2-ami-tools ]; then
+	curl -s -o $scriptdir/ec2-ami-tools.zip http://s3.amazonaws.com/ec2-downloads/ec2-ami-tools.zip
+	unzip $scriptdir/ec2-ami-tools.zip -d $scriptdir/
+	ln -s $scriptdir/ec2-ami-tools-* $scriptdir/ec2-ami-tools
 fi
-export EC2_HOME=/mnt/tools/ec2-api-tools
-export EC2_AMITOOL_HOME=/mnt/tools/ec2-ami-tools
-export EC2_APITOOL_HOME=/mnt/tools/ec2-api-tools
+if [ ! -d $scriptdir/ec2-api-tools ]; then
+	curl -s -o $scriptdir/ec2-api-tools.zip http://s3.amazonaws.com/ec2-downloads/ec2-api-tools.zip
+	unzip $scriptdir/ec2-api-tools.zip -d $scriptdir/
+	ln -s $scriptdir/ec2-api-tools-* $scriptdir/ec2-api-tools
+fi
+export EC2_HOME=$scriptdir/ec2-api-tools
+export EC2_AMITOOL_HOME=$scriptdir/ec2-ami-tools
+export EC2_APITOOL_HOME=$scriptdir/ec2-api-tools
 export PATH=$PATH:${EC2_AMITOOL_HOME}/bin:${EC2_APITOOL_HOME}/bin
