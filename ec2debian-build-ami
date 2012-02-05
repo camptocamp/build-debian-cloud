@@ -426,26 +426,6 @@ EOF
 chroot $imagedir apt-get -y remove --purge isc-dhcp-client isc-dhcp-common
 chroot $imagedir apt-get -y install dhcpcd
 
-
-# FIXME: how essential it this ? The patched file doesn't exist probably
-# because of a package we removed.
-## Make sure the new image doesn't try to remember a hardcoded mac address.
-#chroot $imagedir patch -d /usr/lib/site_ruby/ec2/platform/linux <<'EOF'
-#--- image.rb.orig	2008-11-27 04:58:36.964214178 -0800
-#+++ image.rb	2008-11-27 05:00:25.095464580 -0800
-#@@ -26,7 +26,9 @@
-#       # Symbolic links are preserved.      
-#       class Image
-#         IMG_MNT = '/mnt/img-mnt'
-#-        EXCLUDES= ['/dev', '/media', '/mnt', '/proc', '/sys']
-#+        EXCLUDES= ['/dev', '/media', '/mnt', '/proc', '/sys',
-#+                   '/etc/udev/rules.d/70-persistent-net.rules',
-#+                   '/etc/udev/rules.d/z25_persistent-net.rules' ]
-#         DEFAULT_FSTAB = EC2::Platform::Linux::Fstab::DEFAULT      
-#         LEGACY_FSTAB  = EC2::Platform::Linux::Fstab::LEGACY
-#       
-#EOF
-
 # Download and install startup scripts.
 scripts_url=https://github.com/camptocamp/ec2debian-build-ami/raw/master/init.d
 install_init(){
