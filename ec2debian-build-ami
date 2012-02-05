@@ -366,20 +366,22 @@ export DEBIAN_FRONTEND=noninteractive
 chroot $imagedir apt-get install -y $packages
 unset DEBIAN_FRONTEND
 
-# Install PvGrub
+# Install the menu.lst for PvGrub
 mkdir -p $imagedir/boot/grub
-curl -s -o $imagedir/tmp/grub-legacy-ec2.deb http://ch.archive.ubuntu.com/ubuntu/pool/main/c/cloud-init/grub-legacy-ec2_0.5.10-0ubuntu1.5_all.deb
-export DEBIAN_FRONTEND=noninteractive
-chroot $imagedir apt-get install ucf
-chroot $imagedir dpkg -i /tmp/grub-legacy-ec2.deb
-unset DEBIAN_FRONTEND
-chroot $imagedir /usr/sbin/update-grub-legacy-ec2
+cat <<'EOF' >$imagedir/boot/grub/menu.lst
+default 0
+timeout 1
 
-# Install kernel, kernel modules and grub configuration
+title 2.6.32-5-xen-amd64
+root (hd0)
+kernel /boot/vmlinuz-2.6.32-5-xen-amd64 root=/dev/xvda1 ro
+initrd /boot/initrd.img-2.6.32-5-xen-amd64
+EOF
+
+# Install kernel and kernel modules
 for module in $modules; do
   curl -s $module | tar xjC $imagedir
 done
-sed -i 's!root=LABEL=uec-rootfs!root=/dev/sda1!' $imagedir/boot/grub/menu.lst
 
 # This kernel module has historically been loaded; keeping the tradition.
 echo "xfs" >> $imagedir/etc/modules
