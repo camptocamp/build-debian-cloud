@@ -353,12 +353,12 @@ source $scriptdir/tasks/cleanup
 
 mkdir -p $imagedir/var/lib/apt/lists/partial
 
+umount -l $imagedir/dev/pts
+umount -l $imagedir/proc || true
+
 if [ -z "$ebs" ]
 then
 	source $scriptdir/tasks/s3-upload
 else
 	source $scriptdir/tasks/ebs-upload
 fi
-
-umount -l $imagedir/dev/pts
-umount -l $imagedir/proc || true
