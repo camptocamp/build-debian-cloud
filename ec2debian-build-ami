@@ -243,18 +243,20 @@ fi
 packages="$packages udev psmisc lsb-release"
                              
 echo "Building AMI for $distribution $release $codename"
-echo "locale:       $locale"
-echo "charmap:      $charmap"
-echo "location:     $location"
-echo "region:       $region"
-echo "timezone:     $timezone"
+echo "locale:         $locale"
+echo "charmap:        $charmap"
+echo "location:       $location"
+echo "region:         $region"
+echo "timezone:       $timezone"
 if [ -z "$ebs" ]
 then
-  echo "image size:   ${size} MB"
-  echo "uploading to: $bucket/$prefix"
+  echo "image size:     ${size} MB"
+  echo "uploading to:   $bucket/$prefix"
 fi
-echo "bundlearch:   $bundlearch"
-echo "bsarch:       $bsarch"
+echo "bundlearch:     $bundlearch"
+echo "bsarch:         $bsarch"
+echo "custom modules: $modules"
+echo "packages:       $packages"
 
 # Stop execution if any command fails
 set -e
@@ -265,24 +267,6 @@ source $scriptdir/tasks/prepare-device
 source $scriptdir/tasks/host-dependencies
 
 source $scriptdir/tasks/aws-tools
-
-# To build kernel modules yourself, see:
-# http://alestic.com/2008/05/kernel-modules-2-6-21
-
-if [ ! "$kernel" -a ! "$modules" ]; then
-  if [ $bsarch = 'amd64' ]; then
-    modules=
-    packages="$packages linux-image-xen-amd64"
-  elif [ $bsarch = 'i386' ]; then
-    modules=
-    packages="$packages linux-image-xen-686"
-  else
-    echo >&2 "$0: Unrecognized --arch $bsarch"
-    exit 1
-  fi
-fi
-echo "modules:      $modules"
-echo "packages:     $packages"
 
 # Don't launch daemons on apt-get install
 mkdir -p $imagedir/usr/sbin/
@@ -317,20 +301,9 @@ ln -s /sbin/MAKEDEV $imagedir/dev/MAKEDEV
 
 source $scriptdir/tasks/packages
 
+source $scriptdir/tasks/kernel
+
 source $scriptdir/tasks/grub
-
-# Install kernel and kernel modules
-for module in $modules; do
-  curl -s $module | tar xjC $imagedir
-done
-
-# This kernel module has historically been loaded; keeping the tradition.
-echo "xfs" >> $imagedir/etc/modules
-
-chown -R root.root $imagedir/lib/modules
-for module_version in $(cd $imagedir/lib/modules; ls); do
-  chroot $imagedir depmod -a $module_version
-done
 
 # Xen expects a single tty1
 /bin/rm -f $imagedir/etc/event.d/tty[2-6]
