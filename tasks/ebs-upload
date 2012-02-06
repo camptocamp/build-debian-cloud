@@ -22,6 +22,7 @@ elif [ $bsarch = 'i386' ]; then
   aki="aki-4deec439"
 fi
 
+echo "Creating snapshot of the EBS volume"
 snapshot=`ec2-create-snapshot $volume_id`
 snapshot_id=`echo $snapshot | awk '{print $2}'`
 snapshot_status=`echo $snapshot | awk '{print $4}'`
@@ -32,6 +33,7 @@ do
 	snapshot_status=`ec2-describe-snapshots | grep $snapshot_id | awk '{print $4}'`
 done
 ami_name="$distribution-$codename-$bsarch-$(date +%Y%m%d)"
+echo "Registering the snapshot '$snapshot_id' as an AMI"
 ami_id=`ec2-register --architecture "$bundlearch" --name "$ami_name" --description "$description" --kernel "$aki" --snapshot "$snapshot_id" | awk '{print $2}'`
 
 echo "Your AMI has been created with the ID $ami_id"
