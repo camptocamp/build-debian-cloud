@@ -48,7 +48,7 @@ fi
 user_data_file=$(tempfile --prefix ec2 --suffix .user-data --mode 700)
 $logger "Retrieving user-data"
 $curl -o $user_data_file $instance_data_url/user-data 2>&1 | $logger
-if [ $(file -bi $user_data_file) = 'application/x-gzip' ]; then
+if [ $(file -b --mime-type $user_data_file) = 'application/x-gzip' ]; then
   $logger "Uncompressing gzip'd user-data"
   mv $user_data_file $user_data_file.gz
   gunzip $user_data_file.gz
