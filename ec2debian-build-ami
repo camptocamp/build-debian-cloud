@@ -325,7 +325,7 @@ source $scriptdir/tasks/cleanup
 mkdir -p $imagedir/var/lib/apt/lists/partial
 
 umount -l $imagedir/dev/pts
-umount -l $imagedir/proc || true
+umount -l $imagedir/proc
 
 if [ -z "$ebs" ]
 then
