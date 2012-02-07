@@ -13,5 +13,7 @@
 # ec2-mkdir-tmp Create /tmp if missing (as it's nice to bundle without it).
 #
 
-mkdir -p    /tmp
-chmod 01777 /tmp
+if [ ! -d /tmp ] ; then
+	mkdir -p    /tmp
+	chmod 01777 /tmp
+fi
