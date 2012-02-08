@@ -13,8 +13,7 @@ else
 	elif [ $bsarch = 'i386' ]; then
 		module_package='linux-image-xen-686'
 	else
-		echo >&2 "$0: Unrecognized --arch $bsarch"
-		exit 1
+		die "$0: Unrecognized --arch $bsarch"
 	fi
 	export DEBIAN_FRONTEND=noninteractive
 	chroot $imagedir apt-get install -y $module_package

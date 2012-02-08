@@ -13,9 +13,9 @@ else
 	else
 		echo "Using the volume already mounted on $builddir"
 		if [ -z "$volume_id" ]; then
-			echo "You must specify the volume ID when you want to mount it yourself." >&2
-			echo "Otherwise creating the snapshot later on will not be possible." >&2
-			exit
+			die \
+				"You must specify the volume ID when you want to mount it yourself." \
+				"Otherwise creating the snapshot later on will not be possible."
 		fi
 	fi
 	imagedir=$builddir

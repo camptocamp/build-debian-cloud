@@ -2,9 +2,9 @@
 fstab=$builddir/etc/fstab
 mount_entry=`mount | grep $builddir`
 if [ -z "$mount_entry" ]; then
-	echo >&2 "Could not determine $builddir file system type for $fstab"
-	echo >&2 "You'll need to manually create $fstab"
-	exit 1
+	die \
+		"Could not determine $builddir file system type for $fstab" \
+		"You'll need to manually create $fstab"
 fi
 
 type=`echo $mount_entry | cut -f5 -d' '`
@@ -23,6 +23,7 @@ fi
 
 echo "Creating snapshot of the EBS volume"
 snapshot=`ec2-create-snapshot $volume_id`
+[ -z "$snapshot" ] && die "Unable to create snapshot from the volume '$volume_id'"
 snapshot_id=`echo $snapshot | awk '{print $2}'`
 snapshot_status=`echo $snapshot | awk '{print $4}'`
 while [ "$snapshot_status" != "completed" ]
@@ -34,5 +35,5 @@ done
 ami_name="$distribution-$codename-$bsarch-$(date +%Y%m%d)"
 echo "Registering the snapshot '$snapshot_id' as an AMI"
 ami_id=`ec2-register --architecture "$bundlearch" --name "$ami_name" --description "$description" --kernel "$aki" --snapshot "$snapshot_id" | awk '{print $2}'`
-
+[ -z "$ami_id" ] && die "Unable to register the snapshot as an AMI"
 echo "Your AMI has been created with the ID $ami_id"

@@ -3,36 +3,32 @@ device='/dev/sdf'
 device_path='/dev/xvdf'
 filesystem='xfs'
 
-if [ -n "`df | grep $device_path`" ]; then
-	echo >&2 "Something is already attached to $device_path."
-	exit
-fi
+[ -n "`df | grep $device_path`" ] && die "Something is already attached to $device_path."
 
 metadata_url='http://169.254.169.254/latest/meta-data'
 instance_id=`curl --silent $metadata_url/instance-id`
 availability_zone=`curl --silent $metadata_url/placement/availability-zone`
 
 if [ -z "$instance_id" ]; then
-	echo "Unable to fetch the instance id of this machine." >&2
-	echo "This script must be running on ec2 in order to mount EBS volumes." >$2
-	exit 1
+	die \
+		"Unable to fetch the instance id of this machine." \
+		"This script must be running on ec2 in order to mount EBS volumes."
 fi
-if [ -z "$availability_zone" ]; then
-	echo "Unable to fetch the availability zone of this machine." >&2
-	exit 1
-fi
+[ -z "$availability_zone" ] && die "Unable to fetch the availability zone of this machine."
 
 if [ -z "$volume_id" ]; then
 	echo "No volume id specified, creating a volume now."
 	volume_id=`ec2-create-volume --size 1 --availability-zone "$availability_zone" | awk '{print $2}'`
+	[ -z "$volume_id" ] && die "Unable to create volume."
 else
 	echo "Checking the status of the specified volume."
 	volume_status=`ec2-describe-volumes | grep "VOLUME	$volume_id" | awk '{print $(NF-1)}'`
 	if [ "$volume_status" != 'available' ]; then
-		echo "Please detach the volume $volume_id. Even if it is this instance it is attached to." >&2
-		echo "You can of course also simply mount the volume specify the mountpoint and skip this procedure entirely." >&2
-		echo "Do this with ec2-detach-volume $volume_id"
-		exit
+		die \
+			"Please detach the volume $volume_id. Even if it is this instance it is" \
+			"attached to. You can of course also simply mount the volume specify the" \
+			"mountpoint and skip this procedure entirely." \
+			"Do this with ec2-detach-volume $volume_id"
 	fi
 fi
 echo "Attaching volume with the id $volume_id"

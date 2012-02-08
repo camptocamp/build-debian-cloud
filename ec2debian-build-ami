@@ -93,6 +93,11 @@
 scriptdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 originaldir=$(/bin/pwd)
 
+function die {
+	echo $@ >&2
+	exit 1
+}
+
 #
 # FORMAT: region;location;aki
 #
@@ -136,7 +141,7 @@ while [ $# -gt 0 ]; do
 		--locale)      locale=$2;                           shift 2 ;;
 		--charmap)     charmap=$2;                          shift 2 ;;
 		--size)        size=$2;                             shift 2 ;;
-		--no-run-user-data) no_run_user_data=1;             shift ;;
+		--no-run-user-data) no_run_user_data=1;             shift   ;;
 		--script)      scripts=("${scripts[@]}" "$2");      shift 2 ;;
 		--package)     packages="$packages $2";             shift 2 ;;
 		--modules)     modules=$2;                          shift 2 ;;
@@ -144,11 +149,11 @@ while [ $# -gt 0 ]; do
 		--bundle-opts) bundle_vol_options=$2;               shift 2 ;;
 		--location)    location=$2;                         shift 2 ;;
 		--region)      region=$2;                           shift 2 ;;
-		--upload2all-regions) upload2all_regions=1;         shift ;;
+		--upload2all-regions) upload2all_regions=1;         shift   ;;
 		--description) description=$2;                      shift 2 ;;
-		--ebs)         ebs=1;                               shift ;;
+		--ebs)         ebs=1;                               shift   ;;
 		--volume-id)   volume_id=$2;                        shift 2 ;;
-		*)             echo "$0: Unrecognized option: $1" >&2; exit 1;
+		*)             die "$0: Unrecognized option: $1";           ;;
 	esac
 done
 
@@ -171,19 +176,19 @@ fi
 if [ "$release" = "" ]; then
 	case $codename in
 		squeeze) release=6.0 ;;
-		*)       echo "$0: Unrecognized codename: $codename" >&2; exit 1;
+		*)       die "$0: Unrecognized codename: $codename"
 	esac
 elif [ "$codename" = "" ]; then
 	case $release in
 		6.0) codename=squeeze ;;
-		*)   echo "$0: Unrecognized release: $release" >&2; exit 1;
+		*)   die "$0: Unrecognized release: $release"
 	esac
 fi
 
 if [ "$distribution" = "" ]; then
 	case $codename in
 		squeeze) distribution=debian ;;
-		*)       echo "$0: Unrecognized codename: $codename" >&2; exit 1;
+		*)       die "$0: Unrecognized codename: $codename"
 	esac
 fi
 
@@ -197,10 +202,10 @@ true ${AWS_USER_ID:?} ${AWS_ACCESS_KEY_ID:?} ${AWS_SECRET_ACCESS_KEY:?} \
 	 	${builddir:=/mnt/build}
 
 if [ ! -f $EC2_CERT ]; then
-	echo "$0: AWS certificate file not found: $EC2_CERT" >&2; exit 1;
+	die "$0: AWS certificate file not found: $EC2_CERT"
 fi
 if [ ! -f $EC2_PRIVATE_KEY ]; then
-	echo "$0: AWS private key file not found: $EC2_PRIVATE_KEY" >&2; exit 1;
+	die "$0: AWS private key file not found: $EC2_PRIVATE_KEY"
 fi
 
 if [ -z "$ebs" ]; then
@@ -214,30 +219,14 @@ if [ -z "$ebs" ]; then
 	true ${size:=10240}
 
 else
-
 	# It would be more compact to test all of these using eval in a loop, but
 	# then it's not so easy to give a meaningful error message showing what
 	# command line option shouldn't have been given.
-	if [ -n "$bucket" ]; then
-			echo >&2 "$0: --ebs is incompatible with --bucket"
-			exit 1
-	fi
-	if [ -n "$tag" ]; then
-			echo >&2 "$0: --ebs is incompatible with --tag"
-			exit 1
-	fi
-	if [ -n "$size" ]; then
-			echo >&2 "$0: --ebs is incompatible with --size"
-			exit 1
-	fi
-	if [ -n "$prefix" ]; then
-			echo >&2 "$0: --ebs is incompatible with --prefix"
-			exit 1
-	fi
-	if [ -n "$bundle_vol_options" ]; then
-			echo >&2 "$0: --ebs is incompatible with --bundle-opts"
-			exit 1
-	fi
+	[ -n "$bucket" ] && die "$0: --ebs is incompatible with --bucket"
+	[ -n "$tag" ]    && die "$0: --ebs is incompatible with --tag"
+	[ -n "$size" ]   && die "$0: --ebs is incompatible with --size"
+	[ -n "$prefix" ] &&	die "$0: --ebs is incompatible with --prefix"
+	[ -n "$bundle_vol_options" ] && die "$0: --ebs is incompatible with --bundle-opts"
 fi
 
 packages="$packages udev psmisc lsb-release"
