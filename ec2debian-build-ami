@@ -262,9 +262,9 @@ echo "packages:       $packages"
 set -e
 
 # The good stuff starts here.
-source $scriptdir/tasks/prepare-device
-
 source $scriptdir/tasks/host-dependencies
+
+source $scriptdir/tasks/prepare-device
 
 # Don't launch daemons on apt-get install
 mkdir -p $imagedir/usr/sbin/
