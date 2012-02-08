@@ -248,8 +248,7 @@ echo "charmap:        $charmap"
 echo "location:       $location"
 echo "region:         $region"
 echo "timezone:       $timezone"
-if [ -z "$ebs" ]
-then
+if [ -z "$ebs" ]; then
 	echo "image size:     ${size} MB"
 	echo "uploading to:   $bucket/$prefix"
 fi
@@ -327,8 +326,7 @@ mkdir -p $imagedir/var/lib/apt/lists/partial
 umount -l $imagedir/dev/pts
 umount -l $imagedir/proc
 
-if [ -z "$ebs" ]
-then
+if [ -z "$ebs" ]; then
 	source $scriptdir/tasks/s3-upload
 else
 	source $scriptdir/tasks/ebs-upload

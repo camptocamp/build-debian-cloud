@@ -1,8 +1,7 @@
 #!/bin/bash
 fstab=$builddir/etc/fstab
 mount_entry=`mount | grep $builddir`
-if [ -z "$mount_entry" ]
-then
+if [ -z "$mount_entry" ]; then
 	echo >&2 "Could not determine $builddir file system type for $fstab"
 	echo >&2 "You'll need to manually create $fstab"
 	exit 1
