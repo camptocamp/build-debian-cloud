@@ -7,12 +7,12 @@ export JAVA_HOME=`update-java-alternatives --list | cut -f 3 -d ' ' | tail -n 1`
 # Install AMI and API tools
 if [ ! -d $scriptdir/ec2-ami-tools ]; then
 	curl -s -o $scriptdir/ec2-ami-tools.zip http://s3.amazonaws.com/ec2-downloads/ec2-ami-tools.zip
-	unzip $scriptdir/ec2-ami-tools.zip -d $scriptdir/
+	unzip $scriptdir/ec2-ami-tools.zip -d $scriptdir/ > /dev/null
 	ln -s $scriptdir/ec2-ami-tools-* $scriptdir/ec2-ami-tools
 fi
 if [ ! -d $scriptdir/ec2-api-tools ]; then
 	curl -s -o $scriptdir/ec2-api-tools.zip http://s3.amazonaws.com/ec2-downloads/ec2-api-tools.zip
-	unzip $scriptdir/ec2-api-tools.zip -d $scriptdir/
+	unzip $scriptdir/ec2-api-tools.zip -d $scriptdir/ > /dev/null
 	ln -s $scriptdir/ec2-api-tools-* $scriptdir/ec2-api-tools
 fi
 export EC2_HOME=$scriptdir/ec2-api-tools
