@@ -8,7 +8,7 @@ else
 	if [ ! -d "$builddir" ]; then
 		mkdir -p $builddir
 		source $scriptdir/tasks/create-volume
-  elif [ -z "`mount | grep "$builddir"`" ]; then
+	elif [ -z "`mount | grep "$builddir"`" ]; then
 		source $scriptdir/tasks/create-volume
 	else
 		echo "Using the volume already mounted on $builddir"

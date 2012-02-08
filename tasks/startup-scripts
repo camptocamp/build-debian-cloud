@@ -11,7 +11,7 @@ install_init ec2-mkdir-tmp
 install_init ec2-ssh-host-key-gen
 install_init ec2-get-credentials
 if [ ! $no_run_user_data ]; then
-  install_init ec2-run-user-data
+	install_init ec2-run-user-data
 fi
 
 # Inside Xen, CMOS clock is irrelevant, so save seconds at boot

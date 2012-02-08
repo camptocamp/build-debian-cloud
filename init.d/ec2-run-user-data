@@ -40,8 +40,8 @@ ami_id=$($curl $instance_data_url/meta-data/ami-id)
 been_run_file=/var/ec2/$prog.$ami_id
 mkdir -p $(dirname $been_run_file)
 if [ -f $been_run_file ]; then
-  $logger < $been_run_file
-  exit
+	$logger < $been_run_file
+	exit
 fi
 
 # Retrieve the instance user-data and run it if it looks like a script
@@ -49,20 +49,20 @@ user_data_file=$(tempfile --prefix ec2 --suffix .user-data --mode 700)
 $logger "Retrieving user-data"
 $curl -o $user_data_file $instance_data_url/user-data 2>&1 | $logger
 if [ $(file -b --mime-type $user_data_file) = 'application/x-gzip' ]; then
-  $logger "Uncompressing gzip'd user-data"
-  mv $user_data_file $user_data_file.gz
-  gunzip $user_data_file.gz
+	$logger "Uncompressing gzip'd user-data"
+	mv $user_data_file $user_data_file.gz
+	gunzip $user_data_file.gz
 fi
 if [ ! -s $user_data_file ]; then
-  $logger "No user-data available"
-  echo "user-data was not available" > $been_run_file
+	$logger "No user-data available"
+	echo "user-data was not available" > $been_run_file
 elif head -1 $user_data_file | egrep -v '^#!'; then
-  $logger "Skipping user-data as it does not begin with #!"
-  echo "user-data did not begin with #!" > $been_run_file
+	$logger "Skipping user-data as it does not begin with #!"
+	echo "user-data did not begin with #!" > $been_run_file
 else
-  $logger "Running user-data"
-  echo "user-data has already been run on this instance" > $been_run_file
-  $user_data_file 2>&1 | logger -t "user-data"
-  $logger "user-data exit code: $?"
+	$logger "Running user-data"
+	echo "user-data has already been run on this instance" > $been_run_file
+	$user_data_file 2>&1 | logger -t "user-data"
+	$logger "user-data exit code: $?"
 fi
 rm -f $user_data_file

@@ -49,9 +49,9 @@ mount $device_path $builddir
 echo "The EBS volume has been formatted and mounted"
 
 case $filesystem in
-  xfs)  packages="$packages xfsprogs" ;;
-  ext2) ;;
-  ext3) ;;
-  ext4) ;;
-  *)    echo "Tools for $filesystem were not added, the corresponding package is unknown" >&2;;
+	xfs)  packages="$packages xfsprogs" ;;
+	ext2) ;;
+	ext3) ;;
+	ext4) ;;
+	*)    echo "Tools for $filesystem were not added, the corresponding package is unknown" >&2;;
 esac

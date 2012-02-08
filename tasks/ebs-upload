@@ -3,9 +3,9 @@ fstab=$builddir/etc/fstab
 mount_entry=`mount | grep $builddir`
 if [ -z "$mount_entry" ]
 then
-  echo >&2 "Could not determine $builddir file system type for $fstab"
-  echo >&2 "You'll need to manually create $fstab"
-  exit 1
+	echo >&2 "Could not determine $builddir file system type for $fstab"
+	echo >&2 "You'll need to manually create $fstab"
+	exit 1
 fi
 
 type=`echo $mount_entry | cut -f5 -d' '`
@@ -17,9 +17,9 @@ none      /sys  sysfs   defaults 0 0
 EOF
 
 if [ $bsarch = 'amd64' ]; then
-  aki="aki-4feec43b"
+	aki="aki-4feec43b"
 elif [ $bsarch = 'i386' ]; then
-  aki="aki-4deec439"
+	aki="aki-4deec439"
 fi
 
 echo "Creating snapshot of the EBS volume"

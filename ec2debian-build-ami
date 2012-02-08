@@ -118,130 +118,130 @@ regions_aki_x86_64=(
 packages="openssh-server curl less"
 
 while [ $# -gt 0 ]; do
-  case $1 in
-    --distribution) distribution=$2;                    shift 2 ;;
-    --codename)    codename=$2;                         shift 2 ;;
-    --release)     release=$2;                          shift 2 ;;
-    --arch)        bsarch=$2;                           shift 2 ;;
-    --tag)         tag=$2;                              shift 2 ;;
-    --bucket)      bucket=$2;                           shift 2 ;;
-    --prefix)      prefix=$2;                           shift 2 ;;
-    --user)        AWS_USER_ID=$2;                      shift 2 ;;
-    --access-key)  AWS_ACCESS_KEY_ID=$2;                shift 2 ;;
-    --secret-key)  AWS_SECRET_ACCESS_KEY=$2;            shift 2 ;;
-    --private-key) EC2_PRIVATE_KEY=$2;                  shift 2 ;;
-    --cert)        EC2_CERT=$2;                         shift 2 ;;
-    --bootstrap-mirror) bootstrap_mirror=$2;            shift 2 ;;
-    --timezone)    timezone=$2;                         shift 2 ;;
-    --locale)      locale=$2;                           shift 2 ;;
-    --charmap)     charmap=$2;                          shift 2 ;;
-    --size)        size=$2;                             shift 2 ;;
-    --no-run-user-data) no_run_user_data=1;             shift ;;
-    --script)      scripts=("${scripts[@]}" "$2");      shift 2 ;;
-    --package)     packages="$packages $2";             shift 2 ;;
-    --modules)     modules=$2;                          shift 2 ;;
-    --builddir)    builddir=$2;                         shift 2 ;;
-    --bundle-opts) bundle_vol_options=$2;               shift 2 ;;
-    --location)    location=$2;                         shift 2 ;;
-    --region)      region=$2;                           shift 2 ;;
-    --upload2all-regions) upload2all_regions=1;         shift ;;
-    --description) description=$2;                      shift 2 ;;
-    --ebs)         ebs=1;                               shift ;;
-    --volume-id)   volume_id=$2;                        shift 2 ;;
-    *)             echo "$0: Unrecognized option: $1" >&2; exit 1;
-  esac
+	case $1 in
+		--distribution) distribution=$2;                    shift 2 ;;
+		--codename)    codename=$2;                         shift 2 ;;
+		--release)     release=$2;                          shift 2 ;;
+		--arch)        bsarch=$2;                           shift 2 ;;
+		--tag)         tag=$2;                              shift 2 ;;
+		--bucket)      bucket=$2;                           shift 2 ;;
+		--prefix)      prefix=$2;                           shift 2 ;;
+		--user)        AWS_USER_ID=$2;                      shift 2 ;;
+		--access-key)  AWS_ACCESS_KEY_ID=$2;                shift 2 ;;
+		--secret-key)  AWS_SECRET_ACCESS_KEY=$2;            shift 2 ;;
+		--private-key) EC2_PRIVATE_KEY=$2;                  shift 2 ;;
+		--cert)        EC2_CERT=$2;                         shift 2 ;;
+		--bootstrap-mirror) bootstrap_mirror=$2;            shift 2 ;;
+		--timezone)    timezone=$2;                         shift 2 ;;
+		--locale)      locale=$2;                           shift 2 ;;
+		--charmap)     charmap=$2;                          shift 2 ;;
+		--size)        size=$2;                             shift 2 ;;
+		--no-run-user-data) no_run_user_data=1;             shift ;;
+		--script)      scripts=("${scripts[@]}" "$2");      shift 2 ;;
+		--package)     packages="$packages $2";             shift 2 ;;
+		--modules)     modules=$2;                          shift 2 ;;
+		--builddir)    builddir=$2;                         shift 2 ;;
+		--bundle-opts) bundle_vol_options=$2;               shift 2 ;;
+		--location)    location=$2;                         shift 2 ;;
+		--region)      region=$2;                           shift 2 ;;
+		--upload2all-regions) upload2all_regions=1;         shift ;;
+		--description) description=$2;                      shift 2 ;;
+		--ebs)         ebs=1;                               shift ;;
+		--volume-id)   volume_id=$2;                        shift 2 ;;
+		*)             echo "$0: Unrecognized option: $1" >&2; exit 1;
+	esac
 done
 
 if [ $(uname -m) = 'x86_64' ]; then
-  true ${bsarch:="amd64"}
-  bundlearch="x86_64"
-  regions_aki=${regions_aki_x86_64[@]}
-  export notlongext="64"
+	true ${bsarch:="amd64"}
+	bundlearch="x86_64"
+	regions_aki=${regions_aki_x86_64[@]}
+	export notlongext="64"
 else
-  true ${bsarch:="i386"}
-  bundlearch="i386"
-  regions_aki=${regions_aki_i386[@]}
-  export notlongext=""
+	true ${bsarch:="i386"}
+	bundlearch="i386"
+	regions_aki=${regions_aki_i386[@]}
+	export notlongext=""
 fi
 
 if [ "$codename" = "" -a "$release" = "" ]; then
-  codename=squeeze
+	codename=squeeze
 fi
 
 if [ "$release" = "" ]; then
-  case $codename in
-    squeeze) release=6.0 ;;
-    *)       echo "$0: Unrecognized codename: $codename" >&2; exit 1;
-  esac
+	case $codename in
+		squeeze) release=6.0 ;;
+		*)       echo "$0: Unrecognized codename: $codename" >&2; exit 1;
+	esac
 elif [ "$codename" = "" ]; then
-  case $release in
-    6.0) codename=squeeze ;;
-    *)   echo "$0: Unrecognized release: $release" >&2; exit 1;
-  esac
+	case $release in
+		6.0) codename=squeeze ;;
+		*)   echo "$0: Unrecognized release: $release" >&2; exit 1;
+	esac
 fi
 
 if [ "$distribution" = "" ]; then
-  case $codename in
-    squeeze) distribution=debian ;;
-    *)       echo "$0: Unrecognized codename: $codename" >&2; exit 1;
-  esac
+	case $codename in
+		squeeze) distribution=debian ;;
+		*)       echo "$0: Unrecognized codename: $codename" >&2; exit 1;
+	esac
 fi
 
 # Required and default parameters
 true ${AWS_USER_ID:?} ${AWS_ACCESS_KEY_ID:?} ${AWS_SECRET_ACCESS_KEY:?} \
-     ${EC2_CERT:=$(echo /mnt/cert-*.pem)} \
-     ${EC2_PRIVATE_KEY:=$(echo /mnt/pk-*.pem)} \
-     ${bootstrap_mirror:=http://ftp.us.debian.org/debian/} \
-     ${locale:=en_US} ${charmap:=UTF-8} ${timezone:=UTC} \
-     ${location:=US} ${region:=us-east-1} \
-     ${builddir:=/mnt/build}
+	 	${EC2_CERT:=$(echo /mnt/cert-*.pem)} \
+	 	${EC2_PRIVATE_KEY:=$(echo /mnt/pk-*.pem)} \
+	 	${bootstrap_mirror:=http://ftp.us.debian.org/debian/} \
+	 	${locale:=en_US} ${charmap:=UTF-8} ${timezone:=UTC} \
+	 	${location:=US} ${region:=us-east-1} \
+	 	${builddir:=/mnt/build}
 
 if [ ! -f $EC2_CERT ]; then
-  echo "$0: AWS certificate file not found: $EC2_CERT" >&2; exit 1;
+	echo "$0: AWS certificate file not found: $EC2_CERT" >&2; exit 1;
 fi
 if [ ! -f $EC2_PRIVATE_KEY ]; then
-  echo "$0: AWS private key file not found: $EC2_PRIVATE_KEY" >&2; exit 1;
+	echo "$0: AWS private key file not found: $EC2_PRIVATE_KEY" >&2; exit 1;
 fi
 
 if [ -z "$ebs" ]; then
 
-  # We must be given a bucket and we set a default prefix if we're not
-  # building an EBS snapshot AMI.
-  true ${bucket:?} \
-       ${tag:=custom} \
-       ${prefix:=$distribution-$release-$codename-$bsarch-$tag-$(date +%Y%m%d)}
+	# We must be given a bucket and we set a default prefix if we're not
+	# building an EBS snapshot AMI.
+	true ${bucket:?} \
+		 	${tag:=custom} \
+		 	${prefix:=$distribution-$release-$codename-$bsarch-$tag-$(date +%Y%m%d)}
 
-  true ${size:=10240}
+	true ${size:=10240}
 
 else
 
-  # It would be more compact to test all of these using eval in a loop, but
-  # then it's not so easy to give a meaningful error message showing what
-  # command line option shouldn't have been given.
-  if [ -n "$bucket" ]; then
-      echo >&2 "$0: --ebs is incompatible with --bucket"
-      exit 1
-  fi
-  if [ -n "$tag" ]; then
-      echo >&2 "$0: --ebs is incompatible with --tag"
-      exit 1
-  fi
-  if [ -n "$size" ]; then
-      echo >&2 "$0: --ebs is incompatible with --size"
-      exit 1
-  fi
-  if [ -n "$prefix" ]; then
-      echo >&2 "$0: --ebs is incompatible with --prefix"
-      exit 1
-  fi
-  if [ -n "$bundle_vol_options" ]; then
-      echo >&2 "$0: --ebs is incompatible with --bundle-opts"
-      exit 1
-  fi
+	# It would be more compact to test all of these using eval in a loop, but
+	# then it's not so easy to give a meaningful error message showing what
+	# command line option shouldn't have been given.
+	if [ -n "$bucket" ]; then
+			echo >&2 "$0: --ebs is incompatible with --bucket"
+			exit 1
+	fi
+	if [ -n "$tag" ]; then
+			echo >&2 "$0: --ebs is incompatible with --tag"
+			exit 1
+	fi
+	if [ -n "$size" ]; then
+			echo >&2 "$0: --ebs is incompatible with --size"
+			exit 1
+	fi
+	if [ -n "$prefix" ]; then
+			echo >&2 "$0: --ebs is incompatible with --prefix"
+			exit 1
+	fi
+	if [ -n "$bundle_vol_options" ]; then
+			echo >&2 "$0: --ebs is incompatible with --bundle-opts"
+			exit 1
+	fi
 fi
 
 packages="$packages udev psmisc lsb-release"
-                             
+
 echo "Building AMI for $distribution $release $codename"
 echo "locale:         $locale"
 echo "charmap:        $charmap"
@@ -250,8 +250,8 @@ echo "region:         $region"
 echo "timezone:       $timezone"
 if [ -z "$ebs" ]
 then
-  echo "image size:     ${size} MB"
-  echo "uploading to:   $bucket/$prefix"
+	echo "image size:     ${size} MB"
+	echo "uploading to:   $bucket/$prefix"
 fi
 echo "bundlearch:     $bundlearch"
 echo "bsarch:         $bsarch"
