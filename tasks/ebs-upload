@@ -15,6 +15,9 @@ none      /proc proc    defaults 0 0
 none      /sys  sysfs   defaults 0 0
 EOF
 
+echo "Unmounting the volume"
+umount -l $imagedir
+
 if [ $bsarch = 'amd64' ]; then
 	aki="aki-4feec43b"
 elif [ $bsarch = 'i386' ]; then

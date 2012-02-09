@@ -312,8 +312,12 @@ source $scriptdir/tasks/cleanup
 
 mkdir -p $imagedir/var/lib/apt/lists/partial
 
+set +e
 umount -l $imagedir/dev/pts
 umount -l $imagedir/proc
+chroot $imagedir umount /dev/pts
+chroot $imagedir umount /proc
+set -e
 
 if [ -z "$ebs" ]; then
 	source $scriptdir/tasks/s3-upload
