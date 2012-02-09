@@ -26,9 +26,10 @@ else
 	if [ "$volume_status" != 'available' ]; then
 		die \
 			"Please detach the volume $volume_id. Even if it is this instance it is" \
-			"attached to. You can of course also simply mount the volume specify the" \
+			"attached to.
+			You can of course also simply mount the volume, specify the " \
 			"mountpoint and skip this procedure entirely." \
-			"Do this with ec2-detach-volume $volume_id"
+			"Otherwise detach with 'ec2-detach-volume $volume_id'."
 	fi
 fi
 echo "Attaching volume with the id $volume_id"
