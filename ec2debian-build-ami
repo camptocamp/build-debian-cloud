@@ -37,6 +37,7 @@
 #   --region REGION       - AWS region [default: us-east-1]
 #   --upload2all-regions  - Upload in all regions, use ec2-migrate-manifest
 #   --description         - The description of the AMI
+#   --debug               - Use -x option in bash
 #
 #   The following options are only for S3-based AMIS (not using --ebs):
 #
@@ -153,6 +154,7 @@ while [ $# -gt 0 ]; do
 		--description) description=$2;                      shift 2 ;;
 		--ebs)         ebs=1;                               shift   ;;
 		--volume-id)   volume_id=$2;                        shift 2 ;;
+		--debug)       set -x;                              shift   ;;
 		*)             die "$0: Unrecognized option: $1";           ;;
 	esac
 done
