@@ -22,7 +22,7 @@ if [ -z "$volume_id" ]; then
 	[ -z "$volume_id" ] && die "Unable to create volume."
 else
 	echo "Checking the status of the specified volume."
-	volume_status=`ec2-describe-volumes | grep "VOLUME	$volume_id" | awk '{print $(NF-1)}'`
+	volume_status=`ec2-describe-volumes | grep "VOLUME[[:blank:]]*$volume_id" | awk '{print $(NF-1)}'`
 	if [ "$volume_status" != 'available' ]; then
 		die \
 			"Please detach the volume $volume_id. Even if it is this instance it is" \
@@ -38,7 +38,7 @@ while [ "$attachment_status" != "attached" ]
 do
 	echo "Waiting for volume to finish attaching"
 	sleep 5
-	attachment_status=`ec2-describe-volumes | grep "ATTACHMENT	$volume_id" | awk '{print $5}'`
+	attachment_status=`ec2-describe-volumes | grep "ATTACHMENT[[:blank:]]*$volume_id" | awk '{print $5}'`
 done
 echo "Formatting the device $device_path with $filesystem"
 mkfs.$filesystem $device_path
