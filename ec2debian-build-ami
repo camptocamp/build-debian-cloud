@@ -201,11 +201,14 @@ true ${AWS_USER_ID:?} ${AWS_ACCESS_KEY_ID:?} ${AWS_SECRET_ACCESS_KEY:?} \
 	 	${location:=US} ${region:=us-east-1} \
 	 	${builddir:=/mnt/build}
 
-if [ ! -f $EC2_CERT ]; then
-	die "$0: AWS certificate file not found: $EC2_CERT"
-fi
-if [ ! -f $EC2_PRIVATE_KEY ]; then
-	die "$0: AWS private key file not found: $EC2_PRIVATE_KEY"
+[ ! -f "$EC2_CERT" ] && die "$0: AWS certificate file not found: $EC2_CERT"
+export EC2_CERT
+
+[ ! -f "$EC2_PRIVATE_KEY" ] && die "$0: AWS private key file not found: $EC2_PRIVATE_KEY"
+export EC2_PRIVATE_KEY
+
+if [ -z "$EC2_URL" ]; then
+	export EC2_URL="https://$region.ec2.amazonaws.com"
 fi
 
 if [ -z "$ebs" ]; then
