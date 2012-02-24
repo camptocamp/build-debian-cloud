@@ -10,3 +10,5 @@ root (hd0)
 kernel /boot/vmlinuz-2.6.32-5-xen-amd64 root=/dev/xvda1 ro
 initrd /boot/initrd.img-2.6.32-5-xen-amd64
 EOF
+
+update-initramfs -u -k 2.6.32-5-xen-amd64
