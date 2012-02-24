@@ -255,9 +255,9 @@ echo "packages:       $packages"
 set -e
 
 # The good stuff starts here.
-source $scriptdir/tasks/host-dependencies
+source $scriptdir/tasks/00-host-dependencies
 
-source $scriptdir/tasks/prepare-device
+source $scriptdir/tasks/10-prepare-device
 
 # Don't launch daemons on apt-get install
 mkdir -p $imagedir/usr/sbin/
@@ -285,16 +285,16 @@ echo "LANG=\"$locale.$charmap\""  >$imagedir/etc/default/locale
 echo $timezone >$imagedir/etc/timezone
 /bin/cp -f $imagedir/usr/share/zoneinfo/$timezone $imagedir/etc/localtime
 
-source $scriptdir/tasks/apt-sources
+source $scriptdir/tasks/20-apt-sources
 
 # MAKEDEV is expected in /dev by some packages.
 ln -s /sbin/MAKEDEV $imagedir/dev/MAKEDEV
 
-source $scriptdir/tasks/packages
+source $scriptdir/tasks/25-packages
 
-source $scriptdir/tasks/kernel
+source $scriptdir/tasks/30-kernel
 
-source $scriptdir/tasks/grub
+source $scriptdir/tasks/35-grub
 
 # Xen expects a single tty1
 /bin/rm -f $imagedir/etc/event.d/tty[2-6]
@@ -307,13 +307,13 @@ cat <<'EOF' >>$imagedir/etc/ssh/sshd_config
 UseDNS no
 EOF
 
-source $scriptdir/tasks/networking
+source $scriptdir/tasks/40-networking
 
-source $scriptdir/tasks/startup-scripts
+source $scriptdir/tasks/50-startup-scripts
 
-source $scriptdir/tasks/external-scripts
+source $scriptdir/tasks/60-external-scripts
 
-source $scriptdir/tasks/cleanup
+source $scriptdir/tasks/70-cleanup
 
 mkdir -p $imagedir/var/lib/apt/lists/partial
 
@@ -325,7 +325,7 @@ chroot $imagedir umount /proc
 set -e
 
 if [ -z "$ebs" ]; then
-	source $scriptdir/tasks/s3-upload
+	source $scriptdir/tasks/80-s3-upload
 else
-	source $scriptdir/tasks/ebs-upload
+	source $scriptdir/tasks/80-ebs-upload
 fi
