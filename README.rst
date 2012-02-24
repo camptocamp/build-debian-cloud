@@ -1,39 +1,99 @@
-Latest Debian 6.0.1 "squeeze" AMIs provided by Camptocamp
-=========================================================
+debian "squeeze" bootstrapping script for EC2
+=============================================
 
-+---------------------------------+----------------------------------+--------------------------------+
-| **Region / Location**           | Server 32-bits (instance-store)  | Server 64-bit (instance-store) | 
-+---------------------------------+----------------------------------+--------------------------------+
-| us-east-1 / US                  | **ami-aa46b4c3**                 | **ami-de46b4b7**               |
-+---------------------------------+----------------------------------+--------------------------------+
-| us-west-1 / us-west-1           | **ami-a30655e6**                 | **ami-a70655e2**               |
-+---------------------------------+----------------------------------+--------------------------------+
-| eu-west-1 / EU                  | **ami-17447363**                 | **ami-2b44735f**               |
-+---------------------------------+----------------------------------+--------------------------------+
-| ap-southeast-1 / ap-southeast-1 | **ami-68c4ba3a**                 | **ami-6ac4ba38**               |
-+---------------------------------+----------------------------------+--------------------------------+
-| ap-northeast-1 / ap-northeast-1 | **ami-a0e44ea1**                 | **ami-9ee44e9f**               |
-+---------------------------------+----------------------------------+--------------------------------+
+This is a fork of camptocamps bootstrapping script for EC2 AMIs.
 
-ec2debian-build-ami
-===================
+Installation
+------------
+Simply clone the repo :-)
 
-This script builds, bundles, and uploads an Debian AMI for
-Amazon EC2.
+I recommend setting the AWS credentials via an `Environment script`_,
+this way you do not need to specify the parameters for every api call.
 
-This script is a fork of ec2ubuntu-build-ami available here:
-http://ec2ubuntu.googlecode.com/svn/trunk/bin/ec2ubuntu-build-ami
+Usage
+-----
 
+EBS options
+"""""""""""
+--ebs
+	Build an EBS boot AMI (defaults to S3 based AMI)
+--volume-id
+	The EBS volume to use. Will mount automatically.
 
-create-ec2-boot-bundle
-======================
+S3 options
+""""""""""
+--upload2all-regions
+	Upload in all regions, use ec2-migrate-manifest
+--description
+	The description of the AMI
 
-This script creates a bundle from the running system with the kernel,
-the grub config and the kernel modules.
+Bootstrapping options
+"""""""""""""""""""""
+--distribution NAME
+	debian
+--codename NAME
+	squeeze
+--release VERSION
+	6.0
+--arch ARCHITECTURE
+	i386 amd64 (defaults to arch of the running host)
+--bootstrap-mirror
+	Defaults to http://ftp.us.debian.org/debian/
+--debug
+	Use -x option in bash
 
+Environment options
+"""""""""""""""""""
+--timezone ZONE
+	Defaults to UTC
+--locale LOCALE
+	Defaults to en_US
+--charmap CHARMAP
+	Defaults to UTF-8
+--package NAME
+	Additional package to install
+--modules URLs
+	Kernel modules to download and install
+--no-run-user-data
+	Do not run user-data script on first boot
+--script FILE
+	External script/command to run before bundle
+--builddir DIR
+	Build directory [default: /mnt/build]
 
-init.d/
-=======
+AWS options
+"""""""""""
+--user ID
+	Defaults to $AWS_USER_ID
+--access-key ID
+	Defaults to $AWS_ACCESS_KEY_ID
+--secret-key ID
+	Defaults to $AWS_SECRET_ACCESS_KEY_ID
+--private-key PATH
+	Defaults to $EC2_PRIVATE_KEY
+--cert PATH
+	Defaults to $EC2_CERT
+--location LOC
+	AWS location EU/US [default: US]
+--region REGION
+	AWS region [default: us-east-1]
 
-These scripts are forked from http://code.google.com/p/ec2ubuntu/ and
-adapted for debian squeeze (mostly made compatible with insserv).
+Environment script
+------------------
+Include with `source env-script` for the variables to be present on the commandline.
+::
+
+	export EC2_URL=https://ec2.eu-west-1.amazonaws.com
+	export EC2_HOME="/root/ec2/ec2-api-tools-1.5.2.3"
+	export EC2_AMITOOL_HOME="/root/ec2/ec2-ami-tools-1.4.0.5"
+	export EC2_PRIVATE_KEY="/root/root.key"
+	export EC2_CERT="/root/root.crt"
+	export EC2_ACCNO=1234-4567-8910
+	export EC2_ACCESS_KEY=SOM3L0NG4CC3SSK3Y000
+	export EC2_SECRET_KEY=SomBase64EncodedString
+	export AWS_USER_ID="$EC2_ACCNO"
+	export AWS_ACCESS_KEY_ID="$EC2_ACCESS_KEY"
+	export AWS_SECRET_ACCESS_KEY="$EC2_SECRET_KEY"
+	export AWS_SECRET_ACCESS_KEY_ID="$EC2_SECRET_KEY"
+	export PATH="$PATH:${EC2_HOME}/bin:${EC2_AMITOOL_HOME}/bin"
+ 
