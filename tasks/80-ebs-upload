@@ -15,8 +15,14 @@ none      /proc proc    defaults 0 0
 none      /sys  sysfs   defaults 0 0
 EOF
 
+cd $scriptdir
+while [ -n "`/usr/bin/lsof $imagedir`" ]; do
+	echo "Waiting for volume to idle, before unmounting."
+	sleep 5
+done
+
 echo "Unmounting the volume"
-umount -l $imagedir
+umount $imagedir
 
 echo "Detaching the volume"
 detachment_status=`ec2-detach-volume $volume_id | grep 'available' || true`
