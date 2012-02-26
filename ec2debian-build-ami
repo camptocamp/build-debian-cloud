@@ -27,7 +27,7 @@ while [ $# -gt 0 ]; do
 		--script)      scripts=("${scripts[@]}" "$2");      shift 2 ;;
 		--package)     packages="$packages $2";             shift 2 ;;
 		--modules)     modules=$2;                          shift 2 ;;
-		--builddir)    builddir=$2;                         shift 2 ;;
+		--imagedir)    imagedir=$2;                         shift 2 ;;
 		--description) description=$2;                      shift 2 ;;
 		--volume-id)   volume_id=$2;                        shift 2 ;;
 		--debug)       set -x;                              shift   ;;
@@ -43,7 +43,7 @@ true ${AWS_USER_ID:?} ${AWS_ACCESS_KEY_ID:?} ${AWS_SECRET_ACCESS_KEY:?} \
 		${EC2_CERT:?} ${EC2_PRIVATE_KEY:?} \
 		${bootstrap_mirror:=http://ftp.us.debian.org/debian/} \
 		${locale:=en_US} ${charmap:=UTF-8} ${timezone:=UTC} \
-		${builddir:=/mnt/build} ${arch:=amd64}
+		${imagedir:=/mnt/image} ${arch:=amd64}
 
 case $arch in
 	amd64) bundlearch="x86_64" ;;

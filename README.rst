@@ -43,8 +43,8 @@ Environment options
 	Do not run user-data script on first boot
 --script FILE
 	External script/command to run before bundle
---builddir DIR
-	Build directory [default: /mnt/build]
+--imagedir DIR
+	Bootstrap directory [default: /mnt/image]
 
 AWS options
 """""""""""
