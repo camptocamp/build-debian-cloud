@@ -30,8 +30,6 @@ Environment options
 	Defaults to UTF-8
 --package NAME
 	Additional package to install
---modules URLs
-	Kernel modules to download and install
 --no-run-user-data
 	Do not run user-data script on first boot
 --script FILE

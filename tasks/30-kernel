@@ -1,28 +1,16 @@
 #!/bin/bash
 # Install kernel and kernel modules
-if [ -n "$modules" ]; then
-	# To build kernel modules yourself, see:
-	# http://alestic.com/2008/05/kernel-modules-2-6-21
-	for module in $modules; do
-		curl -s $module | tar xjC $imagedir
-	done
-	chown -R root.root $imagedir/lib/modules
+if [ $arch = 'amd64' ]; then
+	module_package='linux-image-xen-amd64'
+elif [ $arch = 'i386' ]; then
+	module_package='linux-image-xen-686'
 else
-	if [ $arch = 'amd64' ]; then
-		module_package='linux-image-xen-amd64'
-	elif [ $arch = 'i386' ]; then
-		module_package='linux-image-xen-686'
-	else
-		die "$0: Unrecognized --arch $arch"
-	fi
-	export DEBIAN_FRONTEND=noninteractive
-	chroot $imagedir apt-get install -y $module_package
-	unset DEBIAN_FRONTEND
+	die "$0: Unrecognized --arch $arch"
 fi
+export DEBIAN_FRONTEND=noninteractive
+chroot $imagedir apt-get install -y $module_package
+unset DEBIAN_FRONTEND
 
-# This kernel module has historically been loaded; keeping the tradition.
-# Also, xfs is the default fs of this tool now.
-# Could come in handy when you are, you know... booting.
 echo "xfs" >> $imagedir/etc/modules
 
 for module_version in $(cd $imagedir/lib/modules; ls); do

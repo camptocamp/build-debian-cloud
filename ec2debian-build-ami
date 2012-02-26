@@ -16,6 +16,7 @@ packages="openssh-server curl less"
 while [ $# -gt 0 ]; do
 	case $1 in
 		--arch)        arch=$2;                             shift 2 ;;
+		--description) description=$2;                      shift 2 ;;
 		--user)        AWS_USER_ID=$2;                      shift 2 ;;
 		--access-key)  AWS_ACCESS_KEY_ID=$2;                shift 2 ;;
 		--secret-key)  AWS_SECRET_ACCESS_KEY=$2;            shift 2 ;;
@@ -26,11 +27,9 @@ while [ $# -gt 0 ]; do
 		--charmap)     charmap=$2;                          shift 2 ;;
 		--size)        size=$2;                             shift 2 ;;
 		--no-run-user-data) no_run_user_data=1;             shift   ;;
-		--script)      scripts=("${scripts[@]}" "$2");      shift 2 ;;
 		--package)     packages="$packages $2";             shift 2 ;;
-		--modules)     modules=$2;                          shift 2 ;;
 		--imagedir)    imagedir=$2;                         shift 2 ;;
-		--description) description=$2;                      shift 2 ;;
+		--script)      scripts=("${scripts[@]}" "$2");      shift 2 ;;
 		--debug)       set -x;                              shift   ;;
 		*)             die "$0: Unrecognized option: $1";           ;;
 	esac
@@ -64,7 +63,6 @@ echo "locale:         $locale"
 echo "charmap:        $charmap"
 echo "timezone:       $timezone"
 echo "architecture:   $arch"
-echo "custom modules: $modules"
 echo "packages:       $packages"
 
 # The good stuff starts here.
