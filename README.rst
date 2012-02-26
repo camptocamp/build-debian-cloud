@@ -58,10 +58,6 @@ AWS options
 	Defaults to $EC2_PRIVATE_KEY
 --cert PATH
 	Defaults to $EC2_CERT
---location LOC
-	AWS location EU/US [default: US]
---region REGION
-	AWS region [default: us-east-1]
 
 Environment script
 ------------------

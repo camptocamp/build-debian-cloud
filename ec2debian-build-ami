@@ -8,28 +8,6 @@ function die {
 	exit 1
 }
 
-#
-# FORMAT: region;location;aki
-#
-# Use the official AKIs pv-grub-hd0-V1.01 provided by Amazon for all regions
-#
-
-regions_aki_i386=(
- "us-east-1;US;aki-407d9529"
- "us-west-1;us-west-1;aki-99a0f1dc"
- "eu-west-1;EU;aki-4deec439"
- "ap-southeast-1;ap-southeast-1;aki-13d5aa41"
- "ap-northeast-1;ap-northeast-1;aki-d209a2d3"
-)
-
-regions_aki_x86_64=( 
- "us-east-1;US;aki-427d952b"
- "us-west-1;us-west-1;aki-9ba0f1de"
- "eu-west-1;EU;aki-4feec43b"
- "ap-southeast-1;ap-southeast-1;aki-11d5aa43"
- "ap-northeast-1;ap-northeast-1;aki-d409a2d5"
-)
-
 packages="openssh-server curl less"
 
 while [ $# -gt 0 ]; do
@@ -50,7 +28,6 @@ while [ $# -gt 0 ]; do
 		--package)     packages="$packages $2";             shift 2 ;;
 		--modules)     modules=$2;                          shift 2 ;;
 		--builddir)    builddir=$2;                         shift 2 ;;
-		--region)      region=$2;                           shift 2 ;;
 		--description) description=$2;                      shift 2 ;;
 		--volume-id)   volume_id=$2;                        shift 2 ;;
 		--debug)       set -x;                              shift   ;;
@@ -66,12 +43,11 @@ true ${AWS_USER_ID:?} ${AWS_ACCESS_KEY_ID:?} ${AWS_SECRET_ACCESS_KEY:?} \
 		${EC2_CERT:?} ${EC2_PRIVATE_KEY:?} \
 		${bootstrap_mirror:=http://ftp.us.debian.org/debian/} \
 		${locale:=en_US} ${charmap:=UTF-8} ${timezone:=UTC} \
-		${region:=us-east-1} \
 		${builddir:=/mnt/build} ${arch:=amd64}
 
 case $arch in
-	amd64) bundlearch="x86_64"; regions_aki=${regions_aki_x86_64[@]} ;;
-	i386)  bundlearch="i386";   regions_aki=${regions_aki_i386[@]}   ;;
+	amd64) bundlearch="x86_64" ;;
+	i386)  bundlearch="i386"   ;;
 	*)     die "$0: Unrecognized architecture: $arch"
 esac
 
@@ -90,8 +66,6 @@ packages="$packages udev psmisc lsb-release"
 echo "Building AMI for $distribution $codename"
 echo "locale:         $locale"
 echo "charmap:        $charmap"
-echo "location:       $location"
-echo "region:         $region"
 echo "timezone:       $timezone"
 echo "architecture:   $arch"
 echo "custom modules: $modules"
