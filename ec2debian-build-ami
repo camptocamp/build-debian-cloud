@@ -1,95 +1,4 @@
 #!/bin/bash
-#
-# ec2debian-build-ami
-#
-# This script builds, bundles, and uploads an Debian AMI for
-# Amazon EC2.
-#
-# This has currently only been tested on standard ubuntu EC2 instances, but
-# should run fine on most systems with minimal fine tuning.
-#
-# This script is a fork of ec2ubuntu-build-ami available here:
-# http://ec2ubuntu.googlecode.com/svn/trunk/bin/ec2ubuntu-build-ami
-#
-# Command line options:
-#
-#   --ebs                 - Build an EBS boot AMI (defaults to S3 based AMI)
-#   --volume-id           - The EBS volume to use. Will mount automatically.
-#   --user ID             - Defaults to $AWS_USER_ID
-#   --access-key ID       - Defaults to $AWS_ACCESS_KEY_ID
-#   --secret-key ID       - Defaults to $AWS_SECRET_ACCESS_KEY_ID
-#   --private-key PATH    - Defaults to $EC2_PRIVATE_KEY
-#   --cert PATH           - Defaults to $EC2_CERT
-#   --distribution NAME   - debian
-#   --codename NAME       - squeeze
-#   --release VERSION     - 6.0
-#   --arch ARCHITECTURE   - i386 amd64 (defaults to arch of the running host)
-#   --bootstrap-mirror    - Defaults to http://ftp.us.debian.org/debian/
-#   --timezone ZONE       - Defaults to UTC
-#   --locale LOCALE       - Defaults to en_US
-#   --charmap CHARMAP     - Defaults to UTF-8
-#   --no-run-user-data    - Do not run user-data script on first boot
-#   --package NAME        - Additional Ubuntu package to install
-#   --script FILE         - External script/command to run before bundle
-#   --modules "URL1 URL2" - Kernel modules to download and install
-#   --builddir DIR        - Build directory [default: /mnt/build]
-#   --location US/EU      - AWS location [default: US]
-#   --region REGION       - AWS region [default: us-east-1]
-#   --upload2all-regions  - Upload in all regions, use ec2-migrate-manifest
-#   --description         - The description of the AMI
-#   --debug               - Use -x option in bash
-#
-#   The following options are only for S3-based AMIS (not using --ebs):
-#
-#   --bucket NAME         - S3 bucket name for non-EBS AMIs
-#   --prefix PREFIX       - Defaults to a reasonable manifest name
-#   --tag TAGNAME         - Used in the default prefix value
-#   --size MB             - Root partition size in megabytes (default 10240)
-#   --bundle-opts OPTIONS - Options to pass to ec2-bundle-vol
-#
-#   It is ok to specify multiple --package and --script options.
-#   It is ok to specify a quoted command for the --script option.
-#   You can also use "--desktop yes" to install the desktop packages
-#   without the NX software.
-#
-# Example:
-#
-#   Build an Ubuntu 8.04 Hardy base install AMI and upload to MYBUCKET:
-#
-#   bash ec2ubuntu-build-ami             \
-#   --codename    hardy                  \
-#   --bucket      MYBUCKET               \
-#   --user        $AWS_USER_ID           \
-#   --access-key  $AWS_ACCESS_KEY_ID     \
-#   --secret-key  $AWS_SECRET_ACCESS_KEY \
-#   --private-key pk*.pem                \
-#   --cert        cert*.pem 
-#
-#   Build a Debian/Squeeze server AMI and upload to all regions
-#
-#   bash ec2ubuntu-build-ami             \
-#   --codename    hardy                  \
-#   --bucket      MYBUCKET               \
-#   --user        $AWS_USER_ID           \
-#   --access-key  $AWS_ACCESS_KEY_ID     \
-#   --secret-key  $AWS_SECRET_ACCESS_KEY \
-#   --private-key pk*.pem                \
-#   --cert        cert*.pem              \
-#   --upload2all-regions
-# 
-# Amazon EC2 AMIs built using this script:
-#
-#   http://alestic.com
-#
-# Updated versions of this script:
-#
-#   http://code.google.com/p/ec2ubuntu/
-#
-# General Ubuntu on EC2 support (including support for this script):
-#
-#   http://groups.google.com/group/ec2ubuntu
-#
-
 # Rember various paths
 scriptdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 originaldir=$(/bin/pwd)
@@ -125,13 +34,7 @@ packages="openssh-server curl less"
 
 while [ $# -gt 0 ]; do
 	case $1 in
-		--distribution) distribution=$2;                    shift 2 ;;
-		--codename)    codename=$2;                         shift 2 ;;
-		--release)     release=$2;                          shift 2 ;;
 		--arch)        arch=$2;                             shift 2 ;;
-		--tag)         tag=$2;                              shift 2 ;;
-		--bucket)      bucket=$2;                           shift 2 ;;
-		--prefix)      prefix=$2;                           shift 2 ;;
 		--user)        AWS_USER_ID=$2;                      shift 2 ;;
 		--access-key)  AWS_ACCESS_KEY_ID=$2;                shift 2 ;;
 		--secret-key)  AWS_SECRET_ACCESS_KEY=$2;            shift 2 ;;
@@ -147,48 +50,23 @@ while [ $# -gt 0 ]; do
 		--package)     packages="$packages $2";             shift 2 ;;
 		--modules)     modules=$2;                          shift 2 ;;
 		--builddir)    builddir=$2;                         shift 2 ;;
-		--bundle-opts) bundle_vol_options=$2;               shift 2 ;;
-		--location)    location=$2;                         shift 2 ;;
 		--region)      region=$2;                           shift 2 ;;
-		--upload2all-regions) upload2all_regions=1;         shift   ;;
 		--description) description=$2;                      shift 2 ;;
-		--ebs)         ebs=1;                               shift   ;;
 		--volume-id)   volume_id=$2;                        shift 2 ;;
 		--debug)       set -x;                              shift   ;;
 		*)             die "$0: Unrecognized option: $1";           ;;
 	esac
 done
 
-if [ "$codename" = "" -a "$release" = "" ]; then
-	codename=squeeze
-fi
-
-if [ "$release" = "" ]; then
-	case $codename in
-		squeeze) release=6.0 ;;
-		*)       die "$0: Unrecognized codename: $codename"
-	esac
-elif [ "$codename" = "" ]; then
-	case $release in
-		6.0) codename=squeeze ;;
-		*)   die "$0: Unrecognized release: $release"
-	esac
-fi
-
-if [ "$distribution" = "" ]; then
-	case $codename in
-		squeeze) distribution=debian ;;
-		*)       die "$0: Unrecognized codename: $codename"
-	esac
-fi
+distribution="debian"
+codename="squeeze"
 
 # Required and default parameters
 true ${AWS_USER_ID:?} ${AWS_ACCESS_KEY_ID:?} ${AWS_SECRET_ACCESS_KEY:?} \
-		${EC2_CERT:=$(echo /mnt/cert-*.pem)} \
-		${EC2_PRIVATE_KEY:=$(echo /mnt/pk-*.pem)} \
+		${EC2_CERT:?} ${EC2_PRIVATE_KEY:?} \
 		${bootstrap_mirror:=http://ftp.us.debian.org/debian/} \
 		${locale:=en_US} ${charmap:=UTF-8} ${timezone:=UTC} \
-		${location:=US} ${region:=us-east-1} \
+		${region:=us-east-1} \
 		${builddir:=/mnt/build} ${arch:=amd64}
 
 case $arch in
@@ -207,39 +85,14 @@ if [ -z "$EC2_URL" ]; then
 	export EC2_URL="https://$region.ec2.amazonaws.com"
 fi
 
-if [ -z "$ebs" ]; then
-
-	# We must be given a bucket and we set a default prefix if we're not
-	# building an EBS snapshot AMI.
-	true ${bucket:?} \
-		 	${tag:=custom} \
-		 	${prefix:=$distribution-$release-$codename-$bsarch-$tag-$(date +%Y%m%d)}
-
-	true ${size:=10240}
-
-else
-	# It would be more compact to test all of these using eval in a loop, but
-	# then it's not so easy to give a meaningful error message showing what
-	# command line option shouldn't have been given.
-	[ -n "$bucket" ] && die "$0: --ebs is incompatible with --bucket"
-	[ -n "$tag" ]    && die "$0: --ebs is incompatible with --tag"
-	[ -n "$size" ]   && die "$0: --ebs is incompatible with --size"
-	[ -n "$prefix" ] &&	die "$0: --ebs is incompatible with --prefix"
-	[ -n "$bundle_vol_options" ] && die "$0: --ebs is incompatible with --bundle-opts"
-fi
-
 packages="$packages udev psmisc lsb-release"
 
-echo "Building AMI for $distribution $release $codename"
+echo "Building AMI for $distribution $codename"
 echo "locale:         $locale"
 echo "charmap:        $charmap"
 echo "location:       $location"
 echo "region:         $region"
 echo "timezone:       $timezone"
-if [ -z "$ebs" ]; then
-	echo "image size:     ${size} MB"
-	echo "uploading to:   $bucket/$prefix"
-fi
 echo "architecture:   $arch"
 echo "custom modules: $modules"
 echo "packages:       $packages"
@@ -298,8 +151,4 @@ chroot $imagedir umount /dev/pts
 chroot $imagedir umount /proc
 set -e
 
-if [ -z "$ebs" ]; then
-	source $scriptdir/tasks/80-s3-upload
-else
-	source $scriptdir/tasks/80-ebs-upload
-fi
+source $scriptdir/tasks/80-ebs-upload

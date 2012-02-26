@@ -15,26 +15,11 @@ Usage
 
 EBS options
 """""""""""
---ebs
-	Build an EBS boot AMI (defaults to S3 based AMI)
 --volume-id
 	The EBS volume to use. Will mount automatically.
 
-S3 options
-""""""""""
---upload2all-regions
-	Upload in all regions, use ec2-migrate-manifest
---description
-	The description of the AMI
-
 Bootstrapping options
 """""""""""""""""""""
---distribution NAME
-	debian
---codename NAME
-	squeeze
---release VERSION
-	6.0
 --arch ARCHITECTURE
 	i386 amd64 [default: amd64]
 --bootstrap-mirror

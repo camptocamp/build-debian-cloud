@@ -1,22 +1,15 @@
 #!/bin/bash
-if [ -z "$ebs" ]; then
+if [ ! -d "$builddir" ]; then
 	mkdir -p $builddir
-	cd $builddir
-	imagedir=$builddir/$distribution
-	mkdir -p $imagedir
+	source $scriptdir/tasks/11-create-volume
+elif [ -z "`mount | grep "$builddir"`" ]; then
+	source $scriptdir/tasks/11-create-volume
 else
-	if [ ! -d "$builddir" ]; then
-		mkdir -p $builddir
-		source $scriptdir/tasks/11-create-volume
-	elif [ -z "`mount | grep "$builddir"`" ]; then
-		source $scriptdir/tasks/11-create-volume
-	else
-		echo "Using the volume already mounted on $builddir"
-		if [ -z "$volume_id" ]; then
-			die \
-				"You must specify the volume ID when you want to mount it yourself." \
-				"Otherwise creating the snapshot later on will not be possible."
-		fi
+	echo "Using the volume already mounted on $builddir"
+	if [ -z "$volume_id" ]; then
+		die \
+			"You must specify the volume ID when you want to mount it yourself." \
+			"Otherwise creating the snapshot later on will not be possible."
 	fi
-	imagedir=$builddir
 fi
+imagedir=$builddir
