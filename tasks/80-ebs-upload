@@ -78,5 +78,11 @@ ami_id=`ec2-register \
 	--name "$ami_name" --description "$description" \
 	--architecture "$bundlearch" --kernel "$aki" \
 	--snapshot "$snapshot_id" | awk '{print $2}'`
-[ -z "$ami_id" ] && die "Unable to register the snapshot as an AMI"
+if [ -z "$ami_id" ]; then
+	die \
+		"Unable to register the snapshot as an AMI." \
+		"You can do it manually with ec2-register" \
+		"--name \"$ami_name\" --description \"$description\" " \
+		"--architecture \"$bundlearch\" --kernel \"$aki\" --snapshot \"$snapshot_id\""
+fi
 echo "Your AMI has been created with the ID $ami_id"
