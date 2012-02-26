@@ -36,7 +36,7 @@ Bootstrapping options
 --release VERSION
 	6.0
 --arch ARCHITECTURE
-	i386 amd64 (defaults to arch of the running host)
+	i386 amd64 [default: amd64]
 --bootstrap-mirror
 	Defaults to http://ftp.us.debian.org/debian/
 --debug

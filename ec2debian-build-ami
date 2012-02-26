@@ -128,7 +128,7 @@ while [ $# -gt 0 ]; do
 		--distribution) distribution=$2;                    shift 2 ;;
 		--codename)    codename=$2;                         shift 2 ;;
 		--release)     release=$2;                          shift 2 ;;
-		--arch)        bsarch=$2;                           shift 2 ;;
+		--arch)        arch=$2;                             shift 2 ;;
 		--tag)         tag=$2;                              shift 2 ;;
 		--bucket)      bucket=$2;                           shift 2 ;;
 		--prefix)      prefix=$2;                           shift 2 ;;
@@ -159,18 +159,6 @@ while [ $# -gt 0 ]; do
 	esac
 done
 
-if [ $(uname -m) = 'x86_64' ]; then
-	true ${bsarch:="amd64"}
-	bundlearch="x86_64"
-	regions_aki=${regions_aki_x86_64[@]}
-	export notlongext="64"
-else
-	true ${bsarch:="i386"}
-	bundlearch="i386"
-	regions_aki=${regions_aki_i386[@]}
-	export notlongext=""
-fi
-
 if [ "$codename" = "" -a "$release" = "" ]; then
 	codename=squeeze
 fi
@@ -196,12 +184,18 @@ fi
 
 # Required and default parameters
 true ${AWS_USER_ID:?} ${AWS_ACCESS_KEY_ID:?} ${AWS_SECRET_ACCESS_KEY:?} \
-	 	${EC2_CERT:=$(echo /mnt/cert-*.pem)} \
-	 	${EC2_PRIVATE_KEY:=$(echo /mnt/pk-*.pem)} \
-	 	${bootstrap_mirror:=http://ftp.us.debian.org/debian/} \
-	 	${locale:=en_US} ${charmap:=UTF-8} ${timezone:=UTC} \
-	 	${location:=US} ${region:=us-east-1} \
-	 	${builddir:=/mnt/build}
+		${EC2_CERT:=$(echo /mnt/cert-*.pem)} \
+		${EC2_PRIVATE_KEY:=$(echo /mnt/pk-*.pem)} \
+		${bootstrap_mirror:=http://ftp.us.debian.org/debian/} \
+		${locale:=en_US} ${charmap:=UTF-8} ${timezone:=UTC} \
+		${location:=US} ${region:=us-east-1} \
+		${builddir:=/mnt/build} ${arch:=amd64}
+
+case $arch in
+	amd64) bundlearch="x86_64"; regions_aki=${regions_aki_x86_64[@]} ;;
+	i386)  bundlearch="i386";   regions_aki=${regions_aki_i386[@]}   ;;
+	*)     die "$0: Unrecognized architecture: $arch"
+esac
 
 [ ! -f "$EC2_CERT" ] && die "$0: AWS certificate file not found: $EC2_CERT"
 export EC2_CERT
@@ -246,8 +240,7 @@ if [ -z "$ebs" ]; then
 	echo "image size:     ${size} MB"
 	echo "uploading to:   $bucket/$prefix"
 fi
-echo "bundlearch:     $bundlearch"
-echo "bsarch:         $bsarch"
+echo "architecture:   $arch"
 echo "custom modules: $modules"
 echo "packages:       $packages"
 
@@ -268,7 +261,7 @@ EOF
 chmod 755 $imagedir/usr/sbin/policy-rc.d
 
 # Bootstrap
-debootstrap --arch $bsarch $codename $imagedir $bootstrap_mirror
+debootstrap --arch $arch $codename $imagedir $bootstrap_mirror
 
 chroot $imagedir mount -t proc none /proc
 chroot $imagedir mkdir -p /dev/pts

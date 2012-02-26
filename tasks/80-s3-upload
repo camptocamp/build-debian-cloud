@@ -1,9 +1,9 @@
 #!/bin/bash
 # Bundle & upload to S3
 # Special AKIs for PvGrub
-if [ $bsarch = 'amd64' ]; then
+if [ $arch = 'amd64' ]; then
 	aki="aki-4feec43b"
-elif [ $bsarch = 'i386' ]; then
+elif [ $arch = 'i386' ]; then
 	aki="aki-4deec439"
 fi
 

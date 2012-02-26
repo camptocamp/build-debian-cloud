@@ -8,12 +8,12 @@ if [ -n "$modules" ]; then
 	done
 	chown -R root.root $imagedir/lib/modules
 else
-	if [ $bsarch = 'amd64' ]; then
+	if [ $arch = 'amd64' ]; then
 		module_package='linux-image-xen-amd64'
-	elif [ $bsarch = 'i386' ]; then
+	elif [ $arch = 'i386' ]; then
 		module_package='linux-image-xen-686'
 	else
-		die "$0: Unrecognized --arch $bsarch"
+		die "$0: Unrecognized --arch $arch"
 	fi
 	export DEBIAN_FRONTEND=noninteractive
 	chroot $imagedir apt-get install -y $module_package

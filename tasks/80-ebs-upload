@@ -18,9 +18,9 @@ EOF
 echo "Unmounting the volume"
 umount -l $imagedir
 
-if [ $bsarch = 'amd64' ]; then
+if [ $arch = 'amd64' ]; then
 	aki="aki-4feec43b"
-elif [ $bsarch = 'i386' ]; then
+elif [ $arch = 'i386' ]; then
 	aki="aki-4deec439"
 fi
 
@@ -35,8 +35,11 @@ do
 	sleep 5
 	snapshot_status=`ec2-describe-snapshots | grep "$snapshot_id.*completed" || true`
 done
-ami_name="$distribution-$codename-$bsarch-$(date +%Y%m%d)"
+ami_name="$distribution-$codename-$arch-$(date +%Y%m%d)"
 echo "Registering the snapshot '$snapshot_id' as an AMI"
-ami_id=`ec2-register --architecture "$bundlearch" --name "$ami_name" --description "$description" --kernel "$aki" --snapshot "$snapshot_id" | awk '{print $2}'`
+ami_id=`ec2-register \
+	--name "$ami_name" --description "$description" \
+	--architecture "$bundlearch" --kernel "$aki" \
+	--snapshot "$snapshot_id" | awk '{print $2}'`
 [ -z "$ami_id" ] && die "Unable to register the snapshot as an AMI"
 echo "Your AMI has been created with the ID $ami_id"
