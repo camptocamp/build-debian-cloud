@@ -57,10 +57,6 @@ export EC2_CERT
 [ ! -f "$EC2_PRIVATE_KEY" ] && die "$0: AWS private key file not found: $EC2_PRIVATE_KEY"
 export EC2_PRIVATE_KEY
 
-if [ -z "$EC2_URL" ]; then
-	export EC2_URL="https://$region.ec2.amazonaws.com"
-fi
-
 packages="$packages udev psmisc lsb-release"
 
 echo "Building AMI for $distribution $codename"
@@ -76,6 +72,8 @@ set -e
 
 # The good stuff starts here.
 source $scriptdir/tasks/00-host-dependencies
+
+source $scriptdir/tasks/01-host-information
 
 source $scriptdir/tasks/10-prepare-device
 

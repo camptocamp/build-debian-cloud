@@ -5,20 +5,11 @@ filesystem='xfs'
 
 [ -n "`df | grep $device_path`" ] && die "Something is already attached to $device_path."
 
-metadata_url='http://169.254.169.254/latest/meta-data'
-instance_id=`curl --silent $metadata_url/instance-id`
-availability_zone=`curl --silent $metadata_url/placement/availability-zone`
-
-if [ -z "$instance_id" ]; then
-	die \
-		"Unable to fetch the instance id of this machine." \
-		"This script must be running on ec2 in order to mount EBS volumes."
-fi
-[ -z "$availability_zone" ] && die "Unable to fetch the availability zone of this machine."
-
 if [ -z "$volume_id" ]; then
 	echo "No volume id specified, creating a volume now."
-	volume_id=`ec2-create-volume --size 1 --availability-zone "$availability_zone" | awk '{print $2}'`
+	volume_id=`ec2-create-volume --size 1 \
+		--region "$region" --availability-zone "$availability_zone" \
+		| awk '{print $2}'`
 	[ -z "$volume_id" ] && die "Unable to create volume."
 else
 	echo "Checking the status of the specified volume."
@@ -32,14 +23,17 @@ else
 			"Otherwise detach with 'ec2-detach-volume $volume_id'."
 	fi
 fi
+
 echo "Attaching volume with the id $volume_id"
-attachment_status=`ec2-attach-volume "$volume_id" --instance "$instance_id" --device "$device" | grep 'attached' || true`
+attachment_status=`ec2-attach-volume "$volume_id" \
+	--instance "$instance_id" --device "$device" | grep 'attached' || true`
 while [ -z "$attachment_status" ]
 do
 	echo "Waiting for volume to finish attaching"
 	sleep 5
 	attachment_status=`ec2-describe-volumes | grep "ATTACHMENT[[:blank:]]*$volume_id.*attached" || true`
 done
+
 echo "Formatting the device $device_path with $filesystem"
 mkfs.$filesystem $device_path
 mount $device_path $imagedir
