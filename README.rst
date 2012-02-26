@@ -13,11 +13,6 @@ this way you do not need to specify the parameters for every api call.
 Usage
 -----
 
-EBS options
-"""""""""""
---volume-id
-	The EBS volume to use. Will mount automatically.
-
 Bootstrapping options
 """""""""""""""""""""
 --arch ARCHITECTURE

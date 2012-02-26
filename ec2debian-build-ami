@@ -29,7 +29,6 @@ while [ $# -gt 0 ]; do
 		--modules)     modules=$2;                          shift 2 ;;
 		--imagedir)    imagedir=$2;                         shift 2 ;;
 		--description) description=$2;                      shift 2 ;;
-		--volume-id)   volume_id=$2;                        shift 2 ;;
 		--debug)       set -x;                              shift   ;;
 		*)             die "$0: Unrecognized option: $1";           ;;
 	esac
@@ -75,7 +74,7 @@ source $scriptdir/tasks/00-host-dependencies
 
 source $scriptdir/tasks/01-host-information
 
-source $scriptdir/tasks/10-prepare-device
+source $scriptdir/tasks/10-create-volume
 
 # Don't launch daemons on apt-get install
 mkdir -p $imagedir/usr/sbin/
