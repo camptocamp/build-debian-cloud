@@ -280,9 +280,6 @@ source $scriptdir/tasks/20-locales
 
 source $scriptdir/tasks/21-apt-sources
 
-# MAKEDEV is expected in /dev by some packages.
-ln -s /sbin/MAKEDEV $imagedir/dev/MAKEDEV
-
 source $scriptdir/tasks/25-packages
 
 source $scriptdir/tasks/30-kernel
