@@ -1,4 +1,7 @@
-#!/bin/bash
+#!/bin/bash -e
+#            ^ Stop execution if any command fails
+
+
 # Rember various paths
 scriptdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 originaldir=$(/bin/pwd)
@@ -65,9 +68,6 @@ echo "timezone:       $timezone"
 echo "architecture:   $arch"
 echo "custom modules: $modules"
 echo "packages:       $packages"
-
-# Stop execution if any command fails
-set -e
 
 # The good stuff starts here.
 source $scriptdir/tasks/00-host-dependencies
