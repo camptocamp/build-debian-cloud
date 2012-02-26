@@ -21,7 +21,6 @@ while [ $# -gt 0 ]; do
 		--secret-key)  AWS_SECRET_ACCESS_KEY=$2;            shift 2 ;;
 		--private-key) EC2_PRIVATE_KEY=$2;                  shift 2 ;;
 		--cert)        EC2_CERT=$2;                         shift 2 ;;
-		--bootstrap-mirror) bootstrap_mirror=$2;            shift 2 ;;
 		--timezone)    timezone=$2;                         shift 2 ;;
 		--locale)      locale=$2;                           shift 2 ;;
 		--charmap)     charmap=$2;                          shift 2 ;;
@@ -43,7 +42,6 @@ codename="squeeze"
 # Required and default parameters
 true ${AWS_USER_ID:?} ${AWS_ACCESS_KEY_ID:?} ${AWS_SECRET_ACCESS_KEY:?} \
 		${EC2_CERT:?} ${EC2_PRIVATE_KEY:?} \
-		${bootstrap_mirror:=http://ftp.us.debian.org/debian/} \
 		${locale:=en_US} ${charmap:=UTF-8} ${timezone:=UTC} \
 		${imagedir:=/mnt/image} ${arch:=amd64}
 

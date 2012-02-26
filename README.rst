@@ -17,8 +17,6 @@ Bootstrapping options
 """""""""""""""""""""
 --arch ARCHITECTURE
 	i386 amd64 [default: amd64]
---bootstrap-mirror
-	Defaults to http://ftp.us.debian.org/debian/
 --debug
 	Use -x option in bash
 
