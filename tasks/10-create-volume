@@ -1,8 +1,12 @@
 #!/bin/bash
 [ -n "`mount | grep "$imagedir"`" ] && die "Something is already mounted on $imagedir"
 
-device='/dev/sdf'
-device_path='/dev/xvdf'
+device_letter=`cat /dev/urandom| tr -dc 'f-p'|head -c 1`
+while [ -b "/dev/xvd$device_letter" ]; do
+	device_letter=`cat /dev/urandom| tr -dc 'f-p'|head -c 1`
+done
+device="/dev/sd$device_letter"
+device_path="/dev/xvd$device_letter"
 filesystem='xfs'
 
 [ -n "`df | grep $device_path`" ] && die "Something is already attached to $device_path."
