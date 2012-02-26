@@ -276,16 +276,9 @@ chroot $imagedir mount -t devpts none /dev/pts
 
 chroot $imagedir apt-get -f install -y
 
-# Set locale
-chroot $imagedir apt-get install -y --force-yes locales # for Debian
-chroot $imagedir localedef -c --inputfile=$locale --charmap=$charmap $locale.$charmap
-echo "LANG=\"$locale.$charmap\""  >$imagedir/etc/default/locale
+source $scriptdir/tasks/20-locales
 
-# Set timezone
-echo $timezone >$imagedir/etc/timezone
-/bin/cp -f $imagedir/usr/share/zoneinfo/$timezone $imagedir/etc/localtime
-
-source $scriptdir/tasks/20-apt-sources
+source $scriptdir/tasks/21-apt-sources
 
 # MAKEDEV is expected in /dev by some packages.
 ln -s /sbin/MAKEDEV $imagedir/dev/MAKEDEV

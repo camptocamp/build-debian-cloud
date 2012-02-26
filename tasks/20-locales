@@ -1,0 +1,9 @@
+#!/bin/bash
+# Set locale
+chroot $imagedir apt-get install -y --force-yes locales # for Debian
+chroot $imagedir localedef -c --inputfile=$locale --charmap=$charmap $locale.$charmap
+echo "LANG=\"$locale.$charmap\""  >$imagedir/etc/default/locale
+
+# Set timezone
+echo $timezone >$imagedir/etc/timezone
+/bin/cp -f $imagedir/usr/share/zoneinfo/$timezone $imagedir/etc/localtime
