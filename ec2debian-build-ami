@@ -296,9 +296,6 @@ source $scriptdir/tasks/30-kernel
 
 source $scriptdir/tasks/35-grub
 
-# Xen expects a single tty1
-/bin/rm -f $imagedir/etc/event.d/tty[2-6]
-
 # Security
 chroot $imagedir shadowconfig on
 chroot $imagedir passwd -d root
