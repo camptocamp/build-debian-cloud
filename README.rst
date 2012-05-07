@@ -55,17 +55,18 @@ Environment script
 Include with `source env-script` for the variables to be present on the commandline.
 ::
 
-	export EC2_URL=https://ec2.eu-west-1.amazonaws.com
+	export EC2_URL='https://ec2.eu-west-1.amazonaws.com'
 	export EC2_HOME="/root/ec2/ec2-api-tools-1.5.2.3"
 	export EC2_AMITOOL_HOME="/root/ec2/ec2-ami-tools-1.4.0.5"
 	export EC2_PRIVATE_KEY="/root/root.key"
 	export EC2_CERT="/root/root.crt"
-	export EC2_ACCNO=1234-4567-8910
-	export EC2_ACCESS_KEY=SOM3L0NG4CC3SSK3Y000
-	export EC2_SECRET_KEY=SomBase64EncodedString
+	export EC2_ACCNO='1234-4567-8910'
+	export EC2_ACCESS_KEY='SOM3L0NG4CC3SSK3Y000'
+	export EC2_SECRET_KEY='SomBase64EncodedString'
 	export AWS_USER_ID="$EC2_ACCNO"
 	export AWS_ACCESS_KEY_ID="$EC2_ACCESS_KEY"
 	export AWS_SECRET_ACCESS_KEY="$EC2_SECRET_KEY"
 	export AWS_SECRET_ACCESS_KEY_ID="$EC2_SECRET_KEY"
 	export PATH="$PATH:${EC2_HOME}/bin:${EC2_AMITOOL_HOME}/bin"
- 
+
+If you are using IAM to access AWS you may need to create the certificate first. You can use `this gist <https://gist.github.com/2629062>`_ for that.
