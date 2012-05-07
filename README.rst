@@ -62,7 +62,7 @@ Include with `source env-script` for the variables to be present on the commandl
 	export EC2_CERT="/root/root.crt"
 	export AWS_USER_ID='1234-4567-8910'
 	export AWS_ACCESS_KEY_ID='SOM3L0NG4CC3SSK3Y000'
-	export AWS_SECRET_ACCESS_KEY='SomBase64EncodedString'
+	export AWS_SECRET_ACCESS_KEY='SomeBase64EncodedString'
 	export PATH="$PATH:${EC2_HOME}/bin:${EC2_AMITOOL_HOME}/bin"
 
 If you are using IAM to access AWS you may need to create the certificate first. You can use `this gist <https://gist.github.com/2629062>`_ for that.

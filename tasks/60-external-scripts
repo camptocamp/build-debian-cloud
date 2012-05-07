@@ -1,7 +1,8 @@
 #!/bin/bash
 # Export build parameters so they are available in external scripts
-export distribution description codename timezone locale charmap \
-	scripts packages modules desktop imagedir arch \
+export distribution description codename \
+	timezone locale charmap \
+	packages imagedir arch \
 	AWS_USER_ID AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY EC2_PRIVATE_KEY EC2_CERT
 
 # Invoke external scripts/commands if requested
