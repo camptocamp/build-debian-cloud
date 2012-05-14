@@ -1,7 +1,4 @@
 #!/bin/bash
-# MAKEDEV is expected in /dev by some packages.
-ln -s /sbin/MAKEDEV $imagedir/dev/MAKEDEV
-
 # Upgrade/install packages
 chroot $imagedir apt-get -y upgrade
 export DEBIAN_FRONTEND=noninteractive

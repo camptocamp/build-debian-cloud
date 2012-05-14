@@ -1,14 +1,12 @@
 #!/bin/bash
-# Install the menu.lst for PvGrub
-mkdir -p $imagedir/boot/grub
-cat <<'EOF' >$imagedir/boot/grub/menu.lst
-default 0
-timeout 1
+# Disable normal grub 2 cfg files
+chmod -x $imagedir/etc/grub.d/*
 
-title 2.6.32-5-xen-amd64
-root (hd0)
-kernel /boot/vmlinuz-2.6.32-5-xen-amd64 root=/dev/xvda1 ro
-initrd /boot/initrd.img-2.6.32-5-xen-amd64
-EOF
+# Install the 40_custom file, which generates a nice menu.lst
+script=40_custom
+cp $scriptdir/grub.d/$script $imagedir/etc/grub.d/$script
+chmod 755 $imagedir/etc/grub.d/$script
 
-update-initramfs -u -k 2.6.32-5-xen-amd64
+# Generate grub.cfg and alias it as menu.lst
+chroot $imagedir update-grub
+chroot $imagedir ln -s /boot/grub/grub.cfg /boot/grub/menu.lst

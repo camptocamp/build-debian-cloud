@@ -11,7 +11,7 @@ function die {
 	exit 1
 }
 
-packages="openssh-server curl less"
+packages="grub openssh-server curl less"
 
 while [ $# -gt 0 ]; do
 	case $1 in
@@ -82,8 +82,9 @@ chmod 755 $imagedir/usr/sbin/policy-rc.d
 # Bootstrap
 debootstrap --arch $arch $codename $imagedir $bootstrap_mirror
 
+mount --bind /dev $imagedir/dev
 chroot $imagedir mount -t proc none /proc
-chroot $imagedir mkdir -p /dev/pts
+chroot $imagedir mount -t sysfs none /sys
 chroot $imagedir mount -t devpts none /dev/pts
 
 chroot $imagedir apt-get -f install -y
@@ -111,10 +112,13 @@ source $scriptdir/tasks/70-cleanup
 mkdir -p $imagedir/var/lib/apt/lists/partial
 
 set +e
-umount -l $imagedir/dev/pts
 umount -l $imagedir/proc
-chroot $imagedir umount /dev/pts
+umount -l $imagedir/sys
+umount -l $imagedir/dev/pts
 chroot $imagedir umount /proc
+chroot $imagedir umount /sys
+chroot $imagedir umount /dev/pts
+umount $imagedir/dev
 set -e
 
 source $scriptdir/tasks/80-ebs-upload
