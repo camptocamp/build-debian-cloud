@@ -132,4 +132,6 @@ set -e
 # No need to umount any longer, since we already did that.
 trap - HUP INT TERM EXIT
 
-source $scriptdir/tasks/80-ebs-upload
+source $scriptdir/tasks/80-ebs-snapshot
+
+source $scriptdir/tasks/81-register-ami
