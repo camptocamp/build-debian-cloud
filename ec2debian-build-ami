@@ -119,15 +119,10 @@ source $scriptdir/tasks/70-cleanup
 
 mkdir -p $imagedir/var/lib/apt/lists/partial
 
-set +e
-umount -l $imagedir/proc
-umount -l $imagedir/sys
-umount -l $imagedir/dev/pts
-chroot $imagedir umount /proc
-chroot $imagedir umount /sys
 chroot $imagedir umount /dev/pts
+chroot $imagedir umount /sys
+chroot $imagedir umount /proc
 umount $imagedir/dev
-set -e
 
 # No need to umount any longer, since we already did that.
 trap - HUP INT TERM EXIT
