@@ -7,7 +7,7 @@ scriptdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 originaldir=$(/bin/pwd)
 
 function die {
-	echo $@ >&2
+	echo -e $@ >&2
 	exit 1
 }
 
