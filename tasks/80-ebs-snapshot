@@ -24,24 +24,18 @@ done
 echo "Unmounting the volume"
 umount $imagedir
 
-echo "Detaching the volume"
-detachment_status=`ec2-detach-volume $volume_id | grep 'available' || true`
-while [ -z "$detachment_status" ]; do
-	echo "Waiting for volume to finish detaching"
-	sleep 5
-	detachment_status=`ec2-describe-volumes | grep "VOLUME[[:blank:]]*$volume_id.*available" || true`
-done
 
-echo "Creating snapshot of the EBS volume"
+echo -n "Detaching the volume"
+detachment_status=`ec2-detach-volume $volume_id | grep 'available' || true`
+dotdot "$detachment_status" "ec2-describe-volumes | grep \"VOLUME[[:blank:]]*$volume_id.*available\" || true"
+
+echo -n "Creating snapshot of the EBS volume"
 snapshot=`ec2-create-snapshot $volume_id`
-[ -z "$snapshot" ] && die "Unable to create snapshot from the volume '$volume_id'"
+[ -z "$snapshot" ] && die "\nUnable to create snapshot from the volume '$volume_id'"
 snapshot_id=`echo $snapshot | awk '{print $2}'`
+
 snapshot_status=`echo $snapshot | grep 'completed' || true`
-while [ -z "$snapshot_status" ]; do
-	echo "Waiting for snapshot to be completed"
-	sleep 5
-	snapshot_status=`ec2-describe-snapshots | grep "$snapshot_id.*completed" || true`
-done
+dotdot "$snapshot_status" "ec2-describe-snapshots | grep \"$snapshot_id.*completed\" || true"
 
 echo "Deleting the volume"
 ec2-delete-volume $volume_id || true

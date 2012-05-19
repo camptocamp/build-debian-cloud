@@ -11,6 +11,19 @@ function die {
 	exit 1
 }
 
+function dotdot {
+	status=$1
+	cmd=$2
+	sleep=5
+	[ ! -z "$3" ] && sleep=$3
+	while [ -z "$status" ]; do
+		echo -n '.'
+		sleep $sleep
+		status=`eval $cmd`
+	done
+	echo
+}
+
 packages="grub openssh-server curl less"
 
 while [ $# -gt 0 ]; do

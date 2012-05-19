@@ -21,14 +21,10 @@ volume_id=`ec2-create-volume --size 1 \
 	| awk '{print $2}'`
 [ -z "$volume_id" ] && die "Unable to create volume."
 
-echo "Attaching volume with the id $volume_id"
+echo -n "Attaching volume with the id $volume_id"
 attachment_status=`ec2-attach-volume "$volume_id" \
 	--instance "$instance_id" --device "$device" | grep 'attached' || true`
-while [ -z "$attachment_status" ]; do
-	echo "Waiting for volume to finish attaching"
-	sleep 5
-	attachment_status=`ec2-describe-volumes | grep "ATTACHMENT[[:blank:]]*$volume_id.*attached" || true`
-done
+dotdot "$attachment_status" "ec2-describe-volumes | grep \"ATTACHMENT[[:blank:]]*$volume_id.*attached\" || true"
 
 echo "Formatting the device $device_path with $filesystem"
 mkfs.$filesystem $device_path
