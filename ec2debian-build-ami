@@ -82,6 +82,14 @@ chmod 755 $imagedir/usr/sbin/policy-rc.d
 # Bootstrap
 debootstrap --arch $arch $codename $imagedir $bootstrap_mirror
 
+# Unmount if the bootstrapping fails
+trap "echo 'Bootstrapping failed!'
+cd $scriptdir
+chroot $imagedir umount /dev/pts
+chroot $imagedir umount /sys
+chroot $imagedir umount /proc
+umount $imagedir/dev" HUP INT TERM EXIT
+
 mount --bind /dev $imagedir/dev
 chroot $imagedir mount -t proc none /proc
 chroot $imagedir mount -t sysfs none /sys
@@ -120,5 +128,8 @@ chroot $imagedir umount /sys
 chroot $imagedir umount /dev/pts
 umount $imagedir/dev
 set -e
+
+# No need to umount any longer, since we already did that.
+trap - HUP INT TERM EXIT
 
 source $scriptdir/tasks/80-ebs-upload
