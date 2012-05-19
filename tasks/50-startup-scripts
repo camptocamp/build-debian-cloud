@@ -15,4 +15,5 @@ if [ ! $no_run_user_data ]; then
 fi
 
 # Inside Xen, CMOS clock is irrelevant, so save seconds at boot
-/bin/rm -f $imagedir/etc/rc?.d/*hwclock*
+chroot $imagedir insserv -r hwclock.sh
+chroot $imagedir insserv -r hwclockfirst.sh
