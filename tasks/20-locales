@@ -1,8 +1,8 @@
 #!/bin/bash
 # Set locale
-chroot $imagedir apt-get install -y --force-yes locales # for Debian
-chroot $imagedir localedef -c --inputfile=$locale --charmap=$charmap $locale.$charmap
-echo "LANG=\"$locale.$charmap\""  >$imagedir/etc/default/locale
+chroot $imagedir apt-get install -y --force-yes locales
+sed -i 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' $imagedir/etc/locale.gen
+chroot $imagedir dpkg-reconfigure --priority=critical locales
 
 # Set timezone
 echo $timezone >$imagedir/etc/timezone
