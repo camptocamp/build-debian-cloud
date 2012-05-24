@@ -1,6 +1,5 @@
 #!/bin/bash
 # Basic sources.list
-mv $imagedir/etc/apt/sources.list $imagedir/etc/apt/sources.list.orig || true
 cat <<EOF >$imagedir/etc/apt/sources.list
 deb http://security.debian.org/       $codename/updates main contrib non-free
 deb-src http://security.debian.org/   $codename/updates main contrib non-free
