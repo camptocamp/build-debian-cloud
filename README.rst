@@ -2,6 +2,30 @@ debian "squeeze" bootstrapping script for EC2
 =============================================
 
 This is a fork of camptocamps bootstrapping script for EC2 AMIs.
+It creates a vanilla debian squeeze machine image, no latent logfiles no .bash_history or even apt package cache.
+The machine configuration this script creates has been thoroughly tested.
+
+Features
+--------
+AMI features
+""""""""""""
+* EBS booted
+* xfs filesystem
+* Ephemeral storage is properly mapped
+* Standard ec2 startup scripts
+* Uses standard debian Xen kernel from apt
+* update-grub creates an actual menu.lst which pvGrub can read
+
+Bootstrapper features
+"""""""""""""""""""""
+* EBS volume is automatically created, mounted, formatted, unmounted, "snapshotted" and deleted
+* AMI is automatically registered with the right kernels for the current region of the host machine
+* Can create both 32-bit and 64-bit AMIs
+* Custom script inclusion supported to keep the bootstrapping process automated
+* Custom packages
+* The process is divided into simple task based scripts
+* Bootstrapping server mirror depends on AWS region
+* APT source mirror depends on AWS region
 
 Installation
 ------------
