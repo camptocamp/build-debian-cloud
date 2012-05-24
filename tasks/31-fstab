@@ -1,16 +1,7 @@
 #!/bin/bash
-fstab=$imagedir/etc/fstab
-mount_entry=`mount | grep $imagedir || true`
-if [ -z "$mount_entry" ]; then
-	die \
-		"Could not determine $imagedir file system type for $fstab" \
-		"You'll need to manually create $fstab"
-fi
-
-type=`echo $mount_entry | cut -f5 -d' '`
-cat >$fstab <<EOF
-/dev/xvda1 /     $type    defaults 1 1
+cat > $imagedir/etc/fstab <<EOF
+/dev/xvda1 /     $filesystem    defaults 1 1
 /dev/xvda3 swap  swap    defaults 0 0
-none      /proc proc    defaults 0 0
-none      /sys  sysfs   defaults 0 0
+none       /proc proc    defaults 0 0
+none       /sys  sysfs   defaults 0 0
 EOF
