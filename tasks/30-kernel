@@ -1,12 +1,8 @@
 #!/bin/bash
 # Install kernel and kernel modules
-if [ $arch = 'amd64' ]; then
-	module_package='linux-image-xen-amd64'
-elif [ $arch = 'i386' ]; then
-	module_package='linux-image-xen-686'
-else
-	die "$0: Unrecognized --arch $arch"
-fi
+[ $arch = 'i386' ] && module_package='linux-image-xen-686'
+[ $arch = 'amd64' ] && module_package='linux-image-xen-amd64'
+
 export DEBIAN_FRONTEND=noninteractive
 chroot $imagedir apt-get install -y $module_package
 unset DEBIAN_FRONTEND
