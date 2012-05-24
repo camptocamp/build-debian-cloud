@@ -7,6 +7,5 @@ script=40_custom
 cp $scriptdir/grub.d/$script $imagedir/etc/grub.d/$script
 chmod 755 $imagedir/etc/grub.d/$script
 
-# Generate grub.cfg and alias it as menu.lst
-chroot $imagedir update-grub
+# Alias grub.cfg as menu.lst
 chroot $imagedir ln -s /boot/grub/grub.cfg /boot/grub/menu.lst

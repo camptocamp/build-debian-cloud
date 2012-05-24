@@ -116,11 +116,11 @@ source $scriptdir/tasks/21-apt-sources
 
 source $scriptdir/tasks/25-packages
 
-source $scriptdir/tasks/30-kernel
+source $scriptdir/tasks/30-grub
 
 source $scriptdir/tasks/31-fstab
 
-source $scriptdir/tasks/35-grub
+source $scriptdir/tasks/35-kernel
 
 source $scriptdir/tasks/38-security
 
