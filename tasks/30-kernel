@@ -1,10 +1,10 @@
 #!/bin/bash
-# Install kernel and kernel modules
-[ $arch = 'i386' ] && module_package='linux-image-xen-686'
-[ $arch = 'amd64' ] && module_package='linux-image-xen-amd64'
+# Install kernel
+[ $arch = 'i386' ] && kernel='linux-image-xen-686'
+[ $arch = 'amd64' ] && kernel='linux-image-xen-amd64'
 
 export DEBIAN_FRONTEND=noninteractive
-chroot $imagedir apt-get install -y $module_package
+chroot $imagedir apt-get install -y $kernel
 unset DEBIAN_FRONTEND
 
 # Xen expects a single tty1
