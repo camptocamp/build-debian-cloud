@@ -1,0 +1,3 @@
+#!/bin/bash
+# Bootstrap
+debootstrap --arch $arch $codename $imagedir $bootstrap_mirror

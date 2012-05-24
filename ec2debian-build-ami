@@ -84,31 +84,11 @@ source $scriptdir/tasks/01-host-information
 
 source $scriptdir/tasks/10-create-volume
 
-# Don't launch daemons on apt-get install
-mkdir -p $imagedir/usr/sbin/
-cat << EOF > $imagedir/usr/sbin/policy-rc.d
-#!/bin/sh
-exit 101
-EOF
-chmod 755 $imagedir/usr/sbin/policy-rc.d
+source $scriptdir/tasks/13-disable-daemons
 
-# Bootstrap
-debootstrap --arch $arch $codename $imagedir $bootstrap_mirror
+source $scriptdir/tasks/14-bootstrap
 
-# Unmount if the bootstrapping fails
-trap "echo 'Bootstrapping failed!'
-cd $scriptdir
-chroot $imagedir umount /dev/pts
-chroot $imagedir umount /sys
-chroot $imagedir umount /proc
-umount $imagedir/dev" HUP INT TERM EXIT
-
-mount --bind /dev $imagedir/dev
-chroot $imagedir mount -t proc none /proc
-chroot $imagedir mount -t sysfs none /sys
-chroot $imagedir mount -t devpts none /dev/pts
-
-chroot $imagedir apt-get -f install -y
+source $scriptdir/tasks/15-mount
 
 source $scriptdir/tasks/20-locales
 
@@ -132,13 +112,7 @@ source $scriptdir/tasks/60-external-scripts
 
 source $scriptdir/tasks/70-cleanup
 
-chroot $imagedir umount /dev/pts
-chroot $imagedir umount /sys
-chroot $imagedir umount /proc
-umount $imagedir/dev
-
-# No need to umount any longer, since we already did that.
-trap - HUP INT TERM EXIT
+source $scriptdir/tasks/71-unmount
 
 source $scriptdir/tasks/80-ebs-snapshot
 

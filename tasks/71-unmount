@@ -1,0 +1,8 @@
+#!/bin/bash
+chroot $imagedir umount /dev/pts
+chroot $imagedir umount /sys
+chroot $imagedir umount /proc
+umount $imagedir/dev
+
+# No need to umount any longer, since we already did that.
+trap - HUP INT TERM EXIT

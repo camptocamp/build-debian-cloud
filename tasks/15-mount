@@ -1,0 +1,13 @@
+#!/bin/bash
+# Unmount if the bootstrapping fails
+trap "echo 'Bootstrapping failed!'
+cd $scriptdir
+chroot $imagedir umount /dev/pts
+chroot $imagedir umount /sys
+chroot $imagedir umount /proc
+umount $imagedir/dev" HUP INT TERM EXIT
+
+mount --bind /dev $imagedir/dev
+chroot $imagedir mount -t proc none /proc
+chroot $imagedir mount -t sysfs none /sys
+chroot $imagedir mount -t devpts none /dev/pts
