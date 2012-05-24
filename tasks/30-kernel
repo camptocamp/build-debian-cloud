@@ -13,9 +13,5 @@ unset DEBIAN_FRONTEND
 
 echo "xfs" >> $imagedir/etc/modules
 
-for module_version in $(cd $imagedir/lib/modules; ls); do
-	chroot $imagedir depmod -a $module_version
-done
-
 # Xen expects a single tty1
 /bin/rm -f $imagedir/etc/event.d/tty[2-6]
