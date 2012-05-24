@@ -11,7 +11,5 @@ export DEBIAN_FRONTEND=noninteractive
 chroot $imagedir apt-get install -y $module_package
 unset DEBIAN_FRONTEND
 
-echo "xfs" >> $imagedir/etc/modules
-
 # Xen expects a single tty1
 /bin/rm -f $imagedir/etc/event.d/tty[2-6]
