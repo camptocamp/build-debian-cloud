@@ -132,8 +132,6 @@ source $scriptdir/tasks/60-external-scripts
 
 source $scriptdir/tasks/70-cleanup
 
-mkdir -p $imagedir/var/lib/apt/lists/partial
-
 chroot $imagedir umount /dev/pts
 chroot $imagedir umount /sys
 chroot $imagedir umount /proc

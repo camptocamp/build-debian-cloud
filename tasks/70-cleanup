@@ -8,3 +8,5 @@ rm -rf \
 	$imagedir/var/lib/apt/lists            \
 	$imagedir/tmp/*                        \
 	$imagedir/root/.bash_history
+
+mkdir -p $imagedir/var/lib/apt/lists/partial
