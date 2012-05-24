@@ -1,7 +1,7 @@
 #!/bin/bash
 # Set locale
 chroot $imagedir apt-get install -y --force-yes locales
-sed -i 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' $imagedir/etc/locale.gen
+sed -i "s/# $locale.$charmap $charmap/$locale.$charmap $charmap/" $imagedir/etc/locale.gen
 chroot $imagedir dpkg-reconfigure --priority=critical locales
 
 # Set timezone
