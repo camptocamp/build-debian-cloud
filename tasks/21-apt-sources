@@ -6,4 +6,3 @@ deb-src http://security.debian.org/   $codename/updates main contrib non-free
 deb $apt_mirror     $codename         main contrib non-free
 deb-src $apt_mirror $codename         main contrib non-free
 EOF
-chroot $imagedir apt-get update
