@@ -77,43 +77,7 @@ echo "timezone:       $timezone"
 echo "architecture:   $arch"
 echo "packages:       $packages"
 
-# The good stuff starts here.
-source $scriptdir/tasks/00-host-dependencies
-
-source $scriptdir/tasks/01-host-information
-
-source $scriptdir/tasks/10-create-volume
-
-source $scriptdir/tasks/13-disable-daemons
-
-source $scriptdir/tasks/14-bootstrap
-
-source $scriptdir/tasks/15-mount
-
-source $scriptdir/tasks/20-locales
-
-source $scriptdir/tasks/21-apt-sources
-
-source $scriptdir/tasks/25-packages
-
-source $scriptdir/tasks/30-grub
-
-source $scriptdir/tasks/31-fstab
-
-source $scriptdir/tasks/35-kernel
-
-source $scriptdir/tasks/38-security
-
-source $scriptdir/tasks/40-networking
-
-source $scriptdir/tasks/50-startup-scripts
-
-source $scriptdir/tasks/60-external-scripts
-
-source $scriptdir/tasks/70-cleanup
-
-source $scriptdir/tasks/71-unmount
-
-source $scriptdir/tasks/80-ebs-snapshot
-
-source $scriptdir/tasks/81-register-ami
+# Source all tasks in the right order
+for task in `find $scriptdir/tasks -type f | sort`; do
+	source $task
+done
