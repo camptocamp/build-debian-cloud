@@ -53,7 +53,14 @@ if [ -z "$ami_id" ]; then
 	die \
 		"Unable to register the snapshot as an AMI." \
 		"You can do it manually with:\nec2-register" \
-		"--name \"$ami_name\" --description \"$description\" " \
-		"--architecture \"$bundlearch\" --kernel \"$aki\" --snapshot \"$snapshot_id\""
+		"--name '$ami_name' --description '$description' \\\\\n" \
+		"--architecture '$bundlearch' --kernel '$aki' \\\\\n" \
+		"--block-device-mapping '/dev/sda2=ephemeral0' \\\\\n" \
+		"--block-device-mapping '/dev/sda3=ephemeral1' \\\\\n" \
+		"--block-device-mapping '/dev/sdb=ephemeral2' \\\\\n" \
+		"--block-device-mapping '/dev/sdc=ephemeral3' \\\\\n" \
+		"--block-device-mapping '/dev/sdd=ephemeral4' \\\\\n" \
+		"--block-device-mapping '/dev/sde=ephemeral5' \\\\\n" \
+		"--snapshot '$snapshot_id'"
 fi
 echo "Your AMI has been created with the ID $ami_id"
