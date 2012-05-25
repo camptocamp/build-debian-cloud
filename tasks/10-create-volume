@@ -1,16 +1,22 @@
 #!/bin/bash
+# Create the EBS volume
 [ -n "`mount | grep "$imagedir"`" ] && die "Something is already mounted on $imagedir"
 
+# Get a random device letter, we will hang forever if we try to attach a volume to an already mapped device.
 device_letter=`cat /dev/urandom| tr -dc 'f-p'|head -c 1`
 while [ -b "/dev/xvd$device_letter" ]; do
 	device_letter=`cat /dev/urandom| tr -dc 'f-p'|head -c 1`
 done
 device="/dev/sd$device_letter"
 device_path="/dev/xvd$device_letter"
+
+# Hardcode the filesystem for now, maybe we'll add a parameter later on
 filesystem='xfs'
 
+# Double check that the device name is not taken
 [ -n "`df | grep $device_path`" ] && die "Something is already attached to $device_path."
 
+# Create the dir we are going to mount the volume onto
 if [ ! -d "$imagedir" ]; then
 	mkdir -p $imagedir
 fi
@@ -24,6 +30,7 @@ volume_id=`ec2-create-volume --size 1 \
 echo -n "Attaching volume with the id $volume_id"
 attachment_status=`ec2-attach-volume "$volume_id" \
 	--instance "$instance_id" --device "$device" | grep 'attached' || true`
+# Wait until the volume is attached
 dotdot "$attachment_status" "ec2-describe-volumes | grep \"ATTACHMENT[[:blank:]]*$volume_id.*attached\" || true"
 
 echo "Formatting the device $device_path with $filesystem"
@@ -31,6 +38,7 @@ mkfs.$filesystem $device_path
 mount $device_path $imagedir
 echo "The EBS volume has been formatted and mounted"
 
+# Add some tools depending on the filesystem
 case $filesystem in
 	xfs)  packages="$packages xfsprogs" ;;
 	ext2) ;;

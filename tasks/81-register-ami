@@ -1,4 +1,7 @@
 #!/bin/bash
+# Register the snapshot as a new AMI
+
+# Figure out which pvGrub kernel ID we need
 case $region in
 	eu-west-1)
 		[ $arch = 'i386' ] && aki="aki-4deec439"
@@ -31,6 +34,7 @@ case $region in
 	*)              die "$0: Unrecognized region: $region"
 esac
 
+# The AMI has to start with "debian", otherwise we won't get a nice icon
 ami_name="$distribution-$codename-$arch-$(date +%Y%m%d)"
 echo "Registering the snapshot '$snapshot_id' as an AMI"
 ami_id=`ec2-register \
@@ -43,6 +47,8 @@ ami_id=`ec2-register \
 	--block-device-mapping '/dev/sdd=ephemeral4' \
 	--block-device-mapping '/dev/sde=ephemeral5' \
 	--snapshot "$snapshot_id" | awk '{print $2}'`
+
+# If the user has already created an AMI today, this will fail, so give the AMI registration command to the user
 if [ -z "$ami_id" ]; then
 	die \
 		"Unable to register the snapshot as an AMI." \

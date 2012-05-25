@@ -3,6 +3,7 @@
 [ $arch = 'i386' ] && kernel='linux-image-xen-686'
 [ $arch = 'amd64' ] && kernel='linux-image-xen-amd64'
 
+# Don't prompt for anything
 export DEBIAN_FRONTEND=noninteractive
 chroot $imagedir apt-get install -y $kernel
 unset DEBIAN_FRONTEND

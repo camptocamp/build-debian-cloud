@@ -1,8 +1,16 @@
 #!/bin/bash
 # Security
+
+# Privileged access to hashed passwords
 chroot $imagedir shadowconfig on
+
+# No password for root
 chroot $imagedir passwd -d root
+
+# Disallow password authentication, public/private key only
 sed -i -e 's/^#PasswordAuthentication yes/PasswordAuthentication no/' $imagedir/etc/ssh/sshd_config
+
+# Speed up ssh login, by not looking up the DNS name of a client
 cat <<'EOF' >>$imagedir/etc/ssh/sshd_config
 UseDNS no
 EOF

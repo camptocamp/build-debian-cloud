@@ -6,11 +6,13 @@
 scriptdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 originaldir=$(/bin/pwd)
 
+# Custom die function, output to stderr instead of stdout
 function die {
 	echo -e $@ >&2
 	exit 1
 }
 
+# Wait for the execution of $cmd not to return an empty string
 function dotdot {
 	status=$1
 	cmd=$2
@@ -24,6 +26,7 @@ function dotdot {
 	echo
 }
 
+# Add some standard packages we are going to need
 packages="grub openssh-server curl less"
 
 while [ $# -gt 0 ]; do
@@ -47,6 +50,7 @@ while [ $# -gt 0 ]; do
 	esac
 done
 
+# Hardcoded. This script would explode if we would have to take care of other distributions
 distribution="debian"
 codename="squeeze"
 
@@ -56,20 +60,25 @@ true ${AWS_USER_ID:?} ${AWS_ACCESS_KEY_ID:?} ${AWS_SECRET_ACCESS_KEY:?} \
 		${locale:=en_US} ${charmap:=UTF-8} ${timezone:=UTC} \
 		${imagedir:=/mnt/image} ${arch:=amd64}
 
+# Translate the architecture for the AMI
 case $arch in
 	amd64) bundlearch="x86_64" ;;
 	i386)  bundlearch="i386"   ;;
 	*)     die "$0: Unrecognized architecture: $arch"
 esac
 
+# Quit if we can't find the certificate
 [ ! -f "$EC2_CERT" ] && die "$0: AWS certificate file not found: $EC2_CERT"
 export EC2_CERT
 
+# ... or the private for.
 [ ! -f "$EC2_PRIVATE_KEY" ] && die "$0: AWS private key file not found: $EC2_PRIVATE_KEY"
 export EC2_PRIVATE_KEY
 
+# Add some packages to the list
 packages="$packages udev psmisc lsb-release"
 
+# Output some info to the user about the AMI we are about to build
 echo "Building AMI for $distribution $codename"
 echo "locale:         $locale"
 echo "charmap:        $charmap"

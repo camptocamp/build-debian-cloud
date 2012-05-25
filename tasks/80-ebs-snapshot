@@ -1,5 +1,10 @@
 #!/bin/bash
+# Create a snapshot of the EBS volume
+
+# cd out of the volume, otherwise we step on our own feet when unmounting
 cd $scriptdir
+
+# Wait for the volume to idle, maybe the user is currently in it
 while [ -n "`/usr/bin/lsof $imagedir`" ]; do
 	echo "Waiting for volume to idle, before unmounting."
 	sleep 5
@@ -19,6 +24,7 @@ snapshot=`ec2-create-snapshot $volume_id`
 snapshot_id=`echo $snapshot | awk '{print $2}'`
 
 snapshot_status=`echo $snapshot | grep 'completed' || true`
+# Wait for the snapshot to be completed, can take quite some time
 dotdot "$snapshot_status" "ec2-describe-snapshots | grep \"$snapshot_id.*completed\" || true"
 
 echo "Deleting the volume"

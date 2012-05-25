@@ -1,5 +1,7 @@
 #!/bin/bash
 # Basic networking
+
+# Standard configuration for eth0
 cat <<'EOF' >$imagedir/etc/network/interfaces
 auto lo
 iface lo inet loopback
@@ -20,8 +22,10 @@ ff02::2 ip6-allrouters
 ff02::3 ip6-allhosts
 EOF
 
+# Delete the hostname file, we get it from the ec2 dhcp server
 /bin/rm -f $imagedir/etc/hostname
 
+# Uninstall dhcpcd, apparently it doesn't work on ec2
 chroot $imagedir apt-get -y remove --purge isc-dhcp-client isc-dhcp-common
 chroot $imagedir apt-get -y install dhcpcd
 

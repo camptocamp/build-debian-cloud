@@ -7,6 +7,7 @@ chroot $imagedir umount /sys
 chroot $imagedir umount /proc
 umount $imagedir/dev" HUP INT TERM EXIT
 
+# Mount all the different special devices, other installers depend on their existence
 mount --bind /dev $imagedir/dev
 chroot $imagedir mount -t proc none /proc
 chroot $imagedir mount -t sysfs none /sys

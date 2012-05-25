@@ -1,8 +1,16 @@
 #!/bin/bash
-# Upgrade/install packages
+# Install packages
+
+# Update the package cache
 chroot $imagedir apt-get update
+
+# Fix broken dependencies, if any.
 chroot $imagedir apt-get -f install -y
+
+# Upgrade existing packages
 chroot $imagedir apt-get -y upgrade
+
+# Install packages. Don't prompt for anything.
 export DEBIAN_FRONTEND=noninteractive
 chroot $imagedir apt-get install -y $packages
 unset DEBIAN_FRONTEND

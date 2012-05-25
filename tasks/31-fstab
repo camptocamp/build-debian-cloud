@@ -1,4 +1,5 @@
 #!/bin/bash
+# Create the fstab
 cat > $imagedir/etc/fstab <<EOF
 /dev/xvda1 /     $filesystem    defaults 1 1
 /dev/xvda3 swap  swap    defaults 0 0

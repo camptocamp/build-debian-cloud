@@ -1,8 +1,11 @@
 #!/bin/bash
+# Unmount the volume
+
+# We unmount from inside the image, otherwise the system won't boot
 chroot $imagedir umount /dev/pts
 chroot $imagedir umount /sys
 chroot $imagedir umount /proc
 umount $imagedir/dev
 
-# No need to umount any longer, since we already did that.
+# No need to umount on errors any longer
 trap - HUP INT TERM EXIT
