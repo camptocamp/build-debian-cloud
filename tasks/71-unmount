@@ -9,3 +9,17 @@ umount $imagedir/dev
 
 # No need to umount on errors any longer
 trap - HUP INT TERM EXIT
+
+# Unmount the entire volume now
+
+# cd out of the volume, otherwise we step on our own feet
+cd $scriptdir
+
+# Wait for the volume to idle, maybe the user is currently in it
+while [ -n "`/usr/bin/lsof $imagedir`" ]; do
+	echo "Waiting for volume to idle, before unmounting."
+	sleep 5
+done
+
+echo "Unmounting the volume"
+umount $imagedir

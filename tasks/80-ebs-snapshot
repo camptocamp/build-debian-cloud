@@ -1,19 +1,5 @@
 #!/bin/bash
 # Create a snapshot of the EBS volume
-
-# cd out of the volume, otherwise we step on our own feet when unmounting
-cd $scriptdir
-
-# Wait for the volume to idle, maybe the user is currently in it
-while [ -n "`/usr/bin/lsof $imagedir`" ]; do
-	echo "Waiting for volume to idle, before unmounting."
-	sleep 5
-done
-
-echo "Unmounting the volume"
-umount $imagedir
-
-
 echo -n "Detaching the volume"
 detachment_status=`ec2-detach-volume $volume_id | grep 'available' || true`
 dotdot "$detachment_status" "ec2-describe-volumes | grep \"VOLUME[[:blank:]]*$volume_id.*available\" || true"
