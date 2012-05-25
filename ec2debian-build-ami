@@ -27,7 +27,7 @@ function dotdot {
 }
 
 # Add some standard packages we are going to need
-packages="grub openssh-server curl less"
+packages="grub openssh-server curl less udev psmisc lsb-release"
 
 while [ $# -gt 0 ]; do
 	case $1 in
@@ -74,9 +74,6 @@ export EC2_CERT
 # ... or the private for.
 [ ! -f "$EC2_PRIVATE_KEY" ] && die "$0: AWS private key file not found: $EC2_PRIVATE_KEY"
 export EC2_PRIVATE_KEY
-
-# Add some packages to the list
-packages="$packages udev psmisc lsb-release"
 
 # Output some info to the user about the AMI we are about to build
 echo "Building AMI for $distribution $codename"
