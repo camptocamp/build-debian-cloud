@@ -31,15 +31,19 @@ case $region in
 		[ $arch = 'i386' ] && aki="aki-863ce39b"
 		[ $arch = 'amd64' ] && aki="aki-d63ce3cb"
 	;;
-	*)              die "$0: Unrecognized region: $region"
+	*) die "$0: Unrecognized region: $region"
 esac
+
+
+[ $arch = 'i386' ] && ami_arch='i386'
+[ $arch = 'amd64' ] && ami_arch='x86_64'
 
 # The AMI has to start with "debian", otherwise we won't get a nice icon
 ami_name="$distribution-$codename-$arch-$(date +%Y%m%d)"
 echo "Registering the snapshot '$snapshot_id' as an AMI"
 ami_id=`ec2-register \
 	--name "$ami_name" --description "$description" \
-	--architecture "$bundlearch" --kernel "$aki" \
+	--architecture "$ami_arch" --kernel "$aki" \
 	--block-device-mapping '/dev/sda2=ephemeral0' \
 	--block-device-mapping '/dev/sda3=ephemeral1' \
 	--block-device-mapping '/dev/sdb=ephemeral2' \
@@ -54,7 +58,7 @@ if [ -z "$ami_id" ]; then
 		"Unable to register the snapshot as an AMI." \
 		"You can do it manually with:\nec2-register" \
 		"--name '$ami_name' --description '$description' \\\\\n" \
-		"--architecture '$bundlearch' --kernel '$aki' \\\\\n" \
+		"--architecture '$ami_arch' --kernel '$aki' \\\\\n" \
 		"--block-device-mapping '/dev/sda2=ephemeral0' \\\\\n" \
 		"--block-device-mapping '/dev/sda3=ephemeral1' \\\\\n" \
 		"--block-device-mapping '/dev/sdb=ephemeral2' \\\\\n" \

@@ -60,12 +60,8 @@ true ${AWS_USER_ID:?} ${AWS_ACCESS_KEY_ID:?} ${AWS_SECRET_ACCESS_KEY:?} \
 		${locale:=en_US} ${charmap:=UTF-8} ${timezone:=UTC} \
 		${imagedir:=/mnt/image} ${arch:=amd64}
 
-# Translate the architecture for the AMI
-case $arch in
-	amd64) bundlearch="x86_64" ;;
-	i386)  bundlearch="i386"   ;;
-	*)     die "$0: Unrecognized architecture: $arch"
-esac
+# Check the architecture
+[[ $arch != 'amd64' && $arch != 'i386' ]] && die "$0: Unrecognized architecture: $arch"
 
 # Quit if we can't find the certificate
 [ ! -f "$EC2_CERT" ] && die "$0: AWS certificate file not found: $EC2_CERT"
