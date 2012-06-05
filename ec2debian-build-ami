@@ -58,6 +58,24 @@ function dotdot {
 	logn "\n"
 }
 
+# Turns once per newline that is piped into it
+function spin {
+	cursor='|'
+	# Running `tput cols` in every iteration would cause significant slowdown.
+	# Only do this once, the spinner is not a "need to have" anyways.
+	cols=$(( `tput cols` - 2 ))
+	while read line; do
+		printf -- "\r$logcolor$cursor$txtdef %-${cols}s" "${line:0:$cols}"
+		case $cursor in
+			'|') cursor='/' ;;
+			'/') cursor='-' ;;
+			'-') cursor='\\' ;;
+			'\\') cursor='|' ;;
+		esac
+	done
+	printf "\n"
+}
+
 # Add some standard packages we are going to need
 packages=('grub' 'locales' 'openssh-server' 'curl')
 packages+=('less' 'udev' 'psmisc' 'lsb-release' 'dhcpcd')

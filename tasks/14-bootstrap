@@ -16,11 +16,13 @@ args_hash=`echo $bootstrap_args | sha1sum`
 tarball="$scriptdir/bootstrap-${args_hash:0:7}.tar"
 
 if [ ! -e "$tarball" ]; then
+	log "Creating the bootstrap tarball"
 	debootstrap --arch $arch --make-tarball=$tarball \
 		--include=$include --exclude=$exclude \
-		$codename $imagedir $apt_mirror || true
+		$codename $imagedir $apt_mirror | spin
 fi
 
+log "Bootstrapping"
 debootstrap --arch $arch --unpack-tarball=$tarball \
 	--include=$include --exclude=$exclude \
-	$codename $imagedir $apt_mirror || true
+	$codename $imagedir $apt_mirror | spin

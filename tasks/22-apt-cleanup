@@ -9,7 +9,7 @@ EOF
 chmod 755 $imagedir/usr/sbin/policy-rc.d
 
 # Update the package cache
-chroot $imagedir apt-get update
+chroot $imagedir apt-get update | spin
 
 # Fix broken dependencies, if any.
 chroot $imagedir apt-get -f install -y
