@@ -8,6 +8,19 @@ include="${packages[*]}"
 exclude="${exclude_packages[*]}"
 IFS=$SAVE_IFS
 
-debootstrap --arch $arch \
+bootstrap_args="--arch $arch --include=$include --exclude=$exclude
+$codename $imagedir $apt_mirror"
+
+args_hash=`echo $bootstrap_args | sha1sum`
+
+tarball="$scriptdir/bootstrap-${args_hash:0:7}.tar"
+
+if [ ! -e "$tarball" ]; then
+	debootstrap --arch $arch --make-tarball=$tarball \
+		--include=$include --exclude=$exclude \
+		$codename $imagedir $apt_mirror || true
+fi
+
+debootstrap --arch $arch --unpack-tarball=$tarball \
 	--include=$include --exclude=$exclude \
-	$codename $imagedir $apt_mirror
+	$codename $imagedir $apt_mirror || true
