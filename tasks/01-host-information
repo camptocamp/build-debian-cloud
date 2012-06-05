@@ -26,5 +26,5 @@ case $region in
 	ap-northeast-1) apt_mirror="http://ftp.jp.debian.org/debian/" ;;
 	ap-southeast-1) apt_mirror="http://mirror.nus.edu.sg/Debian/" ;;
 	sa-east-1)      apt_mirror="http://ftp.br.debian.org/debian/" ;;
-	*)              die "$0: Unrecognized region:" "$region"
+	*)              die "Unrecognized region:" "$region"
 esac

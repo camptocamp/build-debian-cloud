@@ -31,7 +31,7 @@ case $region in
 		[ $arch = 'i386' ] && aki="aki-863ce39b"
 		[ $arch = 'amd64' ] && aki="aki-d63ce3cb"
 	;;
-	*) die "$0: Unrecognized region:" "$region"
+	*) die "Unrecognized region:" "$region"
 esac
 
 

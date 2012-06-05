@@ -76,7 +76,7 @@ while [ $# -gt 0 ]; do
 		--imagedir)    imagedir=$2;                         shift 2 ;;
 		--script)      scripts=("${scripts[@]}" "$2");      shift 2 ;;
 		--debug)       set -x;                              shift   ;;
-		*)             die "$0: Unrecognized option: $1";           ;;
+		*)             die "Unrecognized option: $1";           ;;
 	esac
 done
 
@@ -91,14 +91,14 @@ true ${AWS_USER_ID:?} ${AWS_ACCESS_KEY_ID:?} ${AWS_SECRET_ACCESS_KEY:?} \
 		${imagedir:=/mnt/image} ${arch:=amd64}
 
 # Check the architecture
-[[ $arch != 'amd64' && $arch != 'i386' ]] && die "$0: Unrecognized architecture: $arch"
+[[ $arch != 'amd64' && $arch != 'i386' ]] && die "Unrecognized architecture: $arch"
 
 # Quit if we can't find the certificate
-[ ! -f "$EC2_CERT" ] && die "$0: AWS certificate file not found:" "$EC2_CERT"
+[ ! -f "$EC2_CERT" ] && die "AWS certificate file not found:" "$EC2_CERT"
 export EC2_CERT
 
 # ... or the private for.
-[ ! -f "$EC2_PRIVATE_KEY" ] && die "$0: AWS private key file not found:" "$EC2_PRIVATE_KEY"
+[ ! -f "$EC2_PRIVATE_KEY" ] && die "AWS private key file not found:" "$EC2_PRIVATE_KEY"
 export EC2_PRIVATE_KEY
 
 # Output some info to the user about the AMI we are about to build
