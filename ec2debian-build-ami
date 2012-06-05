@@ -59,7 +59,9 @@ function dotdot {
 }
 
 # Add some standard packages we are going to need
-packages="grub openssh-server curl less udev psmisc lsb-release"
+packages=('grub' 'locales' 'openssh-server' 'curl')
+packages+=('less' 'udev' 'psmisc' 'lsb-release' 'dhcpcd')
+exclude_packages=('isc-dhcp-client' 'isc-dhcp-common')
 
 while [ $# -gt 0 ]; do
 	case $1 in
@@ -74,7 +76,7 @@ while [ $# -gt 0 ]; do
 		--locale)      locale=$2;                           shift 2 ;;
 		--charmap)     charmap=$2;                          shift 2 ;;
 		--no-run-user-data) no_run_user_data=1;             shift   ;;
-		--package)     packages="$packages $2";             shift 2 ;;
+		--package)     packages+=("$2");                    shift 2 ;;
 		--imagedir)    imagedir=$2;                         shift 2 ;;
 		--script)      scripts=("${scripts[@]}" "$2");      shift 2 ;;
 		--debug)       set -x;                              shift   ;;
@@ -106,11 +108,12 @@ export EC2_PRIVATE_KEY
 # Output some info to the user about the AMI we are about to build
 log \
 	"Building AMI for $distribution $codename" \
-	"locale:       $locale" \
-	"charmap:      $charmap" \
-	"timezone:     $timezone" \
-	"architecture: $arch" \
-	"packages:     $packages" \
+	"locale:            $locale" \
+	"charmap:           $charmap" \
+	"timezone:          $timezone" \
+	"architecture:      $arch" \
+	"packages:          ${packages[*]}" \
+	"excluded packages: ${exclude_packages[*]}" \
 	""
 
 # Source all tasks in the right order

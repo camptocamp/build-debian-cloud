@@ -1,3 +1,13 @@
 #!/bin/bash
 # Bootstrap
-debootstrap --arch $arch $codename $imagedir $apt_mirror
+
+# Concatenate the packages
+SAVE_IFS=$IFS
+IFS=","
+include="${packages[*]}"
+exclude="${exclude_packages[*]}"
+IFS=$SAVE_IFS
+
+debootstrap --arch $arch \
+	--include=$include --exclude=$exclude \
+	$codename $imagedir $apt_mirror

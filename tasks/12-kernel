@@ -1,0 +1,4 @@
+#!/bin/bash
+# Install kernel
+[ $arch = 'i386' ] && packages+=('linux-image-xen-686')
+[ $arch = 'amd64' ] && packages+=('linux-image-xen-amd64')

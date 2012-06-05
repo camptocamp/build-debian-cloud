@@ -1,7 +1,5 @@
 #!/bin/bash
 # Set locale
-# Install the locales package
-chroot $imagedir apt-get install -y --force-yes locales
 # Uncomment the chosen locale
 sed -i "s/# $locale.$charmap $charmap/$locale.$charmap $charmap/" $imagedir/etc/locale.gen
 # Generate the locale
