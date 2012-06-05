@@ -16,18 +16,19 @@ logcolor=$txtblu
 errfile=''
 errcolor=$bldred
 
-# Logging function
+# Logging function, each arg is a line
 function log {
 	for line in "$@"; do
 		out "$logcolor$line$txtdef\n" "$line\n" $logfile
 	done
 }
 
+# Log without the newline
 function logn {
 	out "$logcolor$1$txtdef" "$1" $logfile
 }
 
-# Custom die function, output to stderr instead of stdout
+# Custom die function, output to stderr instead of stdout, each arg is a line
 function die {
 	for line in "$@"; do
 		out "$errcolor$line$txtdef\n" "$line\n" $errfile >&2
@@ -35,6 +36,7 @@ function die {
 	exit 1
 }
 
+# Output function, takes $msg, $filemsg and $file args in that order
 function out {
 	printf -- "$1"
 	if [ -n "$3" ]; then
@@ -76,7 +78,7 @@ while [ $# -gt 0 ]; do
 		--imagedir)    imagedir=$2;                         shift 2 ;;
 		--script)      scripts=("${scripts[@]}" "$2");      shift 2 ;;
 		--debug)       set -x;                              shift   ;;
-		*)             die "Unrecognized option: $1";           ;;
+		*)             die "Unrecognized option: $1";               ;;
 	esac
 done
 
