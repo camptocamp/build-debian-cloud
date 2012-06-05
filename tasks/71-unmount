@@ -17,9 +17,9 @@ cd $scriptdir
 
 # Wait for the volume to idle, maybe the user is currently in it
 while [ -n "`/usr/bin/lsof $imagedir`" ]; do
-	echo "Waiting for volume to idle, before unmounting."
+	log "Waiting for volume to idle, before unmounting."
 	sleep 5
 done
 
-echo "Unmounting the volume"
+log "Unmounting the volume"
 umount $imagedir

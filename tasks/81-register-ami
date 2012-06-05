@@ -31,7 +31,7 @@ case $region in
 		[ $arch = 'i386' ] && aki="aki-863ce39b"
 		[ $arch = 'amd64' ] && aki="aki-d63ce3cb"
 	;;
-	*) die "$0: Unrecognized region: $region"
+	*) die "$0: Unrecognized region:" "$region"
 esac
 
 
@@ -40,7 +40,7 @@ esac
 
 # The AMI has to start with "debian", otherwise we won't get a nice icon
 ami_name="$distribution-$codename-$arch-$(date +%Y%m%d)"
-echo "Registering the snapshot '$snapshot_id' as an AMI"
+log "Registering the snapshot '$snapshot_id' as an AMI"
 ami_id=`ec2-register \
 	--name "$ami_name" --description "$description" \
 	--architecture "$ami_arch" --kernel "$aki" \
@@ -67,4 +67,4 @@ if [ -z "$ami_id" ]; then
 		"--block-device-mapping '/dev/sde=ephemeral5' \\\\\n" \
 		"--snapshot '$snapshot_id'"
 fi
-echo "Your AMI has been created with the ID $ami_id"
+log "Your AMI has been created with the ID $ami_id"

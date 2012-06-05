@@ -1,10 +1,10 @@
 #!/bin/bash
 # Create a snapshot of the EBS volume
-echo -n "Detaching the volume"
+logn "Detaching the volume"
 detachment_status=`ec2-detach-volume $volume_id | grep 'available' || true`
 dotdot "$detachment_status" "ec2-describe-volumes | grep \"VOLUME[[:blank:]]*$volume_id.*available\" || true"
 
-echo -n "Creating snapshot of the EBS volume"
+logn "Creating snapshot of the EBS volume"
 snapshot=`ec2-create-snapshot $volume_id`
 [ -z "$snapshot" ] && die "\nUnable to create snapshot from the volume '$volume_id'"
 snapshot_id=`echo $snapshot | awk '{print $2}'`
@@ -13,5 +13,5 @@ snapshot_status=`echo $snapshot | grep 'completed' || true`
 # Wait for the snapshot to be completed, can take quite some time
 dotdot "$snapshot_status" "ec2-describe-snapshots | grep \"$snapshot_id.*completed\" || true"
 
-echo "Deleting the volume"
+log "Deleting the volume"
 ec2-delete-volume $volume_id || true

@@ -21,22 +21,22 @@ if [ ! -d "$imagedir" ]; then
 	mkdir -p $imagedir
 fi
 
-echo "Creating a volume now."
+log "Creating a volume now."
 volume_id=`ec2-create-volume --size 1 \
 	--region "$region" --availability-zone "$availability_zone" \
 	| awk '{print $2}'`
 [ -z "$volume_id" ] && die "Unable to create volume."
 
-echo -n "Attaching volume with the id $volume_id"
+logn "Attaching volume with the id $volume_id"
 attachment_status=`ec2-attach-volume "$volume_id" \
 	--instance "$instance_id" --device "$device" | grep 'attached' || true`
 # Wait until the volume is attached
 dotdot "$attachment_status" "ec2-describe-volumes | grep \"ATTACHMENT[[:blank:]]*$volume_id.*attached\" || true"
 
-echo "Formatting the device $device_path with $filesystem"
+log "Formatting the device $device_path with $filesystem"
 mkfs.$filesystem $device_path
 mount $device_path $imagedir
-echo "The EBS volume has been formatted and mounted"
+log "The EBS volume has been formatted and mounted"
 
 # Add some tools depending on the filesystem
 case $filesystem in
@@ -44,5 +44,5 @@ case $filesystem in
 	ext2) ;;
 	ext3) ;;
 	ext4) ;;
-	*)    echo "Tools for $filesystem were not added, the corresponding package is unknown" >&2;;
+	*)    printf $errcolor"Tools for $filesystem were not added, the corresponding package is unknown"$txtdef >&2;;
 esac
