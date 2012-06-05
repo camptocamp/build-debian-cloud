@@ -110,9 +110,11 @@ log \
 	"charmap:      $charmap" \
 	"timezone:     $timezone" \
 	"architecture: $arch" \
-	"packages:     $packages"
+	"packages:     $packages" \
+	""
 
 # Source all tasks in the right order
 for task in `find $scriptdir/tasks -type f | sort`; do
+	log "Run task: "`echo $task | sed "s#$scriptdir/tasks/##"`
 	source $task
 done
