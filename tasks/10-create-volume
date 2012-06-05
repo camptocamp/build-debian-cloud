@@ -31,7 +31,7 @@ logn "Attaching volume with the id $volume_id"
 attachment_status=`ec2-attach-volume "$volume_id" \
 	--instance "$instance_id" --device "$device" | grep 'attached' || true`
 # Wait until the volume is attached
-dotdot "$attachment_status" "ec2-describe-volumes | grep \"ATTACHMENT[[:blank:]]*$volume_id.*attached\" || true"
+dotdot "$attachment_status" "ec2dvol $volume_id -F 'attachment.status=attached' || true"
 
 log "Formatting the device $device_path with $filesystem"
 mkfs.$filesystem $device_path
