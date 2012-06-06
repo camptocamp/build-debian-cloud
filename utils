@@ -1,0 +1,71 @@
+#!/bin/bash
+
+# Define some colors
+txtdef="\e[0m"    # revert to default color
+bldred="\e[1;31m" # bold red
+txtblu="\e[0;34m" # blue
+
+logfile=''
+logcolor=$txtblu
+errfile=''
+errcolor=$bldred
+
+# Logging function, each arg is a line
+function log {
+	for line in "$@"; do
+		out "$logcolor$line$txtdef\n" "$line\n" $logfile
+	done
+}
+
+# Log without the newline
+function logn {
+	out "$logcolor$1$txtdef" "$1" $logfile
+}
+
+# Custom die function, output to stderr instead of stdout, each arg is a line
+function die {
+	for line in "$@"; do
+		out "$errcolor$line$txtdef\n" "$line\n" $errfile >&2
+	done
+	exit 1
+}
+
+# Output function, takes $msg, $filemsg and $file args in that order
+function out {
+	printf -- "$1"
+	if [ -n "$3" ]; then
+		printf -- "$2" >>$3
+	fi
+}
+
+# Wait for the execution of $cmd not to return an empty string
+function dotdot {
+	status=$1
+	cmd=$2
+	sleep=5
+	[ ! -z "$3" ] && sleep=$3
+	while [ -z "$status" ]; do
+		logn '.'
+		sleep $sleep
+		status=`eval $cmd`
+	done
+	logn "\n"
+}
+
+# Turns once per newline that is piped into it
+function spin {
+	cursor='|'
+	# Running `tput cols` in every iteration would cause significant slowdown.
+	# Only do this once, the spinner is not a "need to have" anyways.
+	cols=$(( `tput cols` - 2 ))
+	while read line; do
+		printf -- "\r$logcolor$cursor$txtdef %-${cols}s" "${line:0:$cols}"
+		case $cursor in
+			'|') cursor='/' ;;
+			'/') cursor='-' ;;
+			'-') cursor='\\' ;;
+			'\\') cursor='|' ;;
+		esac
+	done
+	printf "\n"
+}
