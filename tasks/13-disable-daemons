@@ -1,8 +1,0 @@
-#!/bin/bash
-# Don't launch daemons on apt-get install
-mkdir -p $imagedir/usr/sbin/
-cat << EOF > $imagedir/usr/sbin/policy-rc.d
-#!/bin/sh
-exit 101
-EOF
-chmod 755 $imagedir/usr/sbin/policy-rc.d
