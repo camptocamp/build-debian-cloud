@@ -112,6 +112,7 @@ Other useful variables include:
 
 * ``scriptdir``: Holds the path to the bootstrapping script folder
 * ``imagedir``: The path to where the EBS volume is mounted.
+* There are a lot of other variables, they are all declared on the first 50 lines in ``ec2-debian-build-ami``
 
 Environment script
 ------------------

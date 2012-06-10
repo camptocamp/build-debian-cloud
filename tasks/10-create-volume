@@ -10,9 +10,6 @@ done
 device="/dev/sd$device_letter"
 device_path="/dev/xvd$device_letter"
 
-# Hardcode the filesystem for now, maybe we'll add a parameter later on
-filesystem='xfs'
-
 # Double check that the device name is not taken
 [ -n "`df | grep $device_path`" ] && die "Something is already attached to $device_path."
 

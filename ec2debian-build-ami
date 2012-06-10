@@ -7,6 +7,39 @@ originaldir=$(/bin/pwd)
 
 source $scriptdir/utils
 
+# Tasks, packages, plugins, boot scripts
+tasks=()
+packages=()
+excluded_packages=()
+plugins=()
+init_scripts=()
+
+# General options about the instance
+arch='amd64'
+locale='en_US'
+charmap='UTF-8'
+timezone='UTC'
+apt_mirror=
+
+# Hardcoded params.
+# This script would explode if we had to take care of other distributions
+distribution='debian'
+codename='squeeze'
+
+# EC2 host info
+instance_id=
+region=
+availability_zone=
+
+# Volume and AMI info
+# Filesystem, hardcoded for now, maybe we'll add a parameter later on
+filesystem='xfs'
+device_path=
+imagedir='/mnt/image'
+volume_id=
+snapshot_id=
+ami_id=
+
 while [ $# -gt 0 ]; do
 	case $1 in
 		--arch)        arch=$2;                             shift 2 ;;
@@ -29,16 +62,9 @@ while [ $# -gt 0 ]; do
 	esac
 done
 
-# Hardcoded params.
-# This script would explode if we would have to take care of other distributions
-distribution="debian"
-codename="squeeze"
-
 # Required and default parameters
 true ${AWS_USER_ID:?} ${AWS_ACCESS_KEY_ID:?} ${AWS_SECRET_ACCESS_KEY:?} \
-		${EC2_CERT:?} ${EC2_PRIVATE_KEY:?} \
-		${locale:=en_US} ${charmap:=UTF-8} ${timezone:=UTC} \
-		${imagedir:=/mnt/image} ${arch:=amd64}
+		${EC2_CERT:?} ${EC2_PRIVATE_KEY:?}
 
 # Check the architecture
 [[ $arch != 'amd64' && $arch != 'i386' ]] && die "Unrecognized architecture: $arch"
@@ -52,7 +78,6 @@ true ${AWS_USER_ID:?} ${AWS_ACCESS_KEY_ID:?} ${AWS_SECRET_ACCESS_KEY:?} \
 export AWS_USER_ID AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY EC2_CERT EC2_PRIVATE_KEY
 
 # Put all tasks in the tasks folder into an array
-tasks=()
 for task in `find $scriptdir/tasks -type f | sort`; do
 	tasks+=($task)
 done
