@@ -85,7 +85,7 @@ true ${AWS_USER_ID:?} ${AWS_ACCESS_KEY_ID:?} ${AWS_SECRET_ACCESS_KEY:?} \
 # Quit if we can't find the certificate
 [ ! -f "$EC2_CERT" ] && die "AWS certificate file not found:" "$EC2_CERT"
 
-# ... or the private for.
+# ... or the private key.
 [ ! -f "$EC2_PRIVATE_KEY" ] && die "AWS private key file not found:" "$EC2_PRIVATE_KEY"
 
 export AWS_USER_ID AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY EC2_CERT EC2_PRIVATE_KEY
