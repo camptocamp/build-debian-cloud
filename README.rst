@@ -41,6 +41,8 @@ Bootstrapping options
 """""""""""""""""""""
 --arch ARCHITECTURE
 	i386 amd64 [default: amd64]
+--filesystem FSTYPE
+	ext2 ext3 ext4 xfs [default: xfs]
 --debug
 	Use -x option in bash
 

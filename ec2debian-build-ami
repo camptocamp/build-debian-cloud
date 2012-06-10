@@ -44,6 +44,7 @@ ami_id=
 while [ $# -gt 0 ]; do
 	case $1 in
 		--arch)        arch=$2;                             shift 2 ;;
+		--filesystem)  filesystem=$2;                       shift 2 ;;
 		--description) description=$2;                      shift 2 ;;
 		--user)        AWS_USER_ID=$2;                      shift 2 ;;
 		--access-key)  AWS_ACCESS_KEY_ID=$2;                shift 2 ;;
@@ -62,6 +63,15 @@ while [ $# -gt 0 ]; do
 		*)             die "Unrecognized option: $1";               ;;
 	esac
 done
+
+case $filesystem in
+	xfs)  ;;
+	ext2) ;;
+	ext3) ;;
+	ext4) ;;
+	*)    die "The filesystem $filesystem was not recognized." \
+	          "Valid filesystems are ext[2-4] and xfs"      ;;
+esac
 
 # Required and default parameters
 true ${AWS_USER_ID:?} ${AWS_ACCESS_KEY_ID:?} ${AWS_SECRET_ACCESS_KEY:?} \

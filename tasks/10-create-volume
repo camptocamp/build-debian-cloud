@@ -38,8 +38,4 @@ log "The EBS volume has been formatted and mounted"
 # Add some tools depending on the filesystem
 case $filesystem in
 	xfs)  packages+=('xfsprogs') ;;
-	ext2) ;;
-	ext3) ;;
-	ext4) ;;
-	*)    printf $errcolor"Tools for $filesystem were not added, the corresponding package is unknown"$txtdef >&2;;
 esac
