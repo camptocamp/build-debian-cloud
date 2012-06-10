@@ -43,6 +43,8 @@ Bootstrapping options
 	i386 amd64 [default: amd64]
 --filesystem FSTYPE
 	ext2 ext3 ext4 xfs [default: xfs]
+--volume-size VOLSIZE
+	The default volume size of an instance in gigabyte [default: 1]
 --debug
 	Use -x option in bash
 

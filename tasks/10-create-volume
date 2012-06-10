@@ -19,7 +19,7 @@ if [ ! -d "$imagedir" ]; then
 fi
 
 log "Creating a volume now."
-volume_id=`ec2-create-volume --size 1 \
+volume_id=`ec2-create-volume --size $volume_size \
 	--region "$region" --availability-zone "$availability_zone" \
 	| awk '{print $2}'`
 [ -z "$volume_id" ] && die "Unable to create volume."

@@ -35,6 +35,7 @@ availability_zone=
 # Filesystem, hardcoded for now, maybe we'll add a parameter later on
 filesystem='xfs'
 mountoptions=
+volume_size='1'
 device_path=
 imagedir='/mnt/image'
 volume_id=
@@ -45,6 +46,7 @@ while [ $# -gt 0 ]; do
 	case $1 in
 		--arch)        arch=$2;                             shift 2 ;;
 		--filesystem)  filesystem=$2;                       shift 2 ;;
+		--volume-size) volume_size=$2;                      shift 2 ;;
 		--description) description=$2;                      shift 2 ;;
 		--user)        AWS_USER_ID=$2;                      shift 2 ;;
 		--access-key)  AWS_ACCESS_KEY_ID=$2;                shift 2 ;;
