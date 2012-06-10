@@ -34,6 +34,7 @@ availability_zone=
 # Volume and AMI info
 # Filesystem, hardcoded for now, maybe we'll add a parameter later on
 filesystem='xfs'
+mountoptions=
 device_path=
 imagedir='/mnt/image'
 volume_id=

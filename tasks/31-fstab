@@ -1,7 +1,17 @@
 #!/bin/bash
 # Create the fstab
+
+# Add some mount options depending on the filesystem
+case $filesystem in
+	ext2) mountoptions+=',barrier=0' ;;
+	ext3) mountoptions+=',barrier=0' ;;
+	ext4) mountoptions+=',barrier=0' ;;
+	xfs)  mountoptions+=',nobarrier' ;;
+	*)    ;;
+esac
+
 cat > $imagedir/etc/fstab <<EOF
-/dev/xvda1 /     $filesystem    defaults 1 1
+/dev/xvda1 /     $filesystem    defaults$mountoptions 1 1
 none       /proc proc    defaults 0 0
 none       /sys  sysfs   defaults 0 0
 EOF
