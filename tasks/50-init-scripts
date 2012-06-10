@@ -1,0 +1,23 @@
+#!/bin/bash
+# Download and install startup scripts.
+init_scripts+=("$scriptdir/init.d/ec2-mkdir-tmp")
+init_scripts+=("$scriptdir/init.d/ec2-ssh-host-key-gen")
+init_scripts+=("$scriptdir/init.d/ec2-get-credentials")
+if [ ! $no_run_user_data ]; then
+	init_scripts+=("$scriptdir/init.d/ec2-run-user-data")
+fi
+
+install_init_script(){
+	scriptname=`basename $1`
+	cp "$1" "$imagedir/etc/init.d/$scriptname"
+	chmod 755 "$imagedir/etc/init.d/$scriptname"
+	chroot $imagedir insserv -d "$scriptname"
+}
+
+for init_script in ${init_scripts[*]}; do
+	install_init_script $init_script
+done
+
+# Inside Xen, CMOS clock is irrelevant, so save seconds at boot
+chroot $imagedir insserv -r hwclock.sh
+chroot $imagedir insserv -r hwclockfirst.sh
