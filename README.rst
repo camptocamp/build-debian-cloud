@@ -21,7 +21,7 @@ Bootstrapper features
 * EBS volume is automatically created, mounted, formatted, unmounted, "snapshotted" and deleted
 * AMI is automatically registered with the right kernels for the current region of the host machine
 * Can create both 32-bit and 64-bit AMIs
-* Custom script inclusion supported to keep the bootstrapping process automated
+* Plugin system to keep the bootstrapping process automated
 * Custom packages
 * The process is divided into simple task based scripts
 * Bootstrapping server mirror depends on AWS region
@@ -46,6 +46,8 @@ Bootstrapping options
 
 Environment options
 """""""""""""""""""
+--plugin FILE
+	Path to scripts which change the behavior of the bootstrapper. Repeat for multiple plugins.
 --timezone ZONE
 	Defaults to UTC
 --locale LOCALE
@@ -73,6 +75,43 @@ AWS options
 	Defaults to $EC2_PRIVATE_KEY
 --cert PATH
 	Defaults to $EC2_CERT
+
+Plugins
+-------
+If you want to change the behavior of the bootstrapper you can either modify the tasks directly or write plugins. Writing plugins has several advantages.
+
+* You can easily include and exclude them with a command line option.
+* The code is held separate from the bare bones bootstrapping setup.
+* You don't need to fork this repo.
+* No need to merge updates into your own repo.
+* Easily share your plugins with others.
+
+All plugins specified when bootstrapping, will be sourced *before* any tasks are run. The plugins can modify the task list and add their own tasks.
+Tasks are simply paths to scripts. They will be sourced as well.
+I recommend namespacing the function and variable names in a task to avoid naming clashes.
+
+Adding tasks is quite easy. To have a custom task run before another, call ``insert_task_before``. The first argument is the basename of the path to the task script. The second argument is the path to the task that is inserted.
+eg.:
+::
+	insert_task_before "14-bootstrap" "/root/someplugin/addpackages.sh"
+
+To insert a task after any other task call ``insert_task_after``. The arguments are the same.
+
+To remove a task, call ``remove_task`` with the basename of the script as an argument.
+
+If you want to install additional packages, simply append them to the ``packages`` variable. The ``exclude_packages`` excludes packages that would otherwise have been installed.
+
+If you need to install init.d scripts, simply add their path to the ``init_scripts`` variable and they will be automatically installed.
+
+You can append to an array in bash by doing this:
+::
+
+	packages+=('vim')
+
+Other useful variables include:
+
+* ``scriptdir``: Holds the path to the bootstrapping script folder
+* ``imagedir``: The path to where the EBS volume is mounted.
 
 Environment script
 ------------------

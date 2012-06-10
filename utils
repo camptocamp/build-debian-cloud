@@ -69,3 +69,35 @@ function spin {
 	done
 	printf "\n"
 }
+
+function insert_task_before {
+	new_task_list=()
+	for task in ${tasks[*]}; do
+		if [ `basename $task` == "$1" ]; then
+			new_task_list+=($2)
+		fi
+		new_task_list+=($task)
+	done
+	tasks=("${new_task_list[@]}")
+}
+
+function insert_task_after {
+	new_task_list=()
+	for task in ${tasks[*]}; do
+		new_task_list+=($task)
+		if [ `basename $task` == "$1" ]; then
+			new_task_list+=($2)
+		fi
+	done
+	tasks=("${new_task_list[@]}")
+}
+
+function remove_task {
+	new_task_list=()
+	for task in ${tasks[*]}; do
+		if [ `basename $task` != "$1" ]; then
+			new_task_list+=($task)
+	fi
+	done
+	tasks=("${new_task_list[@]}")
+}

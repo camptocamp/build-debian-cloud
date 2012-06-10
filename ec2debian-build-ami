@@ -28,6 +28,7 @@ while [ $# -gt 0 ]; do
 		--no-run-user-data) no_run_user_data=1;             shift   ;;
 		--package)     packages+=("$2");                    shift 2 ;;
 		--imagedir)    imagedir=$2;                         shift 2 ;;
+		--plugin)      plugins+=("$2");                     shift 2 ;;
 		--script)      scripts=("${scripts[@]}" "$2");      shift 2 ;;
 		--debug)       set -x;                              shift   ;;
 		*)             die "Unrecognized option: $1";               ;;
@@ -66,9 +67,19 @@ log \
 	"excluded packages: ${exclude_packages[*]}" \
 	""
 
-# Source all tasks in the right order
+# Put all tasks in the tasks folder into an array
+tasks=()
 for task in `find $scriptdir/tasks -type f | sort`; do
-	task_name=`echo $task | sed "s#$scriptdir/tasks/[0-9][0-9]-##"`
-	log "Run task: $task_name"
+	tasks+=($task)
+done
+
+# Invoke plugins so that they may reorder and add tasks
+for plugin in "${plugins[@]}"; do
+	source $plugin
+done
+
+# Source all tasks in the right order
+for task in ${tasks[*]}; do
+	log "Run task: `basename $task`"
 	source $task
 done
