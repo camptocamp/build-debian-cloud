@@ -68,6 +68,7 @@ log \
 
 # Source all tasks in the right order
 for task in `find $scriptdir/tasks -type f | sort`; do
-	log "Run task: "`echo $task | sed "s#$scriptdir/tasks/##"`
+	task_name=`echo $task | sed "s#$scriptdir/tasks/[0-9][0-9]-##"`
+	log "Run task: $task_name"
 	source $task
 done
