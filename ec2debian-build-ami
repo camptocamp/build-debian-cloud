@@ -44,25 +44,25 @@ ami_id=
 
 while [ $# -gt 0 ]; do
 	case $1 in
-		--arch)        arch=$2;                             shift 2 ;;
-		--filesystem)  filesystem=$2;                       shift 2 ;;
-		--volume-size) volume_size=$2;                      shift 2 ;;
-		--description) description=$2;                      shift 2 ;;
-		--user)        AWS_USER_ID=$2;                      shift 2 ;;
-		--access-key)  AWS_ACCESS_KEY_ID=$2;                shift 2 ;;
-		--secret-key)  AWS_SECRET_ACCESS_KEY=$2;            shift 2 ;;
-		--private-key) EC2_PRIVATE_KEY=$2;                  shift 2 ;;
-		--cert)        EC2_CERT=$2;                         shift 2 ;;
-		--timezone)    timezone=$2;                         shift 2 ;;
-		--locale)      locale=$2;                           shift 2 ;;
-		--charmap)     charmap=$2;                          shift 2 ;;
-		--no-run-user-data) no_run_user_data=1;             shift   ;;
-		--package)     packages+=("$2");                    shift 2 ;;
-		--imagedir)    imagedir=$2;                         shift 2 ;;
-		--plugin)      plugins+=("$2");                     shift 2 ;;
-		--script)      scripts=("${scripts[@]}" "$2");      shift 2 ;;
-		--debug)       set -x;                              shift   ;;
-		*)             die "Unrecognized option: $1";               ;;
+		--arch)        arch=$2;                       shift 2 ;;
+		--filesystem)  filesystem=$2;                 shift 2 ;;
+		--volume-size) volume_size=$2;                shift 2 ;;
+		--description) description=$2;                shift 2 ;;
+		--user)        AWS_USER_ID=$2;                shift 2 ;;
+		--access-key)  AWS_ACCESS_KEY_ID=$2;          shift 2 ;;
+		--secret-key)  AWS_SECRET_ACCESS_KEY=$2;      shift 2 ;;
+		--private-key) EC2_PRIVATE_KEY=$2;            shift 2 ;;
+		--cert)        EC2_CERT=$2;                   shift 2 ;;
+		--timezone)    timezone=$2;                   shift 2 ;;
+		--locale)      locale=$2;                     shift 2 ;;
+		--charmap)     charmap=$2;                    shift 2 ;;
+		--no-run-user-data) no_run_user_data=1;       shift   ;;
+		--package)     packages+=("$2");              shift 2 ;;
+		--imagedir)    imagedir=$2;                   shift 2 ;;
+		--plugin)      plugins+=("$2");               shift 2 ;;
+		--script)      scripts+=("$2");               shift 2 ;;
+		--debug)       set -x;                        shift   ;;
+		*)             die "Unrecognized option: $1";         ;;
 	esac
 done
 
