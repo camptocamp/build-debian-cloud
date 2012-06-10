@@ -15,7 +15,7 @@ chroot $imagedir apt-get update | spin
 chroot $imagedir apt-get -f install -y
 
 # Upgrade existing packages
-chroot $imagedir apt-get -y upgrade
+chroot $imagedir apt-get -y upgrade | spin
 
 # Purge all packages that are unused
 chroot $imagedir apt-get autoremove --purge
