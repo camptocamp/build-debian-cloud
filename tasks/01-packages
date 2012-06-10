@@ -1,0 +1,5 @@
+#!/bin/bash
+# Add some standard packages we are going to need
+packages+=('grub' 'locales' 'openssh-server' 'curl')
+packages+=('less' 'udev' 'psmisc' 'lsb-release' 'dhcpcd')
+exclude_packages=('isc-dhcp-client' 'isc-dhcp-common')

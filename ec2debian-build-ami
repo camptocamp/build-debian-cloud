@@ -1,17 +1,11 @@
 #!/bin/bash -e
 #            ^ Stop execution if any command fails
 
-
 # Rember various paths
 scriptdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 originaldir=$(/bin/pwd)
 
 source $scriptdir/utils
-
-# Add some standard packages we are going to need
-packages=('grub' 'locales' 'openssh-server' 'curl')
-packages+=('less' 'udev' 'psmisc' 'lsb-release' 'dhcpcd')
-exclude_packages=('isc-dhcp-client' 'isc-dhcp-common')
 
 while [ $# -gt 0 ]; do
 	case $1 in
@@ -35,7 +29,8 @@ while [ $# -gt 0 ]; do
 	esac
 done
 
-# Hardcoded. This script would explode if we would have to take care of other distributions
+# Hardcoded params.
+# This script would explode if we would have to take care of other distributions
 distribution="debian"
 codename="squeeze"
 
@@ -55,17 +50,6 @@ export EC2_CERT
 # ... or the private for.
 [ ! -f "$EC2_PRIVATE_KEY" ] && die "AWS private key file not found:" "$EC2_PRIVATE_KEY"
 export EC2_PRIVATE_KEY
-
-# Output some info to the user about the AMI we are about to build
-log \
-	"Building AMI for $distribution $codename" \
-	"locale:            $locale" \
-	"charmap:           $charmap" \
-	"timezone:          $timezone" \
-	"architecture:      $arch" \
-	"packages:          ${packages[*]}" \
-	"excluded packages: ${exclude_packages[*]}" \
-	""
 
 # Put all tasks in the tasks folder into an array
 tasks=()
