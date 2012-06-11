@@ -1,12 +1,5 @@
 #!/bin/bash
-# Download and install startup scripts.
-init_scripts+=("$scriptdir/init.d/ec2-mkdir-tmp")
-init_scripts+=("$scriptdir/init.d/ec2-ssh-host-key-gen")
-init_scripts+=("$scriptdir/init.d/ec2-get-credentials")
-if [ ! $no_run_user_data ]; then
-	init_scripts+=("$scriptdir/init.d/ec2-run-user-data")
-fi
-
+# Install startup scripts.
 install_init_script(){
 	scriptname=`basename $1`
 	cp "$1" "$imagedir/etc/init.d/$scriptname"
