@@ -97,6 +97,7 @@ done
 
 # Invoke plugins so that they may reorder and add tasks
 for plugin in "${plugins[@]}"; do
+	[ -e $plugin ] || die "The plugin file $plugin does not exist."
 	source $plugin
 done
 

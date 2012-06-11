@@ -72,32 +72,49 @@ function spin {
 
 function insert_task_before {
 	new_task_list=()
+	local added=false
 	for task in ${tasks[*]}; do
 		if [ `basename $task` == "$1" ]; then
+			log "Adding task `basename $2` before task `basename $task`"
 			new_task_list+=($2)
+			added=true
 		fi
 		new_task_list+=($task)
 	done
+	if [ ! $added ]; then
+		die "Unable to add task `basename $2` to the tasklist." "Task $1 does not exist."
+	fi
 	tasks=("${new_task_list[@]}")
 }
 
 function insert_task_after {
 	new_task_list=()
+	local added=false
 	for task in ${tasks[*]}; do
 		new_task_list+=($task)
 		if [ `basename $task` == "$1" ]; then
+			log "Adding task `basename $2` after task `basename $task`"
 			new_task_list+=($2)
+			added=true
 		fi
 	done
+	if [ ! $added ]; then
+		die "Unable to add task `basename $2` to the tasklist." "Task $1 does not exist."
+	fi
 	tasks=("${new_task_list[@]}")
 }
 
 function remove_task {
 	new_task_list=()
+	local removed=false
 	for task in ${tasks[*]}; do
 		if [ `basename $task` != "$1" ]; then
 			new_task_list+=($task)
+			removed=true
 	fi
 	done
+	if [ ! $removed ]; then
+		die "Unable to remove task `$1` from the tasklist." "Task $1 does not exist."
+	fi
 	tasks=("${new_task_list[@]}")
 }
