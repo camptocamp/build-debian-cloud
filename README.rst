@@ -94,14 +94,30 @@ All plugins specified when bootstrapping, will be sourced *before* any tasks are
 Tasks are simply paths to scripts. They will be sourced as well.
 I recommend namespacing the function and variable names in a task to avoid naming clashes.
 
-Adding tasks is quite easy. To have a custom task run before another, call ``insert_task_before``. The first argument is the basename of the path to the task script. The second argument is the path to the task that is inserted.
+Adding tasks is quite easy. To have a custom task run before another, call ``insert_task_before``. The first argument is one of the task variables listed below. The second argument is the path to the task that is inserted.
 eg.:
 ::
-	insert_task_before "14-bootstrap" "/root/someplugin/addpackages.sh"
+
+	insert_task_before $TASK_INITSCRIPTS "/root/someplugin/add-puppet-init.sh"
 
 To insert a task after any other task call ``insert_task_after``. The arguments are the same.
 
+The task variables are:
+
+* ``TASK_PACKAGES``: Adds packages to the ``packages`` array (and ``exclude_packages``)
+* ``TASK_VOLUME``: Creates the EBS volume
+* ``TASK_BOOTSTRAP``: Runs the bootstrapping process
+* ``TASK_MOUNT``: Mounts things like /dev/pts and /proc
+* ``TASK_APTSOURCES``: Sets the aptitude sources
+* ``TASK_INITSCRIPTS``: Installs the init.d scripts
+* ``TASK_UNMOUNT``: Unmounts the EBS volume
+* ``TASK_SNAPSHOT``: Creates a snapshot of the EBS volume
+* ``TASK_CREATEAMI``: Registers the snapshot as an AMI
+
 To remove a task, call ``remove_task`` with the basename of the script as an argument.
+::
+
+	remove_task "40-networking"
 
 If you want to install additional packages, simply append them to the ``packages`` variable. The ``exclude_packages`` excludes packages that would otherwise have been installed.
 
@@ -112,7 +128,7 @@ You can append to an array in bash by doing this:
 
 	packages+=('vim')
 
-Other useful variables include:
+Other useful variables:
 
 * ``scriptdir``: Holds the path to the bootstrapping script folder
 * ``imagedir``: The path to where the EBS volume is mounted.

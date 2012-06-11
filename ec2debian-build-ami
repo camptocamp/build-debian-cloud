@@ -95,6 +95,16 @@ for task in `find $scriptdir/tasks -type f | sort`; do
 	tasks+=($task)
 done
 
+TASK_PACKAGES="01-packages"
+TASK_VOLUME="10-create-volume"
+TASK_BOOTSTRAP="14-bootstrap"
+TASK_MOUNT="15-mount"
+TASK_APTSOURCES="21-apt-sources"
+TASK_INITSCRIPTS="51-init-scripts"
+TASK_UNMOUNT="71-unmount"
+TASK_SNAPSHOT="80-ebs-snapshot"
+TASK_CREATEAMI="81-register-ami"
+
 # Invoke plugins so that they may reorder and add tasks
 for plugin in "${plugins[@]}"; do
 	[ -e $plugin ] || die "The plugin file $plugin does not exist."
