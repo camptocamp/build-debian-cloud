@@ -2,10 +2,12 @@
 # Output some info to the user about the AMI we are about to build
 log \
 	"Building AMI for $distribution $codename" \
+	"architecture:      $arch" \
+	"filesystem:        $filesystem" \
+	"volume size:       $volume_size GB" \
 	"locale:            $locale" \
 	"charmap:           $charmap" \
 	"timezone:          $timezone" \
-	"architecture:      $arch" \
 	"packages:          ${packages[*]}" \
 	"excluded packages: ${exclude_packages[*]}" \
 	""
