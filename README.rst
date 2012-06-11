@@ -135,6 +135,14 @@ Other useful variables:
 * ``plugindir``: When adding tasks, this is the directory where the script is stored. This avoids some quirky bash magic.
 * There are a lot of other variables, they are all declared on the first 50 lines in ``ec2-debian-build-ami``
 
+Simple plugins
+""""""""""""""
+If your plugin is really simple, you may not need to modify the task list. The ``packages``, ``excluded_packages`` and ``init_scripts`` arrays are already declared when your plugin file is sourced. Removing nano and adding vim to the bootstrap process can be done with:
+::
+
+	packages+=('vim')
+	excluded_packages+=('nano')
+
 Environment script
 ------------------
 Include with `source env-script` for the variables to be present on the commandline.
