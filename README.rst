@@ -143,6 +143,12 @@ If your plugin is really simple, you may not need to modify the task list. The `
 	packages+=('vim')
 	excluded_packages+=('nano')
 
+Utility functions
+"""""""""""""""""
+* ``log``: Logs to the screen with blue text. Every parameter will be printed on a new line.
+* ``die``: Kills the bootstrapping process with a message. Prints to stderr.
+* ``spin``: Pipe into this function if you are running stuff that fills up the screen with verbose information. Every line of output will be printed on the same line in the console.
+
 Environment script
 ------------------
 Include with `source env-script` for the variables to be present on the commandline.
