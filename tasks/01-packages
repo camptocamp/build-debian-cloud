@@ -5,4 +5,4 @@ packages+=('less' 'udev' 'psmisc' 'lsb-release' 'dhcpcd')
 [ $arch = 'i386' ] && packages+=('linux-image-xen-686')
 [ $arch = 'amd64' ] && packages+=('linux-image-xen-amd64')
 
-exclude_packages=('isc-dhcp-client' 'isc-dhcp-common')
+exclude_packages+=('isc-dhcp-client' 'isc-dhcp-common')
