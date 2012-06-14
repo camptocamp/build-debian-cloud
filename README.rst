@@ -36,51 +36,57 @@ this way you do not need to specify the parameters for every api call.
 
 Usage
 -----
+(Defaults are in **bold**)
 
 Bootstrapping options
 """""""""""""""""""""
 --arch ARCHITECTURE
-	i386 amd64 [default: amd64]
+	Processor architecture of the image [ i386 | **amd64** ]
 --filesystem FSTYPE
-	ext2 ext3 ext4 xfs [default: xfs]
+	The filesystem of the root volume [ext2 | ext3 | ext4 | **xfs** ]
 --volume-size VOLSIZE
-	The default volume size of an instance in gigabyte [default: 1]
---debug
-	Use -x option in bash
---help
-	Show a list of options
-
-Environment options
-"""""""""""""""""""
+	The default size of the root volume in GB (**1**)
 --plugin FILE
-	Path to scripts which change the behavior of the bootstrapper. Repeat for multiple plugins.
+	Path to plugin script. Can be specified more than once.
+
 --timezone ZONE
-	Defaults to UTC
+	Standard timezone (**UTC**)
 --locale LOCALE
-	Defaults to en_US
+	Standard locale (**en_US**)
 --charmap CHARMAP
-	Defaults to UTF-8
---package NAME
-	Additional package to install - DEPRECATED
---no-run-user-data
-	Do not run user-data script on first boot - DEPRECATED
---script FILE
-	External script/command to run before bundle - DEPRECATED
+	Standard charmap (**UTF-8**)
+
 --imagedir DIR
-	Bootstrap directory [default: /mnt/image]
+	Bootstrap directory (**/mnt/image**)
 
 AWS options
 """""""""""
 --user ID
-	Defaults to $AWS_USER_ID
+	User ID (**AWS_USER_ID**)
 --access-key ID
-	Defaults to $AWS_ACCESS_KEY_ID
---secret-key ID
-	Defaults to $AWS_SECRET_ACCESS_KEY_ID
---private-key PATH
-	Defaults to $EC2_PRIVATE_KEY
+	Access key ID (**AWS_ACCESS_KEY_ID**)
+--secret-key KEY
+	Secret access key (**AWS_SECRET_ACCESS_KEY_ID**)
 --cert PATH
-	Defaults to $EC2_CERT
+	Certificate (**EC2_CERT**)
+--private-key PATH
+	Certificate private key (**EC2_PRIVATE_KEY**)
+
+Deprecated options
+"""""""""""""""""""
+--script FILE
+	External script/command to run before bundle
+--package NAME
+	Additional package to install
+--no-run-user-data
+	Do not run user-data script on first boot
+
+Other options
+"""""""""""""
+--debug
+	Use -x option in bash
+--help
+	Show a list of options
 
 Plugins
 -------
