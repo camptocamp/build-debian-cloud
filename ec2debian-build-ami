@@ -55,10 +55,6 @@ ${txtund}Bootstrapping${txtdef}
         The filesystem of the root volume
     --volume-size VOLSIZE
         The default size of the root volume in GB (${txtbld}1${txtdef})
-    --package NAME
-        Additional package to install
-    --no-run-user-data
-        Do not run user-data script on first boot
     --plugin FILE
         Path to plugin script. Can be specified more than once.
 
@@ -87,6 +83,10 @@ ${txtund}AWS${txtdef}
 ${txtund}Deprecated options${txtdef}
     --script FILE
         External script/command to run before bundle
+    --package NAME
+        Additional package to install
+    --no-run-user-data
+        Do not run user-data script on first boot
 
 ${txtund}Other options${txtdef}
     --debug

@@ -61,9 +61,9 @@ Environment options
 --charmap CHARMAP
 	Defaults to UTF-8
 --package NAME
-	Additional package to install
+	Additional package to install - DEPRECATED
 --no-run-user-data
-	Do not run user-data script on first boot
+	Do not run user-data script on first boot - DEPRECATED
 --script FILE
 	External script/command to run before bundle - DEPRECATED
 --imagedir DIR
