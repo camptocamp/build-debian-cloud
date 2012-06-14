@@ -9,6 +9,7 @@ packages+=('udev')
 packages+=('psmisc')
 packages+=('lsb-release')
 packages+=('dhcpcd')
+packages+=('file')
 [ $arch = 'i386' ] && packages+=('linux-image-xen-686')
 [ $arch = 'amd64' ] && packages+=('linux-image-xen-amd64')
 
