@@ -1,8 +1,16 @@
 #!/bin/bash
 # Add some standard packages we are going to need
-packages+=('grub' 'locales' 'openssh-server' 'curl')
-packages+=('less' 'udev' 'psmisc' 'lsb-release' 'dhcpcd')
+packages+=('grub')
+packages+=('locales')
+packages+=('openssh-server')
+packages+=('curl')
+packages+=('less')
+packages+=('udev')
+packages+=('psmisc')
+packages+=('lsb-release')
+packages+=('dhcpcd')
 [ $arch = 'i386' ] && packages+=('linux-image-xen-686')
 [ $arch = 'amd64' ] && packages+=('linux-image-xen-amd64')
 
-exclude_packages+=('isc-dhcp-client' 'isc-dhcp-common')
+exclude_packages+=('isc-dhcp-client')
+exclude_packages+=('isc-dhcp-common')
