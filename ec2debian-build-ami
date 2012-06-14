@@ -42,6 +42,59 @@ volume_id=
 snapshot_id=
 ami_id=
 
+# List of options
+help="ec2debian-buil-ami
+This script creates a Debian Squeeze Amazon Machine Image.
+
+Options (defaults in ${txtbld}bold${txtdef}):
+
+${txtund}Bootstrapping${txtdef}
+    --arch ARCHITECTURE [i386|${txtbld}amd64${txtdef}]
+        Processor architecture of the image
+    --filesystem FSTYPE [ext2|ext3|ext4|${txtbld}xfs${txtdef}]
+        The filesystem of the root volume
+    --volume-size VOLSIZE
+        The default size of the root volume in GB (${txtbld}1${txtdef})
+    --package NAME
+        Additional package to install
+    --no-run-user-data
+        Do not run user-data script on first boot
+    --plugin FILE
+        Path to plugin script. Can be specified more than once.
+
+    --timezone ZONE
+        Standard timezone (${txtbld}UTC${txtdef})
+    --locale LOCALE
+        Standard locale (${txtbld}en_US${txtdef})
+    --charmap CHARMAP
+        Standard charmap (${txtbld}UTF-8${txtdef})
+
+    --imagedir DIR
+        Bootstrap directory (${txtbld}/mnt/image${txtdef})
+
+${txtund}AWS${txtdef}
+    --user ID
+        User ID (${txtbld}AWS_USER_ID${txtdef})
+    --access-key ID
+        Access key ID (${txtbld}AWS_ACCESS_KEY_ID${txtdef})
+    --secret-key KEY
+        Secret access key (${txtbld}AWS_SECRET_ACCESS_KEY_ID${txtdef})
+    --cert PATH
+        Certificate (${txtbld}EC2_CERT${txtdef})
+    --private-key PATH
+        Certificate private key (${txtbld}EC2_PRIVATE_KEY${txtdef})
+
+${txtund}Deprecated options${txtdef}
+    --script FILE
+        External script/command to run before bundle
+
+${txtund}Other options${txtdef}
+    --debug
+        Print debugging information
+    --help
+        Prints this help message
+"
+
 while [ $# -gt 0 ]; do
 	case $1 in
 		--arch)        arch=$2;                       shift 2 ;;
@@ -51,8 +104,8 @@ while [ $# -gt 0 ]; do
 		--user)        AWS_USER_ID=$2;                shift 2 ;;
 		--access-key)  AWS_ACCESS_KEY_ID=$2;          shift 2 ;;
 		--secret-key)  AWS_SECRET_ACCESS_KEY=$2;      shift 2 ;;
-		--private-key) EC2_PRIVATE_KEY=$2;            shift 2 ;;
 		--cert)        EC2_CERT=$2;                   shift 2 ;;
+		--private-key) EC2_PRIVATE_KEY=$2;            shift 2 ;;
 		--timezone)    timezone=$2;                   shift 2 ;;
 		--locale)      locale=$2;                     shift 2 ;;
 		--charmap)     charmap=$2;                    shift 2 ;;
@@ -62,6 +115,7 @@ while [ $# -gt 0 ]; do
 		--plugin)      plugins+=("$2");               shift 2 ;;
 		--script)      scripts+=("$2");               shift 2 ;;
 		--debug)       set -x;                        shift   ;;
+		--help)        printf -- "$help";               exit 0  ;;
 		*)             die "Unrecognized option: $1";         ;;
 	esac
 done

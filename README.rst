@@ -47,6 +47,8 @@ Bootstrapping options
 	The default volume size of an instance in gigabyte [default: 1]
 --debug
 	Use -x option in bash
+--help
+	Show a list of options
 
 Environment options
 """""""""""""""""""

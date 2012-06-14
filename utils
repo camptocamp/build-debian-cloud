@@ -4,6 +4,8 @@
 txtdef="\e[0m"    # revert to default color
 bldred="\e[1;31m" # bold red
 txtblu="\e[0;34m" # blue
+txtbld="\e[1m"    # bold
+txtund="\e[4m"    # underline
 
 logfile=''
 logcolor=$txtblu
