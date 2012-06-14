@@ -5,6 +5,9 @@ This is a fork of camptocamps bootstrapping script for EC2 AMIs.
 It creates a vanilla debian squeeze machine image, no latent logfiles no .bash_history or even apt package cache.
 The machine configuration this script creates has been thoroughly tested.
 
+*This script is only tested on debian squeeze.*
+*You will need an EC2 server to run this bootstrapper.*
+
 Features
 --------
 AMI features
