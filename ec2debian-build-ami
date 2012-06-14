@@ -49,50 +49,33 @@ This script creates a Debian Squeeze Amazon Machine Image.
 Options (defaults in ${txtbld}bold${txtdef}):
 
 ${txtund}Bootstrapping${txtdef}
-    --arch ARCHITECTURE [i386|${txtbld}amd64${txtdef}]
-        Processor architecture of the image
-    --filesystem FSTYPE [ext2|ext3|ext4|${txtbld}xfs${txtdef}]
-        The filesystem of the root volume
-    --volume-size VOLSIZE
-        The default size of the root volume in GB (${txtbld}1${txtdef})
-    --plugin FILE
-        Path to plugin script. Can be specified more than once.
+    --arch ARCH [i386|${txtbld}amd64${txtdef}]      Processor architecture of the image
+    --filesystem FS [ext2..4|${txtbld}xfs${txtdef}] The filesystem of the root volume
+    --volume-size SIZE            The default size of the root volume in GB (${txtbld}1${txtdef})
+    --plugin FILE                 Path to plugin script.
+                                  Can be specified more than once.
 
-    --timezone ZONE
-        Standard timezone (${txtbld}UTC${txtdef})
-    --locale LOCALE
-        Standard locale (${txtbld}en_US${txtdef})
-    --charmap CHARMAP
-        Standard charmap (${txtbld}UTF-8${txtdef})
+    --timezone ZONE               Standard timezone (${txtbld}UTC${txtdef})
+    --locale LOCALE               Standard locale (${txtbld}en_US${txtdef})
+    --charmap CHARMAP             Standard charmap (${txtbld}UTF-8${txtdef})
 
-    --imagedir DIR
-        Bootstrap directory (${txtbld}/mnt/image${txtdef})
+    --imagedir DIR                Bootstrap directory (${txtbld}/mnt/image${txtdef})
 
 ${txtund}AWS${txtdef}
-    --user ID
-        User ID (${txtbld}AWS_USER_ID${txtdef})
-    --access-key ID
-        Access key ID (${txtbld}AWS_ACCESS_KEY_ID${txtdef})
-    --secret-key KEY
-        Secret access key (${txtbld}AWS_SECRET_ACCESS_KEY_ID${txtdef})
-    --cert PATH
-        Certificate (${txtbld}EC2_CERT${txtdef})
-    --private-key PATH
-        Certificate private key (${txtbld}EC2_PRIVATE_KEY${txtdef})
+    --user ID                     User ID (${txtbld}AWS_USER_ID${txtdef})
+    --access-key ID               Access key ID (${txtbld}AWS_ACCESS_KEY_ID${txtdef})
+    --secret-key KEY              Secret access key (${txtbld}AWS_SECRET_ACCESS_KEY_ID${txtdef})
+    --cert PATH                   Certificate (${txtbld}EC2_CERT${txtdef})
+    --private-key PATH            Certificate private key (${txtbld}EC2_PRIVATE_KEY${txtdef})
 
 ${txtund}Deprecated options${txtdef}
-    --script FILE
-        External script/command to run before bundle
-    --package NAME
-        Additional package to install
-    --no-run-user-data
-        Do not run user-data script on first boot
+    --script FILE                 External script/command to run before bundle
+    --package NAME                Additional package to install
+    --no-run-user-data            Do not run user-data script on first boot
 
 ${txtund}Other options${txtdef}
-    --debug
-        Print debugging information
-    --help
-        Prints this help message
+    --debug                       Print debugging information
+    --help                        Prints this help message
 "
 
 while [ $# -gt 0 ]; do
