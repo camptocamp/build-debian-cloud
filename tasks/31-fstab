@@ -13,5 +13,4 @@ esac
 cat > $imagedir/etc/fstab <<EOF
 /dev/xvda1 /     $filesystem    defaults$mountoptions 1 1
 none       /proc proc    defaults 0 0
-none       /sys  sysfs   defaults 0 0
 EOF
