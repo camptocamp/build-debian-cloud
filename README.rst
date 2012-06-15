@@ -101,6 +101,9 @@ If you want to change the behavior of the bootstrapper you can either modify the
 * No need to merge updates into your own repo.
 * Easily share your plugins with others.
 
+You can see a list of plugins in `PLUGINS.md <https://github.com/andsens/ec2debian-build-ami/blob/master/PLUGINS.md>`_.
+If you want to share your plugin send me a pull request or an email.
+
 All plugins specified when bootstrapping, will be sourced *before* any tasks are run. The plugins can modify the task list and add their own tasks.
 Tasks are simply paths to scripts. They will be sourced as well.
 I recommend namespacing the function and variable names in a task to avoid naming clashes.
