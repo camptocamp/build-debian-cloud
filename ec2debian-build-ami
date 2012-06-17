@@ -1,5 +1,7 @@
-#!/bin/bash -e
-#            ^ Stop execution if any command fails
+#!/bin/bash
+
+# Stop execution if any command fails
+set -e
 
 # Rember various paths
 scriptdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
