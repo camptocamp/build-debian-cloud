@@ -7,4 +7,4 @@ chroot $imagedir dpkg-reconfigure --priority=critical locales
 
 # Set timezone
 echo $timezone >$imagedir/etc/timezone
-/bin/cp -f $imagedir/usr/share/zoneinfo/$timezone $imagedir/etc/localtime
+cp -f $imagedir/usr/share/zoneinfo/$timezone $imagedir/etc/localtime

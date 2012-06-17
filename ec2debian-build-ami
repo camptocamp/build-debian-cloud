@@ -5,7 +5,7 @@ set -e
 
 # Rember various paths
 scriptdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-originaldir=$(/bin/pwd)
+originaldir=$(pwd)
 
 source $scriptdir/utils
 

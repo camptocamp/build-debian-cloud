@@ -16,7 +16,7 @@ trap - HUP INT TERM EXIT
 cd $scriptdir
 
 # Wait for the volume to idle, maybe the user is currently in it
-while [ -n "`/usr/bin/lsof $imagedir`" ]; do
+while [ -n "`lsof $imagedir`" ]; do
 	log "Waiting for volume to idle, before unmounting."
 	sleep 5
 done
