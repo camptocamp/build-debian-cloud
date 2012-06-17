@@ -75,11 +75,6 @@ AWS options
 --private-key PATH
 	Certificate private key (**EC2_PRIVATE_KEY**)
 
-Deprecated options
-"""""""""""""""""""
---no-run-user-data
-	Do not run user-data script on first boot
-
 Other options
 """""""""""""
 --debug

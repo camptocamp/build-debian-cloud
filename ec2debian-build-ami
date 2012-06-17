@@ -71,9 +71,6 @@ ${txtund}AWS${txtdef}
     --cert PATH                   Certificate (${txtbld}EC2_CERT${txtdef})
     --private-key PATH            Certificate private key (${txtbld}EC2_PRIVATE_KEY${txtdef})
 
-${txtund}Deprecated options${txtdef}
-    --no-run-user-data            Do not run user-data script on first boot
-
 ${txtund}Other options${txtdef}
     --debug                       Print debugging information
     --help                        Prints this help message
@@ -93,7 +90,6 @@ while [ $# -gt 0 ]; do
 		--timezone)    timezone=$2;                   shift 2 ;;
 		--locale)      locale=$2;                     shift 2 ;;
 		--charmap)     charmap=$2;                    shift 2 ;;
-		--no-run-user-data) no_run_user_data=1;       shift   ;;
 		--imagedir)    imagedir=$2;                   shift 2 ;;
 		--plugin)      plugins+=("$2");               shift 2 ;;
 		--debug)       set -x;                        shift   ;;
