@@ -144,7 +144,8 @@ You can append to an array in bash by doing this:
 
 Other useful variables:
 
-* ``scriptdir``: Holds the path to the bootstrapping script folder
+* ``host_packages``: Packages to be installed on the host, works just like ``packages``.
+* ``scriptdir``: Holds the path to the bootstrapping script folder.
 * ``imagedir``: The path to where the EBS volume is mounted.
 * ``plugindir``: When adding tasks, this is the directory where the script is stored. This avoids some quirky bash magic.
 * There are a lot of other variables, they are all declared on the first 50 lines in ``ec2-debian-build-ami``

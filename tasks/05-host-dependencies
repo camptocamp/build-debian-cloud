@@ -1,8 +1,7 @@
 #!/bin/bash
 # Install packages on the host system to make the rest of this script run smoothly
-apt-get install -y bzip2 binutils unzip debootstrap \
-	openssl curl ca-certificates default-jre-headless \
-	xfsprogs lsof | spin
+
+apt-get install -y ${host_packages[*]} | spin
 
 # Bit of a hack to get the pesky JRE running
 export JAVA_HOME=`update-java-alternatives --list | cut -f 3 -d ' ' | tail -n 1`
