@@ -20,9 +20,11 @@ if [ ! -e "$tarball" ]; then
 	debootstrap --arch $arch --make-tarball=$tarball \
 		--include=$include --exclude=$exclude \
 		$codename $imagedir $apt_mirror | spin
+	[ $PIPESTATUS == 1 ] || die "Creating bootstrap tarball failed!"
 fi
 
 log "Bootstrapping"
 debootstrap --arch $arch --unpack-tarball=$tarball \
 	--include=$include --exclude=$exclude \
 	$codename $imagedir $apt_mirror | spin
+[ $PIPESTATUS == 0 ] || die "Bootstrapping failed!"
