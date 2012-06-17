@@ -72,7 +72,6 @@ ${txtund}AWS${txtdef}
     --private-key PATH            Certificate private key (${txtbld}EC2_PRIVATE_KEY${txtdef})
 
 ${txtund}Deprecated options${txtdef}
-    --package NAME                Additional package to install
     --no-run-user-data            Do not run user-data script on first boot
 
 ${txtund}Other options${txtdef}
@@ -95,7 +94,6 @@ while [ $# -gt 0 ]; do
 		--locale)      locale=$2;                     shift 2 ;;
 		--charmap)     charmap=$2;                    shift 2 ;;
 		--no-run-user-data) no_run_user_data=1;       shift   ;;
-		--package)     packages+=("$2");              shift 2 ;;
 		--imagedir)    imagedir=$2;                   shift 2 ;;
 		--plugin)      plugins+=("$2");               shift 2 ;;
 		--debug)       set -x;                        shift   ;;

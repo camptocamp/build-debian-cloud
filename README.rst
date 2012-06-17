@@ -77,8 +77,6 @@ AWS options
 
 Deprecated options
 """""""""""""""""""
---package NAME
-	Additional package to install
 --no-run-user-data
 	Do not run user-data script on first boot
 
