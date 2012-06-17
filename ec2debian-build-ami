@@ -98,8 +98,9 @@ while [ $# -gt 0 ]; do
 		--plugin)      plugins+=("$2");               shift 2 ;;
 		--script)      scripts+=("$2");               shift 2 ;;
 		--debug)       set -x;                        shift   ;;
-		--help)        printf -- "$help";               exit 0  ;;
-		*)             die "Unrecognized option: $1";         ;;
+		--help)        printf -- "$help";             exit 0  ;;
+		*)             die "Unrecognized option: $1" \
+    "Type '$0 --help' to see a list of possible options"; ;;
 	esac
 done
 
