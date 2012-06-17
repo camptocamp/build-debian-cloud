@@ -77,8 +77,6 @@ AWS options
 
 Deprecated options
 """""""""""""""""""
---script FILE
-	External script/command to run before bundle
 --package NAME
 	Additional package to install
 --no-run-user-data
@@ -163,10 +161,6 @@ Utility functions
 * ``log``: Logs to the screen with blue text. Every parameter will be printed on a new line.
 * ``die``: Kills the bootstrapping process with a message. Prints to stderr.
 * ``spin``: Pipe into this function if you are running stuff that fills up the screen with verbose information. Every line of output will be printed on the same line in the console.
-
-external-scripts task
-"""""""""""""""""""""
-The external-scripts task, which can be used with the ``--script`` parameter is deprecated in favor of the plugin system.
 
 Environment script
 ------------------

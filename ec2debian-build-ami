@@ -72,7 +72,6 @@ ${txtund}AWS${txtdef}
     --private-key PATH            Certificate private key (${txtbld}EC2_PRIVATE_KEY${txtdef})
 
 ${txtund}Deprecated options${txtdef}
-    --script FILE                 External script/command to run before bundle
     --package NAME                Additional package to install
     --no-run-user-data            Do not run user-data script on first boot
 
@@ -99,7 +98,6 @@ while [ $# -gt 0 ]; do
 		--package)     packages+=("$2");              shift 2 ;;
 		--imagedir)    imagedir=$2;                   shift 2 ;;
 		--plugin)      plugins+=("$2");               shift 2 ;;
-		--script)      scripts+=("$2");               shift 2 ;;
 		--debug)       set -x;                        shift   ;;
 		--help)        printf -- "$help";             exit 0  ;;
 		*)             die "Unrecognized option: $1" \
