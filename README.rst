@@ -8,6 +8,18 @@ The machine configuration this script creates has been thoroughly tested.
 *This script is only tested on debian squeeze.*
 *You will need an EC2 server to run this bootstrapper.*
 
+Usage
+-----
+The script is started with ``./ec2debian-build-ami`` it has sensible defaults but can be configured with options and plugins. To see a list of options run ``./ec2debian-build-ami --help``.
+At the very least, the script needs to know your AWS credentials.
+I recommend setting them via an `Environment script`_, this way you do not need to specify the parameters for every api call.
+
+There are no interactive prompts, the bootstrapping can run entirely unattended from start till finish.
+
+
+Some plugins are included in the `plugins directory <https://github.com/andsens/ec2debian-build-ami/tree/master/plugins>`_.
+A list of external plugins is also provided there.
+
 Features
 --------
 AMI features
@@ -30,59 +42,7 @@ Bootstrapper features
 * Bootstrapping server mirror depends on AWS region
 * APT source mirror depends on AWS region
 
-Installation
-------------
-Simply clone the repo :-)
-
-I recommend setting the AWS credentials via an `Environment script`_,
-this way you do not need to specify the parameters for every api call.
-
-Usage
------
-(Defaults are in **bold**)
-
-Bootstrapping options
-"""""""""""""""""""""
---arch ARCHITECTURE
-	Processor architecture of the image [ i386 | **amd64** ]
---filesystem FSTYPE
-	The filesystem of the root volume [ext2 | ext3 | ext4 | **xfs** ]
---volume-size VOLSIZE
-	The default size of the root volume in GB (**1**)
---plugin FILE
-	Path to plugin script. Can be specified more than once.
-
---timezone ZONE
-	Standard timezone (**UTC**)
---locale LOCALE
-	Standard locale (**en_US**)
---charmap CHARMAP
-	Standard charmap (**UTF-8**)
-
---imagedir DIR
-	Bootstrap directory (**/mnt/image**)
-
-AWS options
-"""""""""""
---user ID
-	User ID (**AWS_USER_ID**)
---access-key ID
-	Access key ID (**AWS_ACCESS_KEY_ID**)
---secret-key KEY
-	Secret access key (**AWS_SECRET_ACCESS_KEY_ID**)
---cert PATH
-	Certificate (**EC2_CERT**)
---private-key PATH
-	Certificate private key (**EC2_PRIVATE_KEY**)
-
-Other options
-"""""""""""""
---debug
-	Use -x option in bash
---help
-	Show a list of options
-
-Plugins
+Writing your own plugins
 -------
 If you want to change the behavior of the bootstrapper you can either modify the tasks directly or write plugins. Writing plugins has several advantages.
 
@@ -91,8 +51,6 @@ If you want to change the behavior of the bootstrapper you can either modify the
 * You don't need to fork this repo.
 * No need to merge updates into your own repo.
 * Easily share your plugins with others.
-
-There are some plugins included in the ``plugins/`` directory. A list of external plugins is also provided there.
 
 All plugins specified when bootstrapping, will be sourced *before* any tasks are run. The plugins can modify the task list and add their own tasks.
 Tasks are simply paths to scripts. They will be sourced as well.
