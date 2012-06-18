@@ -1,0 +1,2 @@
+#!/bin/bash
+insert_task_before $TASK_INITSCRIPTS $plugindir/no-ec2-run-user-data-tasks/remove-ec2-run-user-data
