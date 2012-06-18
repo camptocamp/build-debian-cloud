@@ -92,8 +92,7 @@ If you want to change the behavior of the bootstrapper you can either modify the
 * No need to merge updates into your own repo.
 * Easily share your plugins with others.
 
-You can see a list of plugins in `PLUGINS.md <https://github.com/andsens/ec2debian-build-ami/blob/master/PLUGINS.md>`_.
-If you want to share your plugin send me a pull request or an email.
+There are some plugins included in the ``plugins/`` directory. A list of external plugins is also provided there.
 
 All plugins specified when bootstrapping, will be sourced *before* any tasks are run. The plugins can modify the task list and add their own tasks.
 Tasks are simply paths to scripts. They will be sourced as well.
@@ -103,7 +102,7 @@ Adding tasks is quite easy. To have a custom task run before another, call ``ins
 eg.:
 ::
 
-	insert_task_before $TASK_INITSCRIPTS "/root/someplugin/add-puppet-init.sh"
+	insert_task_before $TASK_INITSCRIPTS "/$plugindir/add-puppet-init.sh"
 
 To insert a task after any other task call ``insert_task_after``. The arguments are the same.
 
