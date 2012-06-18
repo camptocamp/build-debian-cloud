@@ -5,7 +5,10 @@ You can run them via the ``--plugin`` option when bootstrapping:
 ./ec2debian-build-ami --plugin plugins/no-ec2-run-user-data
 ```
 
-* ``no-ec2-run-user-data``: Replicates the old ``-no-run-user-data`` option. This removes the ``ec-run-user-data`` script from the init scripts to be bootstrapped.
+* ``no-ec2-run-user-data``  
+  *Replicates the old ``-no-run-user-data`` option. This removes the ``ec-run-user-data`` script from the init scripts to be bootstrapped.*
+* ``standard-packages``  
+  *Adds some common packages to the AMI.*
 
 ## Other plugins ##
 The following is a list of external plugins you can use with ec2debian-build-ami.
