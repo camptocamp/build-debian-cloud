@@ -9,6 +9,8 @@ You can run them via the ``--plugin`` option when bootstrapping:
   *Replicates the old ``-no-run-user-data`` option. This removes the ``ec-run-user-data`` script from the init scripts to be bootstrapped.*
 * ``standard-packages``  
   *Adds some common packages to the AMI.*
+* ``unattended-upgrades``  
+  *Enables unattended upgrades with aptitude. Your EC2 server will upgrade itself daily.*
 
 ## Other plugins ##
 The following is a list of external plugins you can use with ec2debian-build-ami.
