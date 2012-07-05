@@ -17,14 +17,14 @@ I recommend namespacing the function and variable names in a task to avoid namin
 Adding tasks is quite easy. To have a custom task run before another, call `insert_task_before`. The first argument is one of the task variables [listed below](#task-variables). The second argument is the path to the task that is inserted.
 eg.:
 ```
-	insert_task_before $TASK_INITSCRIPTS "/$plugindir/add-puppet-init.sh"
+insert_task_before $TASK_INITSCRIPTS "/$plugindir/add-puppet-init.sh"
 ```
 
 To insert a task after any other task call `insert_task_after`. The arguments are the same.
 
 To remove a task, call `remove_task` with the basename of the script as an argument.
 ```
-	remove_task "40-networking"
+remove_task "40-networking"
 ```
 
 ### Task variables ###
@@ -50,7 +50,7 @@ If you need to install init.d scripts, simply add their path to the `init_script
 
 You can append to an array in bash by doing this:
 ```
-	packages+=('vim')
+packages+=('vim')
 ```
 
 __Other useful variables__:
