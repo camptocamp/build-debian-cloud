@@ -39,7 +39,7 @@ esac
 [ $arch = 'amd64' ] && ami_arch='x86_64'
 
 # The AMI has to start with "debian", otherwise we won't get a nice icon
-ami_name="$distribution-$codename-$arch-$(date +%Y%m%d)"
+ami_name="$distribution-$codename-$arch-$ami_name_suffix"
 log "Registering the snapshot '$snapshot_id' as an AMI"
 ami_id=`ec2-register \
 	--name "$ami_name" --description "$description" \
