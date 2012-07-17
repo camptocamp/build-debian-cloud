@@ -28,6 +28,7 @@ apt_mirror=
 # This script would explode if we had to take care of other distributions
 distribution='debian'
 codename='squeeze'
+description=
 
 # EC2 host info
 instance_id=
@@ -63,6 +64,8 @@ ${txtund}Bootstrapping${txtdef}
     --charmap CHARMAP             Standard charmap (${txtbld}UTF-8${txtdef})
 
     --imagedir DIR                Bootstrap directory (${txtbld}/mnt/image${txtdef})
+
+    --description DESC            Description of the AMI
 
 ${txtund}AWS${txtdef}
     --user ID                     User ID (${txtbld}AWS_USER_ID${txtdef})
