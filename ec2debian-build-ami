@@ -48,7 +48,7 @@ snapshot_id=
 ami_id=
 
 # List of options
-help="ec2debian-buil-ami
+help="ec2debian-build-ami
 This script creates a Debian Squeeze Amazon Machine Image.
 
 Options (defaults in ${txtbld}bold${txtdef}):
