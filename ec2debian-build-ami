@@ -70,11 +70,8 @@ ${txtund}Bootstrapping${txtdef}
     --description DESC            Description of the AMI
 
 ${txtund}AWS${txtdef}
-    --user ID                     User ID (${txtbld}AWS_USER_ID${txtdef})
-    --access-key ID               Access key ID (${txtbld}AWS_ACCESS_KEY_ID${txtdef})
-    --secret-key KEY              Secret access key (${txtbld}AWS_SECRET_ACCESS_KEY_ID${txtdef})
-    --cert PATH                   Certificate (${txtbld}EC2_CERT${txtdef})
-    --private-key PATH            Certificate private key (${txtbld}EC2_PRIVATE_KEY${txtdef})
+    --access-key ID               AWS Access Key (${txtbld}AWS_ACCESS_KEY${txtdef})
+    --secret-key KEY              AWS Secret Key (${txtbld}AWS_SECRET_KEY${txtdef})
 
 ${txtund}Other options${txtdef}
     --debug                       Print debugging information
@@ -88,11 +85,8 @@ while [ $# -gt 0 ]; do
 		--volume-size) volume_size=$2;                shift 2 ;;
 		--name)        ami_name_suffix=$2;            shift 2 ;;
 		--description) description=$2;                shift 2 ;;
-		--user)        AWS_USER_ID=$2;                shift 2 ;;
-		--access-key)  AWS_ACCESS_KEY_ID=$2;          shift 2 ;;
-		--secret-key)  AWS_SECRET_ACCESS_KEY=$2;      shift 2 ;;
-		--cert)        EC2_CERT=$2;                   shift 2 ;;
-		--private-key) EC2_PRIVATE_KEY=$2;            shift 2 ;;
+		--access-key)  AWS_ACCESS_KEY=$2;             shift 2 ;;
+		--secret-key)  AWS_SECRET_KEY=$2;             shift 2 ;;
 		--timezone)    timezone=$2;                   shift 2 ;;
 		--locale)      locale=$2;                     shift 2 ;;
 		--charmap)     charmap=$2;                    shift 2 ;;
@@ -115,19 +109,12 @@ case $filesystem in
 esac
 
 # Required and default parameters
-true ${AWS_USER_ID:?} ${AWS_ACCESS_KEY_ID:?} ${AWS_SECRET_ACCESS_KEY:?} \
-		${EC2_CERT:?} ${EC2_PRIVATE_KEY:?}
+true ${AWS_ACCESS_KEY:?} ${AWS_SECRET_KEY:?}
 
 # Check the architecture
 [[ $arch != 'amd64' && $arch != 'i386' ]] && die "Unrecognized architecture: $arch"
 
-# Quit if we can't find the certificate
-[ ! -f "$EC2_CERT" ] && die "AWS certificate file not found:" "$EC2_CERT"
-
-# ... or the private key.
-[ ! -f "$EC2_PRIVATE_KEY" ] && die "AWS private key file not found:" "$EC2_PRIVATE_KEY"
-
-export AWS_USER_ID AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY EC2_CERT EC2_PRIVATE_KEY
+export AWS_ACCESS_KEY AWS_SECRET_KEY 
 
 # Put all tasks in the tasks folder into an array
 for task in `find $scriptdir/tasks -type f | sort`; do
