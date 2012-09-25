@@ -12,7 +12,7 @@ source $scriptdir/utils
 # Tasks, packages, plugins, boot scripts
 tasks=()
 packages=()
-excluded_packages=()
+exclude_packages=()
 host_packages=()
 plugins=()
 init_scripts=()

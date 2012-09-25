@@ -62,10 +62,10 @@ __Other useful variables__:
 * There are a lot of other variables, they are all declared on the first 50 lines in `ec2-debian-build-ami`
 
 ## Simple plugins ##
-If your plugin is really simple, you may not need to modify the task list. The `packages`, `excluded_packages` and `init_scripts` arrays are already declared when your plugin file is sourced. Removing nano and adding vim to the bootstrap process can be done with:
+If your plugin is really simple, you may not need to modify the task list. The `packages`, `exclude_packages` and `init_scripts` arrays are already declared when your plugin file is sourced. Removing nano and adding vim to the bootstrap process can be done with:
 ```
 packages+=('vim')
-excluded_packages+=('nano')
+exclude_packages+=('nano')
 ```
 
 ## Utility functions ##
