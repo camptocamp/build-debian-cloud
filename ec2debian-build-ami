@@ -42,7 +42,8 @@ filesystem='xfs'
 mountoptions=
 volume_size='1'
 device_path=
-imagedir='/mnt/image'
+debootstrap_dir='/target'
+imagedir=
 volume_id=
 snapshot_id=
 ami_id=
@@ -54,24 +55,26 @@ This script creates a Debian Squeeze Amazon Machine Image.
 Options (defaults in ${txtbld}bold${txtdef}):
 
 ${txtund}Bootstrapping${txtdef}
-    --arch ARCH [i386|${txtbld}amd64${txtdef}]      Processor architecture of the image
-    --filesystem FS [ext2..4|${txtbld}xfs${txtdef}] The filesystem of the root volume
-    --volume-size SIZE            The default size of the root volume in GB (${txtbld}1${txtdef})
+    --arch ARCH [i386|amd64]      Processor architecture of the image (${txtbld}${arch}${txtdef})
+    --filesystem FS [ext2..4|xfs] Filesystem of the root volume (${txtbld}${filesystem}${txtdef})
+    --volume-size SIZE            Default size of the root volume in GB (${txtbld}${volume_size}${txtdef})
     --plugin FILE                 Path to plugin script.
                                   Can be specified more than once.
 
-    --timezone ZONE               Standard timezone (${txtbld}UTC${txtdef})
-    --locale LOCALE               Standard locale (${txtbld}en_US${txtdef})
-    --charmap CHARMAP             Standard charmap (${txtbld}UTF-8${txtdef})
+    --timezone ZONE               Standard timezone (${txtbld}${timezone}${txtdef})
+    --locale LOCALE               Standard locale (${txtbld}${locale}${txtdef})
+    --charmap CHARMAP             Standard charmap (${txtbld}${charmap}${txtdef})
 
-    --imagedir DIR                Bootstrap directory (${txtbld}/mnt/image${txtdef})
+    --debootstrap-dir DIR         Debootstrap directory (${txtbld}${debootstrap_dir}${txtdef})
+                                  The created volume will be mounted
+                                  at \$debootstrap_dir/\$volume_id.
 
-    --name SUFFIX                 AMI name suffix (${txtbld}current date${txtdef})
+    --name SUFFIX                 AMI name suffix (${txtbld}${ami_name_suffix}${txtdef})
     --description DESC            Description of the AMI
 
 ${txtund}AWS${txtdef}
-    --access-key ID               AWS Access Key (${txtbld}AWS_ACCESS_KEY${txtdef})
-    --secret-key KEY              AWS Secret Key (${txtbld}AWS_SECRET_KEY${txtdef})
+    --access-key ID               AWS Access Key (${txtbld}\$AWS_ACCESS_KEY${txtdef})
+    --secret-key KEY              AWS Secret Key (${txtbld}\$AWS_SECRET_KEY${txtdef})
 
 ${txtund}Other options${txtdef}
     --debug                       Print debugging information
@@ -80,20 +83,20 @@ ${txtund}Other options${txtdef}
 
 while [ $# -gt 0 ]; do
 	case $1 in
-		--arch)        arch=$2;                       shift 2 ;;
-		--filesystem)  filesystem=$2;                 shift 2 ;;
-		--volume-size) volume_size=$2;                shift 2 ;;
-		--name)        ami_name_suffix=$2;            shift 2 ;;
-		--description) description=$2;                shift 2 ;;
-		--access-key)  AWS_ACCESS_KEY=$2;             shift 2 ;;
-		--secret-key)  AWS_SECRET_KEY=$2;             shift 2 ;;
-		--timezone)    timezone=$2;                   shift 2 ;;
-		--locale)      locale=$2;                     shift 2 ;;
-		--charmap)     charmap=$2;                    shift 2 ;;
-		--imagedir)    imagedir=$2;                   shift 2 ;;
-		--plugin)      plugins+=("$2");               shift 2 ;;
-		--debug)       set -x;                        shift   ;;
-		--help)        printf -- "$help";             exit 0  ;;
+		--arch)             arch=$2;                       shift 2 ;;
+		--filesystem)       filesystem=$2;                 shift 2 ;;
+		--volume-size)      volume_size=$2;                shift 2 ;;
+		--name)             ami_name_suffix=$2;            shift 2 ;;
+		--description)      description=$2;                shift 2 ;;
+		--access-key)       AWS_ACCESS_KEY=$2;             shift 2 ;;
+		--secret-key)       AWS_SECRET_KEY=$2;             shift 2 ;;
+		--timezone)         timezone=$2;                   shift 2 ;;
+		--locale)           locale=$2;                     shift 2 ;;
+		--charmap)          charmap=$2;                    shift 2 ;;
+		--debootstrap-dir)  debootstrap_dir=$2;            shift 2 ;;
+		--plugin)           plugins+=("$2");               shift 2 ;;
+		--debug)            set -x;                        shift   ;;
+		--help)             printf -- "$help";             exit 0  ;;
 		*)             die "Unrecognized option: $1" \
     "Type '$0 --help' to see a list of possible options"; ;;
 	esac

@@ -1,6 +1,5 @@
 #!/bin/bash
 # Create the EBS volume
-[ -n "`mount | grep "$imagedir"`" ] && die "Something is already mounted on $imagedir"
 
 # Get a random device letter, we will hang forever if we try to attach a volume to an already mapped device.
 device_letter=`cat /dev/urandom| tr -dc 'f-p'|head -c 1`
@@ -13,16 +12,22 @@ device_path="/dev/xvd$device_letter"
 # Double check that the device name is not taken
 [ -n "`df | grep $device_path`" ] && die "Something is already attached to $device_path."
 
-# Create the dir we are going to mount the volume onto
-if [ ! -d "$imagedir" ]; then
-	mkdir -p $imagedir
-fi
-
-log "Creating a volume now."
+log "Creating EBS volume."
 volume_id=`ec2-create-volume --size $volume_size \
 	--region "$region" --availability-zone "$availability_zone" \
 	| awk '{print $2}'`
 [ -z "$volume_id" ] && die "Unable to create volume."
+
+imagedir=$debootstrap_dir/${volume_id}
+log "Set imagedir to ${imagedir}" 
+
+# Create the dir we are going to mount the volume onto
+if [ ! -d "$imagedir" ]; then
+	log "Creating mount location ${imagedir}"
+	mkdir -p $imagedir
+fi
+
+[ -n "`mount | grep "$imagedir"`" ] && die "Something is already mounted on $imagedir"
 
 logn "Attaching volume with the id $volume_id"
 attachment_status=`ec2-attach-volume "$volume_id" \
@@ -43,4 +48,4 @@ case $filesystem in
 esac
 
 mount $device_path $imagedir
-log "The EBS volume has been formatted and mounted"
+log "EBS volume ${volume_id} (${device_path}) has been formatted (${filesystem}) and mounted (${imagedir})."
