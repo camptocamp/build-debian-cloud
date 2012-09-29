@@ -27,6 +27,7 @@ your itch, you can of course [write your own plugin](https://github.com/andsens/
 ### AMI features ###
 
 * EBS booted
+* Base installation uses only 289MB
 * xfs filesystem
 * Ephemeral storage is properly mapped
 * Standard ec2 startup scripts
