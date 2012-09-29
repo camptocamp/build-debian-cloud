@@ -19,13 +19,15 @@ volume_id=`ec2-create-volume --size $volume_size \
 [ -z "$volume_id" ] && die "Unable to create volume."
 
 imagedir=$debootstrap_dir/${volume_id}
-log "Set imagedir to ${imagedir}" 
 
-# Create the dir we are going to mount the volume onto
-if [ ! -d "$imagedir" ]; then
-	log "Creating mount location ${imagedir}"
-	mkdir -p $imagedir
+# Fail if the imagedir exists, it should be quite unique.
+# This guarantees that we later on can delete it without having to check for anything.
+if [ -d "$imagedir" ]; then
+	die "The mount location $imagedir already exists."
 fi
+# Create the dir we are going to mount the volume onto
+log "Creating mount location ${imagedir}"
+mkdir -p $imagedir
 
 [ -n "`mount | grep "$imagedir"`" ] && die "Something is already mounted on $imagedir"
 

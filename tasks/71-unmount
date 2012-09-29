@@ -23,3 +23,6 @@ done
 
 log "Unmounting the volume"
 umount $imagedir
+
+# Delete the imagedir, it was unique to the volume
+rm -rf "$imagedir"
