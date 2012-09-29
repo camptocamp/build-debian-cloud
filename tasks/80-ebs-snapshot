@@ -12,6 +12,3 @@ snapshot_id=`echo $snapshot | awk '{print $2}'`
 snapshot_status=`echo $snapshot | grep 'completed' || true`
 # Wait for the snapshot to be completed, can take quite some time
 dotdot "$snapshot_status" "ec2dsnap $snapshot_id -F 'status=completed' || true"
-
-log "Deleting the volume"
-ec2-delete-volume $volume_id || true
