@@ -1,20 +1,31 @@
 #!/bin/bash
-# Add some standard packages we are going to need
+# Add some basic packages we are going to need
 packages+=('grub')
-packages+=('locales')
-packages+=('openssh-server')
-packages+=('curl')
 packages+=('udev')
+packages+=('openssh-server')
+# We could bootstrap without locales, but things just suck without them,
+# error messages etc.
+packages+=('locales')
+# Needed for the init scripts
+packages+=('curl')
+# This is inherited from the original script.
+# Apparently isc-dhcp-client doesn't work properly with ec2
 packages+=('dhcpcd')
+
 [ $arch = 'i386' ] && packages+=('linux-image-xen-686')
 [ $arch = 'amd64' ] && packages+=('linux-image-xen-amd64')
 
+# We use dhcpcd instead
 exclude_packages+=('isc-dhcp-client')
 exclude_packages+=('isc-dhcp-common')
 
+# These are for the ec2 tools fetching, extraction and running
 host_packages+=('curl')
 host_packages+=('unzip')
 host_packages+=('default-jre-headless')
+
+# We will need to format the volume, so we need xfsprogs
 [ $filesystem = 'xfs' ] && host_packages+=('xfsprogs')
-host_packages+=('debootstrap')
+# In order to make sure a volume is not busy, before unmounting we need lsof
 host_packages+=('lsof')
+host_packages+=('debootstrap')

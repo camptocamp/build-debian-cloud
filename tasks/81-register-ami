@@ -52,7 +52,8 @@ ami_id=`ec2-register \
 	--block-device-mapping '/dev/sde=ephemeral5' \
 	--snapshot "$snapshot_id" | awk '{print $2}'`
 
-# If the user has already created an AMI today, this will fail, so give the AMI registration command to the user
+# If the user has already created an unnamed AMI today,
+# this will fail, so give the AMI registration command to the user
 if [ -z "$ami_id" ]; then
 	die \
 		"Unable to register the snapshot as an AMI." \

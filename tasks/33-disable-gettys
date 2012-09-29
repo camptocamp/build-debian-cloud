@@ -1,6 +1,6 @@
 #!/bin/bash
 # Disable getty processes
-# Login happens via SSH, and XEN needs to TTY
+# Login happens via SSH, and XEN needs no TTY
 inittab="$imagedir/etc/inittab"
 tty1='1:2345:respawn:/sbin/getty 38400 tty1'
 ttyx=':23:respawn:/sbin/getty 38400 tty'

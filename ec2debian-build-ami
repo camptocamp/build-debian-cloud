@@ -81,6 +81,7 @@ ${txtund}Other options${txtdef}
     --help                        Prints this help message
 "
 
+# Run through the parameters and save them to variables.
 while [ $# -gt 0 ]; do
 	case $1 in
 		--arch)             arch=$2;                       shift 2 ;;
@@ -102,6 +103,7 @@ while [ $# -gt 0 ]; do
 	esac
 done
 
+# Check if the chosen fs is on we can handle.
 case $filesystem in
 	xfs)  ;;
 	ext2) ;;
@@ -117,6 +119,7 @@ true ${AWS_ACCESS_KEY:?} ${AWS_SECRET_KEY:?}
 # Check the architecture
 [[ $arch != 'amd64' && $arch != 'i386' ]] && die "Unrecognized architecture: $arch"
 
+# Export the AWS credentials, so that we can launch ec2-tools without specifying them
 export AWS_ACCESS_KEY AWS_SECRET_KEY 
 
 # Put all tasks in the tasks folder into an array
@@ -124,6 +127,8 @@ for task in `find $scriptdir/tasks -type f | sort`; do
 	tasks+=($task)
 done
 
+# Specify specific points in the bootstrapping process, which the plugins can latch onto.
+# This way plugins don't need fixing if we rename files.
 TASK_PACKAGES="01-packages"
 TASK_VOLUME="10-create-volume"
 TASK_BOOTSTRAP="14-bootstrap"
@@ -137,9 +142,12 @@ TASK_CREATEAMI="81-register-ami"
 # Invoke plugins so that they may reorder and add tasks
 for plugin in "${plugins[@]}"; do
 	[ -e $plugin ] || die "The plugin file $plugin does not exist."
+	# Get the directory of the current plugin.
+	# This way the plugins don't have to figure it out for themselves.
 	plugindir=`dirname $plugin`
 	source $plugin
 done
+unset plugindir
 
 # Source all tasks in the right order
 for task in ${tasks[*]}; do

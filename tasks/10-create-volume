@@ -48,4 +48,6 @@ case $filesystem in
 esac
 
 mount $device_path $imagedir
-log "EBS volume ${volume_id} (${device_path}) has been formatted (${filesystem}) and mounted (${imagedir})."
+log \
+	"The EBS volume ${volume_id} on ${device_path} has been formatted with ${filesystem}," \
+	"it is mounted at ${imagedir}."
