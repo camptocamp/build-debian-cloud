@@ -28,6 +28,7 @@ your itch, you can of course [write your own plugin](https://github.com/andsens/
 
 * EBS booted
 * Base installation uses only 289MB
+* Base installation bootup time ~32s (from AMI launch to SSH connectivity)
 * xfs filesystem
 * Ephemeral storage is properly mapped
 * Standard ec2 startup scripts
