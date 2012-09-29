@@ -2,11 +2,11 @@
 In this folder you will find plugins made for the bootstrapper.  
 You can run them via the ``--plugin`` option when bootstrapping:  
 ```
-./ec2debian-build-ami --plugin plugins/no-ec2-run-user-data
+./ec2debian-build-ami --plugin plugins/ec2-run-user-data
 ```
 
-* ``no-ec2-run-user-data``  
-  Replicates the old ``-no-run-user-data`` option. This removes the ``ec-run-user-data`` script from the init scripts to be bootstrapped.
+* ``ec2-run-user-data``  
+  This adds the ``ec2-run-user-data`` script to the init scripts. Anything in the userdata field will be executed by this script.
 * ``standard-packages``  
   Adds some common packages to the AMI.
 * ``unattended-upgrades``  

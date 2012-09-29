@@ -1,0 +1,2 @@
+#!/bin/bash
+init_scripts+=("$plugindir/ec2-run-user-data-tasks/ec2-run-user-data")

@@ -6,7 +6,6 @@ packages+=('openssh-server')
 packages+=('curl')
 packages+=('udev')
 packages+=('dhcpcd')
-packages+=('file')
 [ $arch = 'i386' ] && packages+=('linux-image-xen-686')
 [ $arch = 'amd64' ] && packages+=('linux-image-xen-amd64')
 

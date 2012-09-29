@@ -1,0 +1,5 @@
+#!/bin/bash
+insert_task_after $TASK_PACKAGES \
+	$plugindir/ec2-run-user-data-tasks/add-dependencies
+insert_task_before $TASK_INITSCRIPTS \
+	$plugindir/ec2-run-user-data-tasks/add-ec2-run-user-data
