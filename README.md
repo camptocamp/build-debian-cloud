@@ -50,7 +50,6 @@ your itch, you can of course [write your own plugin](https://github.com/andsens/
 ## Environment script ##
 Include with `source env-script` for the variables to be present on the commandline.
 ```
-export EC2_URL='https://ec2.eu-west-1.amazonaws.com'
 export AWS_ACCESS_KEY='SOM3L0NG4CC3SSK3Y000'
 export AWS_SECRET_KEY='SomeBase64EncodedString'
 ```
