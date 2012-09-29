@@ -12,17 +12,14 @@ thoroughly tested.
 
 The script is started with ``./ec2debian-build-ami`` it has sensible defaults
 but can be configured with options and plugins. To see a list of options run
-``./ec2debian-build-ami --help``.  
-
+``./ec2debian-build-ami --help``.
 At the very least, the script needs to know your AWS credentials.
-I recommend setting them via an [environment script](#environment-script), this
-way you do not need to specify the parameters for every invocation.
 
 There are no interactive prompts, the bootstrapping can run entirely unattended
 from start till finish.
 
 Some plugins are included in the [plugins directory](https://github.com/andsens/ec2debian-build-ami/tree/master/plugins).
-A list of external plugins is also provided there.  If none of those scratch
+A list of external plugins is also provided there. If none of those scratch
 your itch, you can of course [write your own plugin](https://github.com/andsens/ec2debian-build-ami/blob/master/plugins/HOWTO.md).
 
 ## Features ##
@@ -46,10 +43,3 @@ your itch, you can of course [write your own plugin](https://github.com/andsens/
 * The process is divided into simple task based scripts
 * Bootstrapping server mirror depends on AWS region
 * APT source mirror depends on AWS region
-
-## Environment script ##
-Include with `source env-script` for the variables to be present on the commandline.
-```
-export AWS_ACCESS_KEY='SOM3L0NG4CC3SSK3Y000'
-export AWS_SECRET_KEY='SomeBase64EncodedString'
-```
