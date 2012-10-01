@@ -42,9 +42,9 @@ function out {
 
 # Wait for the execution of $cmd not to return an empty string
 function dotdot {
-	status=$1
-	cmd=$2
-	sleep=5
+	local status=$1
+	local cmd=$2
+	local sleep=5
 	[ ! -z "$3" ] && sleep=$3
 	while [ -z "$status" ]; do
 		logn '.'
@@ -56,10 +56,10 @@ function dotdot {
 
 # Turns once per newline that is piped into it
 function spin {
-	cursor='|'
+	local cursor='|'
 	# Running `tput cols` in every iteration would cause significant slowdown.
 	# Only do this once, the spinner is not a "need to have" anyways.
-	cols=$(( `tput cols` - 2 ))
+	local cols=$(( `tput cols` - 2 ))
 	while read line; do
 		printf -- "\r$logcolor$cursor$txtdef %-${cols}s" "${line:0:$cols}"
 		case $cursor in
@@ -73,7 +73,7 @@ function spin {
 }
 
 function insert_task_before {
-	new_task_list=()
+	local new_task_list=()
 	local added=false
 	for task in ${tasks[*]}; do
 		if [ `basename $task` == "$1" ]; then
@@ -90,7 +90,7 @@ function insert_task_before {
 }
 
 function insert_task_after {
-	new_task_list=()
+	local new_task_list=()
 	local added=false
 	for task in ${tasks[*]}; do
 		new_task_list+=($task)
@@ -107,7 +107,7 @@ function insert_task_after {
 }
 
 function remove_task {
-	new_task_list=()
+	local new_task_list=()
 	local removed=false
 	for task in ${tasks[*]}; do
 		if [ `basename $task` != "$1" ]; then
