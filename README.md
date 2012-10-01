@@ -28,12 +28,14 @@ your itch, you can of course [write your own plugin](https://github.com/andsens/
 
 * EBS booted
 * Base installation uses only 289MB
-* Base installation bootup time ~32s (from AMI launch to SSH connectivity)
+* Base installation bootup time ~45s* (from AMI launch to SSH connectivity)
 * xfs filesystem
 * Ephemeral storage is properly mapped
 * Standard ec2 startup scripts
 * Uses standard debian Xen kernel from apt
 * update-grub creates an actual menu.lst which pvGrub can read
+
+**The bootup time was measured with [this script](https://gist.github.com/3813743)*
 
 ### Bootstrapper features ###
 
