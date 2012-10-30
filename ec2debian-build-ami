@@ -153,5 +153,7 @@ unset plugindir
 for task in ${tasks[*]}; do
 	[ -e $task ] || die "The task $task does not exist."
 	log "Run task: `basename $task`"
+	taskdir=`dirname $task`
 	source $task
 done
+unset taskdir
