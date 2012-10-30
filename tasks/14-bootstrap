@@ -11,7 +11,7 @@ IFS=$SAVE_IFS
 bootstrap_args="--arch $arch --include=$include --exclude=$exclude
 $codename $imagedir $apt_mirror"
 
-args_hash=`echo $bootstrap_args | sha1sum`
+args_hash=`printf -- "$arch $include -- $exclude $codename" | sha1sum`
 
 tarball="$scriptdir/bootstrap-${args_hash:0:7}.tar"
 
