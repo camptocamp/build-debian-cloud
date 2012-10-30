@@ -23,7 +23,7 @@ ff02::3 ip6-allhosts
 EOF
 
 # Delete the hostname file, we get it from the ec2 dhcp server
-/bin/rm -f $imagedir/etc/hostname
+rm -f $imagedir/etc/hostname
 
 # let the DHCP client manage /etc/resolv.conf
 sed -i -e "s/^#*SET_DNS=.*/SET_DNS='yes'/" $imagedir/etc/default/dhcpcd
