@@ -1,5 +1,6 @@
 #!/bin/bash
 insert_task_after $TASK_PACKAGES \
 	$plugindir/ec2-run-user-data-tasks/add-dependencies
+# We need to add this init script *after* ec2-get-credentials, since ec2-run-userdata depends on it
 insert_task_before $TASK_INITSCRIPTS \
-	$plugindir/ec2-run-user-data-tasks/add-ec2-run-user-data
+	$plugindir/ec2-run-user-data-tasks/add-init-script
