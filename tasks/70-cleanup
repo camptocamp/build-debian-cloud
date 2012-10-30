@@ -1,6 +1,9 @@
 #!/bin/bash
 # Clean up the image
 
+# Clear the motd head, it contains the hostname of the bootstrapper
+> /var/run/motd
+
 # Remove log files, temporary files and bash history
 rm -rf \
 	$imagedir/var/log/{bootstrap,dpkg}.log \
