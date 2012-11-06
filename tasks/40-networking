@@ -10,18 +10,6 @@ auto eth0
 iface eth0 inet dhcp
 EOF
 
-cat <<'EOF' >$imagedir/etc/hosts
-127.0.0.1 localhost.localdomain localhost
-
-# The following lines are desirable for IPv6 capable hosts
-::1 ip6-localhost ip6-loopback
-fe00::0 ip6-localnet
-ff00::0 ip6-mcastprefix
-ff02::1 ip6-allnodes
-ff02::2 ip6-allrouters
-ff02::3 ip6-allhosts
-EOF
-
 # Delete the hostname file, we get it from the ec2 dhcp server
 rm -f $imagedir/etc/hostname
 
