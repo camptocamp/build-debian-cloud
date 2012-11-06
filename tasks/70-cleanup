@@ -1,6 +1,13 @@
 #!/bin/bash
 # Clean up the image
 
+# Remove the ssh host keys
+rm \
+	$imagedir/etc/ssh/ssh_host_dsa_key \
+	$imagedir/etc/ssh/ssh_host_dsa_key.pub \
+	$imagedir/etc/ssh/ssh_host_rsa_key \
+	$imagedir/etc/ssh/ssh_host_rsa_key.pub \
+
 # Clear the motd head, it contains the hostname of the bootstrapper
 > /var/run/motd
 
