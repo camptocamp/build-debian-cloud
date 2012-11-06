@@ -75,6 +75,9 @@ function spin {
 function insert_task_before {
 	local new_task_list=()
 	local added=false
+	if [ ! -e $2 ]; then
+		die "Unable to add task `basename $2` to the tasklist." "$2 does not exist."
+	fi
 	for task in ${tasks[*]}; do
 		if [ `basename $task` == "$1" ]; then
 			log "Adding task `basename $2` before task `basename $task`"
@@ -84,7 +87,7 @@ function insert_task_before {
 		new_task_list+=($task)
 	done
 	if ! $added; then
-		die "Unable to add task `basename $2` to the tasklist." "Task $1 does not exist."
+		die "Unable to add `basename $2` to the tasklist." "Task $1 does not exist."
 	fi
 	tasks=("${new_task_list[@]}")
 }
@@ -92,6 +95,9 @@ function insert_task_before {
 function insert_task_after {
 	local new_task_list=()
 	local added=false
+	if [ ! -e $2 ]; then
+		die "Unable to add task `basename $2` to the tasklist." "$2 does not exist."
+	fi
 	for task in ${tasks[*]}; do
 		new_task_list+=($task)
 		if [ `basename $task` == "$1" ]; then
@@ -101,7 +107,7 @@ function insert_task_after {
 		fi
 	done
 	if ! $added; then
-		die "Unable to add task `basename $2` to the tasklist." "Task $1 does not exist."
+		die "Unable to add `basename $2` to the tasklist." "Task $1 does not exist."
 	fi
 	tasks=("${new_task_list[@]}")
 }
@@ -117,7 +123,7 @@ function remove_task {
 		fi
 	done
 	if ! $removed; then
-		die "Unable to remove task $1 from the tasklist." "Task $1 does not exist."
+		die "Unable to remove $1 from the tasklist." "The task does not exist."
 	fi
 	tasks=("${new_task_list[@]}")
 }
