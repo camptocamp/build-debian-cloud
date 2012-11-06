@@ -10,6 +10,6 @@ case $filesystem in
 	*)    ;;
 esac
 
-cat > $imagedir/etc/fstab <<EOF
+cat >> $imagedir/etc/fstab <<EOF
 /dev/xvda1 /     $filesystem    defaults$mountoptions 1 1
 EOF
