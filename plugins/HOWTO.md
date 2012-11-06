@@ -32,14 +32,18 @@ remove_task "40-networking"
 The internal workings of the bootstrapper might change from time to time, this includes the filenames of the different tasks. There are however some fundamentals in the bootstrapping process that are not likely to ever change. You can hook your plugin up to those fundamentals, they are aliased in the form of variables that point to a task filename.
 
 * `TASK_PACKAGES`: Adds packages to the `packages` array (and `exclude_packages`)
-* `TASK_VOLUME`: Creates the EBS volume
+* `TASK_CREATE_VOLUME`: Creates the EBS volume
+* `TASK_MOUNT_VOLUME`: Mounts the EBS volume
 * `TASK_BOOTSTRAP`: Runs the bootstrapping process
-* `TASK_MOUNT`: Mounts things like /dev/pts and /proc
-* `TASK_APTSOURCES`: Sets the aptitude sources
+* `TASK_MOUNT_SPECIALS`: Mounts things like /dev/pts and /proc
+* `TASK_APT_SOURCES`: Sets the aptitude sources
+* `TASK_APT_UPGRADE`: Upgrades packages and fixes broken dependencies
 * `TASK_INITSCRIPTS`: Installs the init.d scripts
-* `TASK_UNMOUNT`: Unmounts the EBS volume
+* `TASK_UNMOUNT_SPECIALS`: Unmounts things like /dev/pts and /proc
+* `TASK_UNMOUNT_VOLUME`: Unmounts the EBS volume
 * `TASK_SNAPSHOT`: Creates a snapshot of the EBS volume
-* `TASK_CREATEAMI`: Registers the snapshot as an AMI
+* `TASK_DELETE_VOLUME`: Deletes the EBS volume
+* `TASK_CREATE_AMI`: Registers the snapshot as an AMI
 
 ### Internal variables ###
 
