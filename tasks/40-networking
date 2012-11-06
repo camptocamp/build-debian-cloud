@@ -2,7 +2,7 @@
 # Basic networking
 
 # Standard configuration for eth0
-cat <<'EOF' >$imagedir/etc/network/interfaces
+cat > $imagedir/etc/network/interfaces <<EOF
 auto lo
 iface lo inet loopback
 

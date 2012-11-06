@@ -2,7 +2,7 @@
 # Upgrade and cleanup packages installed by debootstrap
 
 # Don't launch daemons when upgrading
-cat << EOF > $imagedir/usr/sbin/policy-rc.d
+cat > $imagedir/usr/sbin/policy-rc.d << EOF
 #!/bin/sh
 exit 101
 EOF

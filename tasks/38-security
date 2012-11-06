@@ -8,6 +8,6 @@ chroot $imagedir shadowconfig on
 sed -i -e 's/^#PasswordAuthentication yes/PasswordAuthentication no/' $imagedir/etc/ssh/sshd_config
 
 # Speed up ssh login, by not looking up the DNS name of a client
-cat <<'EOF' >>$imagedir/etc/ssh/sshd_config
+cat >> $imagedir/etc/ssh/sshd_config <<EOF
 UseDNS no
 EOF

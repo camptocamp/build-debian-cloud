@@ -2,7 +2,7 @@
 # Blacklist
 
 # Prevent pcspkr from loading because we don't need it
-cat <<'EOF' >>$imagedir/etc/modprobe.d/blacklist.conf
+cat >> $imagedir/etc/modprobe.d/blacklist.conf <<EOF
 # disable pc speaker
 blacklist pcspkr
 EOF
