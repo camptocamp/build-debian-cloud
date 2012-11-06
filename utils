@@ -83,7 +83,7 @@ function insert_task_before {
 		fi
 		new_task_list+=($task)
 	done
-	if [ ! $added ]; then
+	if ! $added; then
 		die "Unable to add task `basename $2` to the tasklist." "Task $1 does not exist."
 	fi
 	tasks=("${new_task_list[@]}")
@@ -100,7 +100,7 @@ function insert_task_after {
 			added=true
 		fi
 	done
-	if [ ! $added ]; then
+	if ! $added; then
 		die "Unable to add task `basename $2` to the tasklist." "Task $1 does not exist."
 	fi
 	tasks=("${new_task_list[@]}")
@@ -112,11 +112,12 @@ function remove_task {
 	for task in ${tasks[*]}; do
 		if [ `basename $task` != "$1" ]; then
 			new_task_list+=($task)
+		else
 			removed=true
-	fi
+		fi
 	done
-	if [ ! $removed ]; then
-		die "Unable to remove task `$1` from the tasklist." "Task $1 does not exist."
+	if ! $removed; then
+		die "Unable to remove task $1 from the tasklist." "Task $1 does not exist."
 	fi
 	tasks=("${new_task_list[@]}")
 }
