@@ -1,4 +1,6 @@
 #!/bin/bash
+# Mount special devices
+
 # Unmount if the bootstrapping fails
 trap "printf 'Bootstrapping failed!\n'
 cd $scriptdir

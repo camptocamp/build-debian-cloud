@@ -1,5 +1,5 @@
 #!/bin/bash
-# Unmount the volume
+# Unmount special devices
 
 # We unmount from inside the image, otherwise the system won't boot
 chroot $imagedir umount /dev/pts
@@ -20,9 +20,3 @@ while [ -n "`lsof $imagedir`" ]; do
 	log "Waiting for volume to idle, before unmounting."
 	sleep 5
 done
-
-log "Unmounting the volume"
-umount $imagedir
-
-# Delete the imagedir, it was unique to the volume
-rm -rf "$imagedir"

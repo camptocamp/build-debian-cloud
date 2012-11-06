@@ -1,0 +1,4 @@
+#!/bin/bash
+# Detach the EBS volume
+attachment_status=`ec2-detach-volume $volume_id | grep 'available' || true`
+dotdot "$attachment_status" "ec2dvol $volume_id -F 'status=available' || true"

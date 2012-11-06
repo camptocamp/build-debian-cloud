@@ -1,9 +1,5 @@
 #!/bin/bash
 # Create a snapshot of the EBS volume
-logn "Detaching the volume"
-attachment_status=`ec2-detach-volume $volume_id | grep 'available' || true`
-dotdot "$attachment_status" "ec2dvol $volume_id -F 'status=available' || true"
-
 logn "Creating snapshot of the EBS volume"
 snapshot=`ec2-create-snapshot $volume_id`
 [ -z "$snapshot" ] && die "\nUnable to create snapshot from the volume '$volume_id'"

@@ -130,13 +130,16 @@ done
 # Specify specific points in the bootstrapping process, which the plugins can latch onto.
 # This way plugins don't need fixing if we rename files.
 TASK_PACKAGES="01-packages"
-TASK_VOLUME="10-create-volume"
+TASK_CREATE_VOLUME="10-create-volume"
+TASK_MOUNT_VOLUME="13-mount-volume"
 TASK_BOOTSTRAP="14-bootstrap"
-TASK_MOUNT="15-mount"
+TASK_MOUNT_SPECIALS="15-mount-specials"
 TASK_APTSOURCES="21-apt-sources"
 TASK_INITSCRIPTS="51-init-scripts"
-TASK_UNMOUNT="71-unmount"
+TASK_UNMOUNT_SPECIALS="71-unmount-specials"
+TASK_UNMOUNT_VOLUME="72-unmount-volume"
 TASK_SNAPSHOT="80-ebs-snapshot"
+TASK_DELETE_VOLUME="82-delete-volume"
 TASK_CREATEAMI="95-register-ami"
 
 # Invoke plugins so that they may reorder and add tasks
