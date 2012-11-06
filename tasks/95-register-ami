@@ -3,33 +3,37 @@
 
 # Figure out which pvGrub kernel ID we need
 case $region in
-	eu-west-1)
-		[ $arch = 'i386' ] && aki="aki-4deec439"
-		[ $arch = 'amd64' ] && aki="aki-4feec43b"
-	;;
 	us-east-1)
-		[ $arch = 'i386' ] && aki="aki-407d9529"
-		[ $arch = 'amd64' ] && aki="aki-427d952b"
+		[ $arch = 'amd64' ] && aki="aki-88aa75e1"
+		[ $arch = 'i386' ] && aki="aki-b6aa75df"
 	;;
 	us-west-1)
-		[ $arch = 'i386' ] && aki="aki-99a0f1dc"
-		[ $arch = 'amd64' ] && aki="aki-9ba0f1de"
+		[ $arch = 'amd64' ] && aki="aki-f77e26b2"
+		[ $arch = 'i386' ] && aki="aki-f57e26b0"
 	;;
 	us-west-2)
-		[ $arch = 'i386' ] && aki="aki-dce26fec"
-		[ $arch = 'amd64' ] && aki="aki-ace26f9c"
+		[ $arch = 'amd64' ] && aki="aki-fc37bacc"
+		[ $arch = 'i386' ] && aki="aki-fa37baca"
 	;;
-	ap-northeast-1)
-		[ $arch = 'i386' ] && aki="aki-d209a2d3"
-		[ $arch = 'amd64' ] && aki="aki-d409a2d5"
+	eu-west-1)
+		[ $arch = 'amd64' ] && aki="aki-71665e05"
+		[ $arch = 'i386' ] && aki="aki-75665e01"
 	;;
 	ap-southeast-1)
-		[ $arch = 'i386' ] && aki="aki-13d5aa41"
-		[ $arch = 'amd64' ] && aki="aki-11d5aa43"
+		[ $arch = 'amd64' ] && aki="aki-fe1354ac"
+		[ $arch = 'i386' ] && aki="aki-f81354aa"
+	;;
+	ap-northeast-1)
+		[ $arch = 'amd64' ] && aki="aki-44992845"
+		[ $arch = 'i386' ] && aki="aki-42992843"
 	;;
 	sa-east-1)
-		[ $arch = 'i386' ] && aki="aki-863ce39b"
-		[ $arch = 'amd64' ] && aki="aki-d63ce3cb"
+		[ $arch = 'amd64' ] && aki="aki-c48f51d9"
+		[ $arch = 'i386' ] && aki="aki-ca8f51d7"
+	;;
+	us-gov-west-1)
+		[ $arch = 'amd64' ] && aki="aki-79a4c05a"
+		[ $arch = 'i386' ] && aki="aki-7ba4c058"
 	;;
 	*) die "Unrecognized region:" "$region"
 esac

@@ -19,12 +19,13 @@ export EC2_URL="https://$region.ec2.amazonaws.com"
 
 # We can speed up the bootstrapping process by choosing a debian mirror nearby
 case $region in
-	eu-west-1)      apt_mirror="http://ftp.ie.debian.org/debian/" ;;
 	us-east-1)      apt_mirror="http://ftp.us.debian.org/debian/" ;;
 	us-west-1)      apt_mirror="http://ftp.us.debian.org/debian/" ;;
 	us-west-2)      apt_mirror="http://ftp.us.debian.org/debian/" ;;
-	ap-northeast-1) apt_mirror="http://ftp.jp.debian.org/debian/" ;;
+	eu-west-1)      apt_mirror="http://ftp.ie.debian.org/debian/" ;;
 	ap-southeast-1) apt_mirror="http://mirror.nus.edu.sg/Debian/" ;;
+	ap-northeast-1) apt_mirror="http://ftp.jp.debian.org/debian/" ;;
 	sa-east-1)      apt_mirror="http://ftp.br.debian.org/debian/" ;;
+	us-gov-west-1)  apt_mirror="http://ftp.us.debian.org/debian/" ;;
 	*)              die "Unrecognized region:" "$region"
 esac
