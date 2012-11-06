@@ -12,6 +12,13 @@ logcolor=$txtblu
 errfile=''
 errcolor=$bldred
 
+# Logging function without coloring
+function logplain {
+	for line in "$@"; do
+		out "$line\n" "$line\n" $logfile
+	done
+}
+
 # Logging function, each arg is a line
 function log {
 	for line in "$@"; do
