@@ -127,6 +127,7 @@ function remove_task {
 			new_task_list+=($task)
 		else
 			removed=true
+			log "Removing task $1"
 		fi
 	done
 	if ! $removed; then
