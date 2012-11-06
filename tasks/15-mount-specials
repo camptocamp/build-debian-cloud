@@ -3,7 +3,7 @@
 
 # Unmount if the bootstrapping fails
 trap "printf 'Bootstrapping failed!\n'
-cd $scriptdir
+cd $originaldir
 chroot $imagedir umount /dev/pts
 chroot $imagedir umount /sys
 chroot $imagedir umount /proc
