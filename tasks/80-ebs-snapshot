@@ -7,8 +7,8 @@ dotdot "$attachment_status" "ec2dvol $volume_id -F 'status=available' || true"
 logn "Creating snapshot of the EBS volume"
 snapshot=`ec2-create-snapshot $volume_id`
 [ -z "$snapshot" ] && die "\nUnable to create snapshot from the volume '$volume_id'"
-snapshot_id=`echo $snapshot | awk '{print $2}'`
+snapshot_id=`printf -- "$snapshot" | awk '{print $2}'`
 
-snapshot_status=`echo $snapshot | grep 'completed' || true`
+snapshot_status=`printf -- "$snapshot" | grep 'completed' || true`
 # Wait for the snapshot to be completed, can take quite some time
 dotdot "$snapshot_status" "ec2dsnap $snapshot_id -F 'status=completed' || true"

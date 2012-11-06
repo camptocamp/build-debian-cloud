@@ -2,9 +2,9 @@
 # Retreive information about the host system
 instance_information=`curl --silent http://169.254.169.254/latest/dynamic/instance-identity/document`
 # We need the region, for the apt sources and the availability zone for the EBS volume
-instance_id=`echo "$instance_information" | grep instanceId | awk -F\" '{print $4}'`
-region=`echo "$instance_information" | grep region | awk -F\" '{print $4}'`
-availability_zone=`echo "$instance_information" | grep availabilityZone | awk -F\" '{print $4}'`
+instance_id=`printf -- "$instance_information" | grep instanceId | awk -F\" '{print $4}'`
+region=`printf -- "$instance_information" | grep region | awk -F\" '{print $4}'`
+availability_zone=`printf -- "$instance_information" | grep availabilityZone | awk -F\" '{print $4}'`
 
 if [ -z "$instance_id" ]; then
 	die \

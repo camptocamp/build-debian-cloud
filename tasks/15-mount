@@ -1,6 +1,6 @@
 #!/bin/bash
 # Unmount if the bootstrapping fails
-trap "echo 'Bootstrapping failed!'
+trap "printf 'Bootstrapping failed!\n'
 cd $scriptdir
 chroot $imagedir umount /dev/pts
 chroot $imagedir umount /sys
