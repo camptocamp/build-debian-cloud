@@ -6,5 +6,8 @@ sed -i "s/# $locale.$charmap $charmap/$locale.$charmap $charmap/" $imagedir/etc/
 chroot $imagedir dpkg-reconfigure --priority=critical locales
 
 # Set timezone
-echo $timezone >$imagedir/etc/timezone
+cat > $imagedir/etc/timezone <<EOF
+$timezone
+EOF
+
 cp -f $imagedir/usr/share/zoneinfo/$timezone $imagedir/etc/localtime
