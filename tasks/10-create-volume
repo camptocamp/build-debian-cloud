@@ -1,55 +1,8 @@
 #!/bin/bash
 # Create the EBS volume
 
-# Get a random device letter, we will hang forever if we try to attach a volume to an already mapped device.
-device_letter=`cat /dev/urandom| tr -dc 'f-p'|head -c 1`
-while [ -b "/dev/xvd$device_letter" ]; do
-	device_letter=`cat /dev/urandom| tr -dc 'f-p'|head -c 1`
-done
-device="/dev/sd$device_letter"
-device_path="/dev/xvd$device_letter"
-
-# Double check that the device name is not taken
-[ -n "`df | grep $device_path`" ] && die "Something is already attached to $device_path."
-
-log "Creating EBS volume."
 volume_id=`ec2-create-volume --size $volume_size \
 	--region "$region" --availability-zone "$availability_zone" \
 	| awk '{print $2}'`
 [ -z "$volume_id" ] && die "Unable to create volume."
-
-imagedir=$debootstrap_dir/${volume_id}
-
-# Fail if the imagedir exists, it should be quite unique.
-# This guarantees that we later on can delete it without having to check for anything.
-if [ -d "$imagedir" ]; then
-	die "The mount location $imagedir already exists."
-fi
-# Create the dir we are going to mount the volume onto
-log "Creating mount location ${imagedir}"
-mkdir -p $imagedir
-
-[ -n "`mount | grep "$imagedir"`" ] && die "Something is already mounted on $imagedir"
-
-logn "Attaching volume with the id $volume_id"
-attachment_status=`ec2-attach-volume "$volume_id" \
-	--instance "$instance_id" --device "$device" | grep 'attached' || true`
-# Wait until the volume is attached
-dotdot "$attachment_status" "ec2dvol $volume_id -F 'attachment.status=attached' || true"
-
-log "Formatting the device $device_path with $filesystem"
-mkfs.$filesystem $device_path
-
-case $filesystem in
-	# Disable time based fs checks
-	ext2) tune2fs -i 0 $device_path ;;
-	ext3) tune2fs -i 0 $device_path ;;
-	ext4) tune2fs -i 0 $device_path ;;
-	# Add some tools for xfs, ext tools are built-in
-	xfs)  packages+=('xfsprogs')    ;;
-esac
-
-mount $device_path $imagedir
-log \
-	"The EBS volume ${volume_id} on ${device_path} has been formatted with ${filesystem}," \
-	"it is mounted at ${imagedir}."
+log "The EBS volume id is $volume_id"
