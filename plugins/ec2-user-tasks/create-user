@@ -1,0 +1,14 @@
+#!/bin/bash
+ec2user_name='ec2-user'
+
+# Create the user and add him to the 'sudo' group
+chroot $imagedir useradd --create-home --shell /bin/bash $ec2user_name
+
+# Allow ec2-user to use sudo without a password
+sed -i "/^root\tALL=(ALL) ALL/a ec2-user\tALL=(ALL) NOPASSWD: ALL" $imagedir/etc/sudoers
+
+# ec2-get-credentials should add the pubkey to the new user account and not root
+sed -i "s/^username='root'/username='$ec2user_name'/" $imagedir/etc/init.d/ec2-get-credentials
+
+# Disallow root login
+sed -i "s/^PermitRootLogin yes/PermitRootLogin no/" $imagedir/etc/ssh/sshd_config

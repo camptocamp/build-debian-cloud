@@ -11,6 +11,8 @@ You can run them via the ``--plugin`` option when bootstrapping:
   Adds some common packages to the AMI.
 * ``unattended-upgrades``  
   Enables unattended upgrades with aptitude. Your EC2 server will upgrade itself daily.
+* ``ec2-user``  
+  Creates a user named 'ec2-user', gives it sudo rights and disables the root login.
 
 ## Other plugins ##
 The following is a list of external plugins you can use with ec2debian-build-ami.
