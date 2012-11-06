@@ -4,9 +4,6 @@
 # Privileged access to hashed passwords
 chroot $imagedir shadowconfig on
 
-# No password for root
-chroot $imagedir passwd -d root
-
 # Disallow password authentication, public/private key only
 sed -i -e 's/^#PasswordAuthentication yes/PasswordAuthentication no/' $imagedir/etc/ssh/sshd_config
 
