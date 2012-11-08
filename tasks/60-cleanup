@@ -8,11 +8,17 @@ shred --remove \
 	$imagedir/etc/ssh/ssh_host_rsa_key \
 	$imagedir/etc/ssh/ssh_host_rsa_key.pub
 
+# We do the same to the bash history, there shouldn't be anything sensitive in there,
+# it's just in case plugins need to execute commands that have credentials in their parameters.
+# In fact: The standard bootstrapping process does not even create it.
+if [ -f $imagedir/root/.bash_history ]; then
+	shred --remove $imagedir/root/.bash_history
+fi
+
 # Clear the motd head, it contains the hostname of the bootstrapper
 > /var/run/motd
 
 # Remove log files, temporary files and bash history
 rm -rf \
 	$imagedir/var/log/{bootstrap,dpkg}.log \
-	$imagedir/tmp/*                        \
-	$imagedir/root/.bash_history
+	$imagedir/tmp/*
