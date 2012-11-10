@@ -1,5 +1,0 @@
-#!/bin/bash
-insert_task_after $TASK_PACKAGES \
-	$plugindir/ec2-user-tasks/add-sudo-package
-insert_task_after $TASK_INITSCRIPTS \
-	$plugindir/ec2-user-tasks/create-user

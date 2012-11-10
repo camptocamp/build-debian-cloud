@@ -9,8 +9,8 @@ You can run them via the ``--plugin`` option when bootstrapping:
   Adds some common packages to the AMI.
 * ``unattended-upgrades``  
   Enables unattended upgrades with aptitude. Your EC2 server will upgrade itself daily.
-* ``ec2-user``  
-  Creates a user named 'ec2-user', gives it sudo rights and disables the root login.
+* ``admin-user``  
+  Creates a user named 'admin', gives it sudo rights and disables the root login.
 * ``remount``  
   Remounts the bootstrapped volume.
   With this plugin you can inspect the results of the bootstrapping process without launching an instance.

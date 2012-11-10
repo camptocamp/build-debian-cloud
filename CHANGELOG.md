@@ -4,6 +4,7 @@
 * Plugin removed: "ec2-run-user-data" is back in the standard bootstrapping process and has been simplified
 
 #### Minor changes: ####
+* Plugin modified: "ec2-user" renamed to "admin-user". Login name is now "admin"
 
 ### 2012-11-06 Anders Ingemann <anders@ingemann.de> ###
 
