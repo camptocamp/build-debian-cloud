@@ -2,9 +2,11 @@
 
 #### Major changes: ####
 * Plugin removed: "ec2-run-user-data" is back in the standard bootstrapping process and has been simplified
+* New init.d script "expand-volume": Try to grow the root volume size when booting
 
 #### Minor changes: ####
 * Plugin modified: "ec2-user" renamed to "admin-user". Login name is now "admin"
+* Fix help message on AMI registration failure
 
 ### 2012-11-06 Anders Ingemann <anders@ingemann.de> ###
 
