@@ -61,7 +61,8 @@ ami_id=`ec2-register \
 if [ -z "$ami_id" ]; then
 	die \
 		"Unable to register the snapshot as an AMI." \
-		"You can do it manually with:\nec2-register" \
+		"You can do it manually with:" \
+		"`which ec2-register` \\\\"
 		"--name '$ami_name' --description '$description' \\\\" \
 		"--architecture '$ami_arch' --kernel '$aki' \\\\" \
 		"--block-device-mapping '/dev/sda2=ephemeral0' \\\\" \
