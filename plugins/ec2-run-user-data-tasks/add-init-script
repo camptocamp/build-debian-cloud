@@ -1,2 +1,0 @@
-#!/bin/bash
-init_scripts+=("$taskdir/ec2-run-user-data")

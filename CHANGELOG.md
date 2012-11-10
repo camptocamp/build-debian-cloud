@@ -1,3 +1,10 @@
+### 2012-11-10 Anders Ingemann <anders@ingemann.de> ###
+
+#### Major changes: ####
+* Plugin removed: "ec2-run-user-data" is back in the standard bootstrapping process and has been simplified
+
+#### Minor changes: ####
+
 ### 2012-11-06 Anders Ingemann <anders@ingemann.de> ###
 
 #### Major changes: ####

@@ -5,8 +5,6 @@ You can run them via the ``--plugin`` option when bootstrapping:
 ./ec2debian-build-ami --plugin plugins/ec2-run-user-data
 ```
 
-* ``ec2-run-user-data``  
-  This adds the ``ec2-run-user-data`` script to the init scripts. Anything in the userdata field will be executed by this script.
 * ``standard-packages``  
   Adds some common packages to the AMI.
 * ``unattended-upgrades``  
