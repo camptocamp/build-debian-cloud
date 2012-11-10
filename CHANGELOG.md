@@ -5,6 +5,7 @@
 * New init.d script "expand-volume": Try to grow the root volume size when booting
 
 #### Minor changes: ####
+* Rename "ec2-ssh-host-keys-gen" to "generate-ssh-hostkeys" and refactor
 * Plugin modified: "ec2-user" renamed to "admin-user". Login name is now "admin"
 * Fix help message on AMI registration failure
 
