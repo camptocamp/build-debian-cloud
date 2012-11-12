@@ -2,11 +2,11 @@
 # Attach the EBS volume
 
 # Get a random device letter, we will hang forever if we try to attach a volume to an already mapped device.
-device_letter=`cat /dev/urandom| tr -dc 'f-p'|head -c 1`
-while [ -b "/dev/xvd$device_letter" ]; do
-	device_letter=`cat /dev/urandom| tr -dc 'f-p'|head -c 1`
+for device_letter in {f..z}; do
+	device_path="/dev/xvd$device_letter"
+	[ ! -b $device_path ] && break
 done
-device_path="/dev/xvd$device_letter"
+[ -b $device_path ] && die "No free device letters found (tried sdf to sdz)!"
 
 euca-attach-volume --instance "$instance_id" --device "/dev/sd$device_letter" "$volume_id"
 # Wait until the volume is attached
