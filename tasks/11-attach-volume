@@ -8,9 +8,6 @@ while [ -b "/dev/xvd$device_letter" ]; do
 done
 device_path="/dev/xvd$device_letter"
 
-# Double check that the device name is not taken
-[ -n "`df | grep $device_path`" ] && die "Something is already attached to $device_path."
-
 euca-attach-volume --instance "$instance_id" --device "/dev/sd$device_letter" "$volume_id"
 # Wait until the volume is attached
 dotdot "test -b $device_path && echo attached"
