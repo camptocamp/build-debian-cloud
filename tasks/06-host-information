@@ -24,6 +24,7 @@ case $region in
 	us-west-2)      apt_mirror="http://ftp.us.debian.org/debian/" ;;
 	eu-west-1)      apt_mirror="http://ftp.ie.debian.org/debian/" ;;
 	ap-southeast-1) apt_mirror="http://mirror.nus.edu.sg/Debian/" ;;
+	ap-southeast-2) apt_mirror="http://ftp.au.debian.org/debian/" ;;
 	ap-northeast-1) apt_mirror="http://ftp.jp.debian.org/debian/" ;;
 	sa-east-1)      apt_mirror="http://ftp.br.debian.org/debian/" ;;
 	us-gov-west-1)  apt_mirror="http://ftp.us.debian.org/debian/" ;;

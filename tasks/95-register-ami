@@ -23,6 +23,10 @@ case $region in
 		[ $arch = 'amd64' ] && aki="aki-fe1354ac"
 		[ $arch = 'i386' ] && aki="aki-f81354aa"
 	;;
+	ap-southeast-2)
+		[ $arch = 'amd64' ] && aki="aki-31990e0b"
+		[ $arch = 'i386' ] && aki="aki-33990e09"
+	;;
 	ap-northeast-1)
 		[ $arch = 'amd64' ] && aki="aki-44992845"
 		[ $arch = 'i386' ] && aki="aki-42992843"
