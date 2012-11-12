@@ -13,4 +13,4 @@ device_path="/dev/xvd$device_letter"
 
 euca-attach-volume --instance "$instance_id" --device "/dev/sd$device_letter" "$volume_id"
 # Wait until the volume is attached
-dotdot "euca-describe-volumes $volume_id | grep 'ATTACHMENT'"
+dotdot "test -b $device_path && echo attached"
