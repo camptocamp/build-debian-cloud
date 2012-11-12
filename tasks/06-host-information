@@ -15,7 +15,7 @@ fi
 [ -z "$availability_zone" ] && die "Unable to fetch the availability zone of this machine."
 
 # Set the ec2_url to the same region as this machine, anything else wouldn't make sense
-export EC2_URL="https://$region.ec2.amazonaws.com"
+export EC2_URL="https://ec2.$region.amazonaws.com"
 
 # We can speed up the bootstrapping process by choosing a debian mirror nearby
 case $region in

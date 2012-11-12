@@ -4,22 +4,11 @@
 apt-get install -y ${host_packages[*]} | spin
 [ $PIPESTATUS == 0 ] || die "Installing host packages failed!"
 
-# Bit of a hack to get the pesky JRE running
-export JAVA_HOME=`update-java-alternatives --list | cut -f 3 -d ' ' | tail -n 1`
-
-# Install AMI and API tools
-if [ ! -d $scriptdir/ec2-ami-tools ]; then
-	curl -s -o $scriptdir/ec2-ami-tools.zip http://s3.amazonaws.com/ec2-downloads/ec2-ami-tools.zip
-	unzip $scriptdir/ec2-ami-tools.zip -d $scriptdir/ > /dev/null
-	ln -s $scriptdir/ec2-ami-tools-* $scriptdir/ec2-ami-tools
+# We use euca2ools to communicate with AWS
+# The package in squeeze is v 1.2, which does not support EBS images
+# So we install 1.3 from source instead
+if [ ! -d $scriptdir/euca2ools ]; then
+	curl -s -L -o $scriptdir/euca2ools-1.3.2.tar.gz https://github.com/eucalyptus/euca2ools/archive/1.3.2.tar.gz
+	tar zxf $scriptdir/euca2ools-1.3.2.tar.gz
 fi
-if [ ! -d $scriptdir/ec2-api-tools ]; then
-	curl -s -o $scriptdir/ec2-api-tools.zip http://s3.amazonaws.com/ec2-downloads/ec2-api-tools.zip
-	unzip $scriptdir/ec2-api-tools.zip -d $scriptdir/ > /dev/null
-	ln -s $scriptdir/ec2-api-tools-* $scriptdir/ec2-api-tools
-fi
-
-export EC2_HOME=$scriptdir/ec2-api-tools
-export EC2_AMITOOL_HOME=$scriptdir/ec2-ami-tools
-export EC2_APITOOL_HOME=$scriptdir/ec2-api-tools
-export PATH=$PATH:${EC2_AMITOOL_HOME}/bin:${EC2_APITOOL_HOME}/bin
+(cd euca2ools-1.3.2; make)

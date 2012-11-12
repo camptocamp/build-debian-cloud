@@ -73,8 +73,8 @@ ${txtund}Bootstrapping${txtdef}
     --description DESC            Description of the AMI
 
 ${txtund}AWS${txtdef}
-    --access-key ID               AWS Access Key (${txtbld}\$AWS_ACCESS_KEY${txtdef})
-    --secret-key KEY              AWS Secret Key (${txtbld}\$AWS_SECRET_KEY${txtdef})
+    --access-key ID               AWS Access Key (${txtbld}\$EC2_ACCESS_KEY${txtdef})
+    --secret-key KEY              AWS Secret Key (${txtbld}\$EC2_SECRET_KEY${txtdef})
 
 ${txtund}Other options${txtdef}
     --debug                       Print debugging information
@@ -89,8 +89,8 @@ while [ $# -gt 0 ]; do
 		--volume-size)      volume_size=$2;                shift 2 ;;
 		--name)             ami_name_suffix=$2;            shift 2 ;;
 		--description)      description=$2;                shift 2 ;;
-		--access-key)       AWS_ACCESS_KEY=$2;             shift 2 ;;
-		--secret-key)       AWS_SECRET_KEY=$2;             shift 2 ;;
+		--access-key)       EC2_ACCESS_KEY=$2;             shift 2 ;;
+		--secret-key)       EC2_SECRET_KEY=$2;             shift 2 ;;
 		--timezone)         timezone=$2;                   shift 2 ;;
 		--locale)           locale=$2;                     shift 2 ;;
 		--charmap)          charmap=$2;                    shift 2 ;;
@@ -114,13 +114,13 @@ case $filesystem in
 esac
 
 # Required and default parameters
-true ${AWS_ACCESS_KEY:?} ${AWS_SECRET_KEY:?}
+true ${EC2_ACCESS_KEY:?} ${EC2_SECRET_KEY:?}
 
 # Check the architecture
 [[ $arch != 'amd64' && $arch != 'i386' ]] && die "Unrecognized architecture: $arch"
 
 # Export the AWS credentials, so that we can launch ec2-tools without specifying them
-export AWS_ACCESS_KEY AWS_SECRET_KEY 
+export EC2_ACCESS_KEY EC2_SECRET_KEY 
 
 # Put all tasks in the tasks folder into an array
 for task in `find $scriptdir/tasks -type f | sort`; do

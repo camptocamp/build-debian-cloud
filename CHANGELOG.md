@@ -1,3 +1,11 @@
+### 2012-11-12 Anders Ingemann <anders@ingemann.de> ###
+
+#### Major changes: ####
+* Replace ec2-a[mp]i-tools with euca2ools
+
+#### Minor changes: ####
+* Added regions: ap-southeast-2 (Australia)
+
 ### 2012-11-10 Anders Ingemann <anders@ingemann.de> ###
 
 #### Major changes: ####

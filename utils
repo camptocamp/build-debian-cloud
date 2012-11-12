@@ -49,14 +49,15 @@ function out {
 
 # Wait for the execution of $cmd not to return an empty string
 function dotdot {
-	local status=$1
-	local cmd=$2
+	local cmd=$1
+	local status=`eval $cmd`
 	local sleep=5
-	[ ! -z "$3" ] && sleep=$3
+	[ ! -z "$2" ] && sleep=$2
 	while [ -z "$status" ]; do
 		logn '.'
 		sleep $sleep
-		status=`eval $cmd`
+		# Don't error out if the command fails.
+		status=`eval $cmd || true`
 	done
 	logn "\n"
 }

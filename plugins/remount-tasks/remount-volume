@@ -6,14 +6,12 @@ device_letter=`cat /dev/urandom| tr -dc 'f-p'|head -c 1`
 while [ -b "/dev/xvd$device_letter" ]; do
 	device_letter=`cat /dev/urandom| tr -dc 'f-p'|head -c 1`
 done
-device="/dev/sd$device_letter"
 device_path="/dev/xvd$device_letter"
 
 logn "Reattaching the bootstrapped volume"
-attachment_status=`ec2-attach-volume "$volume_id" \
-	--instance "$instance_id" --device "$device" | grep 'attached' || true`
+euca-attach-volume --instance "$instance_id" --device "/dev/sd$device_letter" "$volume_id"
 # Wait until the volume is attached
-dotdot "$attachment_status" "ec2dvol $volume_id -F 'attachment.status=attached' || true"
+dotdot "euca-describe-volumes $volume_id | grep 'ATTACHMENT'"
 
 # Recreate the imagedir, it was delete in the unmount task
 log "Creating mount location ${imagedir}"
@@ -24,15 +22,8 @@ log "The volume has been mounted at $imagedir"
 
 log "Run the following commands to unmount and remove the volume:"
 logplain \
+	"export EC2_URL=https://ec2.$region.amazonaws.com" \
 	"umount $imagedir" \
 	"rm -rf $imagedir" \
-	"`which ec2-detach-volume` $volume_id" \
-	"`which ec2-delete-volume` $volume_id"
-
-log "You will need these environment variables to run the last two commands:"
-logplain \
-	"export JAVA_HOME=`update-java-alternatives --list | cut -f 3 -d ' ' | tail -n 1`" \
-	"export EC2_HOME=$scriptdir/ec2-api-tools" \
-	"export EC2_AMITOOL_HOME=$scriptdir/ec2-ami-tools" \
-	"export EC2_APITOOL_HOME=$scriptdir/ec2-api-tools" \
-	"export EC2_URL=https://$region.ec2.amazonaws.com"
+	"euca-detach-volume $volume_id" \
+	"euca-delete-volume $volume_id"

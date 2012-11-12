@@ -6,13 +6,11 @@ device_letter=`cat /dev/urandom| tr -dc 'f-p'|head -c 1`
 while [ -b "/dev/xvd$device_letter" ]; do
 	device_letter=`cat /dev/urandom| tr -dc 'f-p'|head -c 1`
 done
-device="/dev/sd$device_letter"
 device_path="/dev/xvd$device_letter"
 
 # Double check that the device name is not taken
 [ -n "`df | grep $device_path`" ] && die "Something is already attached to $device_path."
 
-attachment_status=`ec2-attach-volume "$volume_id" \
-	--instance "$instance_id" --device "$device" | grep 'attached' || true`
+euca-attach-volume --instance "$instance_id" --device "/dev/sd$device_letter" "$volume_id"
 # Wait until the volume is attached
-dotdot "$attachment_status" "ec2dvol $volume_id -F 'attachment.status=attached' || true"
+dotdot "euca-describe-volumes $volume_id | grep 'ATTACHMENT'"

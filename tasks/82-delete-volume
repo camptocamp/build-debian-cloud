@@ -1,4 +1,4 @@
 #!/bin/bash
 # Delete the EBS volume
 log "Deleting the volume"
-ec2-delete-volume $volume_id || true
+euca-delete-volume $volume_id

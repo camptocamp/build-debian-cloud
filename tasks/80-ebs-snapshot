@@ -1,10 +1,9 @@
 #!/bin/bash
 # Create a snapshot of the EBS volume
 logn "Creating snapshot of the EBS volume"
-snapshot=`ec2-create-snapshot $volume_id`
+snapshot=`euca-create-snapshot $volume_id`
 [ -z "$snapshot" ] && die "\nUnable to create snapshot from the volume '$volume_id'"
 snapshot_id=`printf -- "$snapshot" | awk '{print $2}'`
 
-snapshot_status=`printf -- "$snapshot" | grep 'completed' || true`
 # Wait for the snapshot to be completed, can take quite some time
-dotdot "$snapshot_status" "ec2dsnap $snapshot_id -F 'status=completed' || true"
+dotdot "euca-describe-snapshots $snapshot_id | grep 'completed'"

@@ -49,7 +49,7 @@ esac
 # The AMI has to start with "debian", otherwise we won't get a nice icon
 ami_name="$distribution-$codename-$arch-$ami_name_suffix"
 log "Registering the snapshot '$snapshot_id' as an AMI"
-ami_id=`ec2-register \
+ami_id=`euca-register \
 	--name "$ami_name" --description "$description" \
 	--architecture "$ami_arch" --kernel "$aki" \
 	--block-device-mapping '/dev/sda2=ephemeral0' \
@@ -66,7 +66,7 @@ if [ -z "$ami_id" ]; then
 	die \
 		"Unable to register the snapshot as an AMI." \
 		"You can do it manually with:" \
-		"`which ec2-register` \\\\"
+		"`which euca-register` \\\\"
 		"--name '$ami_name' --description '$description' \\\\" \
 		"--architecture '$ami_arch' --kernel '$aki' \\\\" \
 		"--block-device-mapping '/dev/sda2=ephemeral0' \\\\" \

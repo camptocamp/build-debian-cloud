@@ -1,4 +1,2 @@
-ec2-a[mp]i-tools
-ec2-a[mp]i-tools-[0-9.]*
-ec2-a[mp]i-tools.zip
+euca2ools-*
 bootstrap-[a-z0-9]*.tar

@@ -20,10 +20,10 @@ packages+=('dhcpcd')
 exclude_packages+=('isc-dhcp-client')
 exclude_packages+=('isc-dhcp-common')
 
-# These are for the ec2 tools fetching, extraction and running
-host_packages+=('curl')
-host_packages+=('unzip')
-host_packages+=('default-jre-headless')
+# euca2ools dependencies
+host_packages+=('build-essential')
+host_packages+=('python-boto')
+host_packages+=('python-m2crypto')
 
 # We will need to format the volume, so we need xfsprogs
 [ $filesystem = 'xfs' ] && host_packages+=('xfsprogs')
