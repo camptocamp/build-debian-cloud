@@ -52,12 +52,6 @@ log "Registering the snapshot '$snapshot_id' as an AMI"
 ami_id=`euca-register \
 	--name "$ami_name" --description "$description" \
 	--architecture "$ami_arch" --kernel "$aki" \
-	--block-device-mapping '/dev/sda2=ephemeral0' \
-	--block-device-mapping '/dev/sda3=ephemeral1' \
-	--block-device-mapping '/dev/sdb=ephemeral2' \
-	--block-device-mapping '/dev/sdc=ephemeral3' \
-	--block-device-mapping '/dev/sdd=ephemeral4' \
-	--block-device-mapping '/dev/sde=ephemeral5' \
 	--snapshot "$snapshot_id" | awk '{print $2}'`
 
 # If the user has already created an unnamed AMI today,
@@ -69,12 +63,6 @@ if [ -z "$ami_id" ]; then
 		"`which euca-register` \\\\"
 		"--name '$ami_name' --description '$description' \\\\" \
 		"--architecture '$ami_arch' --kernel '$aki' \\\\" \
-		"--block-device-mapping '/dev/sda2=ephemeral0' \\\\" \
-		"--block-device-mapping '/dev/sda3=ephemeral1' \\\\" \
-		"--block-device-mapping '/dev/sdb=ephemeral2' \\\\" \
-		"--block-device-mapping '/dev/sdc=ephemeral3' \\\\" \
-		"--block-device-mapping '/dev/sdd=ephemeral4' \\\\" \
-		"--block-device-mapping '/dev/sde=ephemeral5' \\\\" \
 		"--snapshot '$snapshot_id'"
 fi
 log "Your AMI has been created with the ID $ami_id"

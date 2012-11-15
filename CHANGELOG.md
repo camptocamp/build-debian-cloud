@@ -1,5 +1,8 @@
 ### 2012-11-15 Anders Ingemann <anders@ingemann.de> ###
 
+#### Major changes: ####
+* Don't attach ephemeral volumes, they can be added in the AWS console now
+
 #### Minor changes: ####
 * Remove hardcoded location specific apt mirror and use geo redirector instead
 
