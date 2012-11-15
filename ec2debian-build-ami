@@ -16,13 +16,22 @@ exclude_packages=()
 host_packages=()
 plugins=()
 init_scripts=()
+known_regions=('us-east-1')
+known_regions+=('us-west-1')
+known_regions+=('us-west-2')
+known_regions+=('eu-west-1')
+known_regions+=('ap-southeast-1')
+known_regions+=('ap-southeast-2')
+known_regions+=('ap-northeast-1')
+known_regions+=('sa-east-1')
+known_regions+=('us-gov-west-1')
 
 # General options about the instance
 arch='amd64'
 locale='en_US'
 charmap='UTF-8'
 timezone='UTC'
-apt_mirror=
+apt_mirror='http://http.debian.net/debian'
 
 # Hardcoded params.
 # This script would explode if we had to take care of other distributions

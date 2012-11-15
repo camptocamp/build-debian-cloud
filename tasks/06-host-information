@@ -17,16 +17,13 @@ fi
 # Set the ec2_url to the same region as this machine, anything else wouldn't make sense
 export EC2_URL="https://ec2.$region.amazonaws.com"
 
-# We can speed up the bootstrapping process by choosing a debian mirror nearby
-case $region in
-	us-east-1)      apt_mirror="http://ftp.us.debian.org/debian/" ;;
-	us-west-1)      apt_mirror="http://ftp.us.debian.org/debian/" ;;
-	us-west-2)      apt_mirror="http://ftp.us.debian.org/debian/" ;;
-	eu-west-1)      apt_mirror="http://ftp.ie.debian.org/debian/" ;;
-	ap-southeast-1) apt_mirror="http://mirror.nus.edu.sg/Debian/" ;;
-	ap-southeast-2) apt_mirror="http://ftp.au.debian.org/debian/" ;;
-	ap-northeast-1) apt_mirror="http://ftp.jp.debian.org/debian/" ;;
-	sa-east-1)      apt_mirror="http://ftp.br.debian.org/debian/" ;;
-	us-gov-west-1)  apt_mirror="http://ftp.us.debian.org/debian/" ;;
-	*)              die "Unrecognized region:" "$region"
-esac
+# Check if we can handle this region, there are hardcoded AKIs later on.
+region_is_known=false
+for known_region in ${known_regions[*]}; do
+	if [ "$region" == "$known_region" ]; then
+		region_is_known=true
+	fi
+done
+if ! $region_is_known; then
+	die "The region $region is unkown."
+fi

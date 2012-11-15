@@ -1,3 +1,8 @@
+### 2012-11-15 Anders Ingemann <anders@ingemann.de> ###
+
+#### Minor changes: ####
+* Remove hardcoded location specific apt mirror and use geo redirector instead
+
 ### 2012-11-12 Anders Ingemann <anders@ingemann.de> ###
 
 #### Major changes: ####
