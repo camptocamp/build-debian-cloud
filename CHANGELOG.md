@@ -5,6 +5,7 @@
 
 #### Minor changes: ####
 * Remove hardcoded location specific apt mirror and use geo redirector instead
+* Fail if euca2ools make fails
 
 ### 2012-11-12 Anders Ingemann <anders@ingemann.de> ###
 
