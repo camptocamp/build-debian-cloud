@@ -1,8 +1,8 @@
 #!/bin/bash
 # Basic sources.list
 cat > $imagedir/etc/apt/sources.list <<EOF
-deb http://security.debian.org/       $codename/updates main contrib non-free
-deb-src http://security.debian.org/   $codename/updates main contrib non-free
-deb $apt_mirror     $codename         main contrib non-free
-deb-src $apt_mirror $codename         main contrib non-free
+deb http://security.debian.org/       $codename/updates main
+deb-src http://security.debian.org/   $codename/updates main
+deb $apt_mirror     $codename         main
+deb-src $apt_mirror $codename         main
 EOF
