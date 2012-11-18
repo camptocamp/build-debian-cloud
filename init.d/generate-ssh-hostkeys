@@ -1,6 +1,6 @@
 #!/bin/sh
 ### BEGIN INIT INFO
-# Provides:       generate-hostkeys
+# Provides:       generate-ssh-hostkeys
 # Required-Start: $network
 # Required-Stop:  
 # Should-Start:   
@@ -17,7 +17,7 @@ rsa_key="/etc/ssh/ssh_host_rsa_key"
 dsa_key="/etc/ssh/ssh_host_dsa_key"
 
 # Exit if the hostkeys already exist
-if [ -f $rsa_key -a -f $dsa_key]; then
+if [ -f $rsa_key -a -f $dsa_key ]; then
 	exit
 fi
 

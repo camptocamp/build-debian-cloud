@@ -7,6 +7,7 @@
 #### Bugfixes: ####
 * Autoapply patch to boto  
 (thanks to James for the patch)
+* Fix bug in `generate-ssh-hostkeys`
 
 ### 2012-11-15 Anders Ingemann <anders@ingemann.de> ###
 
