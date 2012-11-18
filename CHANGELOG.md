@@ -1,3 +1,13 @@
+### 2012-11-18 Anders Ingemann <anders@ingemann.de> ###
+
+#### Major changes: ####
+* Remove contrib and non-free from apt/sources.list  
+(thanks to zack for finding this and James for the patch)
+
+#### Bugfixes: ####
+* Autoapply patch to boto  
+(thanks to James for the patch)
+
 ### 2012-11-15 Anders Ingemann <anders@ingemann.de> ###
 
 #### Major changes: ####
