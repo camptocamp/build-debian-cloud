@@ -2,6 +2,7 @@
 
 #### Minor changes: ####
 * `wget` is installed per default on debian, use that instead
+* Alternative `-h` help param for packaging
 
 ### 2012-11-18 Anders Ingemann <anders@ingemann.de> ###
 

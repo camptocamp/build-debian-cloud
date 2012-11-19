@@ -106,7 +106,7 @@ while [ $# -gt 0 ]; do
 		--debootstrap-dir)  debootstrap_dir=$2;            shift 2 ;;
 		--plugin)           plugins+=("$2");               shift 2 ;;
 		--debug)            set -x;                        shift   ;;
-		--help)             printf -- "$help";             exit 0  ;;
+		-h|--help)          printf -- "$help";             exit 0  ;;
 		*)             die "Unrecognized option: $1" \
     "Type '$0 --help' to see a list of possible options"; ;;
 	esac
@@ -129,7 +129,7 @@ true ${EC2_ACCESS_KEY:?} ${EC2_SECRET_KEY:?}
 [[ $arch != 'amd64' && $arch != 'i386' ]] && die "Unrecognized architecture: $arch"
 
 # Export the AWS credentials, so that we can launch ec2-tools without specifying them
-export EC2_ACCESS_KEY EC2_SECRET_KEY 
+export EC2_ACCESS_KEY EC2_SECRET_KEY
 
 # Put all tasks in the tasks folder into an array
 for task in `find $scriptdir/tasks -type f | sort`; do
