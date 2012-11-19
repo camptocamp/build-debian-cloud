@@ -8,7 +8,7 @@ function apply_boto_patch {
 			grep -q "pre = '%sBlockDeviceMapping.%d' % (pre, i)" $boto_ec2_dir/blockdevicemapping.py
 			echo $?)
 		if [ $result -eq 0 ]; then
-			curl -sL $patch_url | patch -sfr - -d $boto_ec2_dir
+			wget -qO $patch_url | patch -sfr - -d $boto_ec2_dir
 		fi
 	fi
 }

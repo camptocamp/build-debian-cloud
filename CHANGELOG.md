@@ -1,3 +1,8 @@
+### 2012-11-19 Anders Ingemann <anders@ingemann.de> ###
+
+#### Minor changes: ####
+* `wget` is installed per default on debian, use that instead
+
 ### 2012-11-18 Anders Ingemann <anders@ingemann.de> ###
 
 #### Major changes: ####

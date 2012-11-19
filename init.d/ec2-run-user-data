@@ -17,14 +17,13 @@
 #
 prog=$(basename $0)
 logger="logger -t $prog"
-curl="curl --retry 3 --silent --show-error --fail"
 instance_data_url="http://169.254.169.254/2008-02-01"
 
 
 # Retrieve the instance user-data and run it if it looks like a script
 user_data_file=$(tempfile --prefix ec2 --suffix .user-data --mode 700)
 $logger "Retrieving user-data"
-$curl -o $user_data_file $instance_data_url/user-data 2>&1 | $logger
+wget -qO $user_data_file $instance_data_url/user-data 2>&1 | $logger
 
 if [ $(file -b --mime-type $user_data_file) = 'application/x-gzip' ]; then
 	$logger "Uncompressing gzip'd user-data"
