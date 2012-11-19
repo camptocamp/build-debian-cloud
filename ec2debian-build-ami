@@ -5,6 +5,12 @@ set -e
 
 # Rember various paths
 scriptdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+if [ ! -d "$scriptdir/tasks" ]; then
+	scriptdir='/usr/share/ec2debian-build-ami'
+	if [ ! -d "$scriptdir/tasks" ]; then
+		die "Unable to locate tasks folder."
+	fi
+fi
 originaldir=$(pwd)
 
 source $scriptdir/utils
