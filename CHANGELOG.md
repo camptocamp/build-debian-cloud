@@ -6,6 +6,7 @@
 
 #### Minor changes: ####
 * List operations have been refactored (tasks, known_regions)
+* Prevent two tasks from having the same basename
 
 ### 2013-01-17 Anders Ingemann <anders@ingemann.de> ###
 

@@ -144,7 +144,11 @@ tasklist=`find \
 	$scriptdir/tasks $scriptdir/tasks/$codename \
 	-maxdepth 1 -type f -name '[0-9][0-9]-*' \
 	-printf '%p\t%f\n' | sort -k 2 | awk '{print $1}'`
+tasks=()
 for task in $tasklist; do
+	if $(contains_basename `basename $task` tasks[@]); then
+		die "The task $task has a naming conflict with an existing task." "Please rename the file."
+	fi
 	tasks+=($task)
 done
 
