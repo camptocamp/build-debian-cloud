@@ -47,7 +47,6 @@ your itch, you can of course [write your own plugin](https://github.com/andsens/
 * AMI is automatically registered with the right kernels for the current region of the host machine
 * Can create both 32-bit and 64-bit AMIs
 * Plugin system to keep the bootstrapping process automated
-* Custom packages
 * The process is divided into simple task based scripts
 * Bootstrapping server mirror depends on AWS region
 * APT source mirror depends on AWS region
