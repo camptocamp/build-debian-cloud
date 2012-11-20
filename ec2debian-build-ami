@@ -173,6 +173,6 @@ for task in ${tasks[*]}; do
 	[ -e $task ] || die "The task $task does not exist."
 	log "Run task: `basename $task`"
 	taskdir=`dirname $task`
-	source $task
+	source $task || true
 done
 unset taskdir
