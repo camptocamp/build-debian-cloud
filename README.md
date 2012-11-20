@@ -47,7 +47,7 @@ your itch, you can of course [write your own plugin](https://github.com/andsens/
   * `expand-volume`: Expands the root partition to the volume size
   * `change-root-uuid`: Regenerates the UUID of the root volume on first boot
 
-**The bootup time was measured with [this script](https://gist.github.com/3813743)*
+*\*The bootup time was measured with [this script](https://gist.github.com/3813743)*
 
 ### Bootstrapper features ###
 
