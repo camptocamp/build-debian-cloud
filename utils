@@ -81,58 +81,71 @@ function spin {
 }
 
 function insert_task_before {
-	local new_task_list=()
-	local added=false
 	if [ ! -e $2 ]; then
 		die "Unable to add task `basename $2` to the tasklist." "$2 does not exist."
 	fi
+	if ! $(contains_basename $1 tasks[@]); then
+		die "Unable to add `basename $2` to the tasklist." "Task $1 does not exist."
+	fi
+	local i=0
 	for task in ${tasks[*]}; do
 		if [ `basename $task` == "$1" ]; then
 			log "Adding task `basename $2` before task `basename $task`"
-			new_task_list+=($2)
-			added=true
+			tasks[$i]=$2
+			i=$[i+1]
 		fi
-		new_task_list+=($task)
+		tasks[$i]=$task
+		i=$[i+1]
 	done
-	if ! $added; then
-		die "Unable to add `basename $2` to the tasklist." "Task $1 does not exist."
-	fi
-	tasks=("${new_task_list[@]}")
 }
 
 function insert_task_after {
-	local new_task_list=()
-	local added=false
 	if [ ! -e $2 ]; then
 		die "Unable to add task `basename $2` to the tasklist." "$2 does not exist."
 	fi
-	for task in ${tasks[*]}; do
-		new_task_list+=($task)
-		if [ `basename $task` == "$1" ]; then
-			log "Adding task `basename $2` after task `basename $task`"
-			new_task_list+=($2)
-			added=true
-		fi
-	done
-	if ! $added; then
+	if ! $(contains_basename $1 tasks[@]); then
 		die "Unable to add `basename $2` to the tasklist." "Task $1 does not exist."
 	fi
-	tasks=("${new_task_list[@]}")
+	local i=0
+	for task in ${tasks[*]}; do
+		tasks[$i]=$task
+		i=$[i+1]
+		if [ `basename $task` == "$1" ]; then
+			log "Adding task `basename $2` after task `basename $task`"
+			tasks[$i]=$2
+			i=$[i+1]
+		fi
+	done
 }
 
 function remove_task {
-	local new_task_list=()
-	local removed=false
-	for task in ${tasks[*]}; do
-		if [ `basename $task` != "$1" ]; then
-			new_task_list+=($task)
-		else
-			removed=true
-			log "Removing task $1"
-		fi
-	done
-	if ! $removed; then
+	if ! $(contains_basename $1 tasks[@]); then
 		die "Unable to remove $1 from the tasklist." "The task does not exist."
 	fi
-	tasks=("${new_task_list[@]}")
+	local i=0
+	for task in ${tasks[*]}; do
+		if [ `basename $task` == "$1" ]; then
+			log "Removing task $1"
+		else
+			tasks[$i]=$task
+			i=$[i+1]
+		fi
+	done
+	unset tasks[${#tasks[@]}-1]
+}
+
+function contains {
+	declare -a haystack=("${!2}")
+	for needle in ${haystack[*]}; do
+		[ "$needle" == "$1" ] && exit 0
+	done
+	exit 1
+}
+
+function contains_basename {
+	declare -a haystack=("${!2}")
+	for needle in ${haystack[*]}; do
+		[ "`basename $needle`" == "$1" ] && exit 0
+	done
+	exit 1
 }
