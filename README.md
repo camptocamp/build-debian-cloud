@@ -8,6 +8,14 @@ thoroughly tested.
 *This script is only tested on debian squeeze.*
 *You will need an EC2 server to run this bootstrapper.*
 
+## Official AMIs provided by the Debian community and Amazon ##
+The Debian community and Amazon have together created AMIs using this bootstrapper
+and replicated them across aws regions. The images have been tested for security and bugs.
+They are available on the [aws marketplace](https://aws.amazon.com/marketplace/pp/ref=csl_clsc_prd?sku=8fvdn95s5ev33cprr62nq3q7t).
+
+More information about these images and a link to the gzipped volume images can be found on the
+[Debian wiki page](http://wiki.debian.org/Cloud/AmazonEC2Image/Squeeze) dedicated to those images.
+
 ## Usage ##
 
 The script is started with ``./ec2debian-build-ami`` it has sensible defaults
