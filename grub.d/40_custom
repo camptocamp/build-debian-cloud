@@ -15,10 +15,15 @@ export TEXTDOMAINDIR=${prefix}/share/locale
 
 GRUB_DEVICE=/dev/xvda1
 
+
 cat << EOF
-default 0
-timeout 1
+default ${GRUB_DEFAULT}
+timeout ${GRUB_TIMEOUT}
 EOF
+
+if ! ${GRUB_HIDDEN_TIMEOUT:-false}; then
+	printf "hiddenmenu\n"
+fi
 
 linux_entry ()
 {

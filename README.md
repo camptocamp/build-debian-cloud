@@ -32,6 +32,7 @@ your itch, you can of course [write your own plugin](https://github.com/andsens/
 * Support for both ext* and xfs
 * Uses standard debian Xen kernel from apt
 * update-grub creates an actual menu.lst which pvGrub can read
+* ec2 system log is not cluttered by grub menu
 * ec2 startup scripts:
   * `ec2-get-credentials`: Copies the ec2 keypair to `~/.ssh/authorized_keys`
   * `ec2-run-user-data`: If the userdata starts with `#!` it will be executed
