@@ -1,15 +1,6 @@
 #!/bin/bash
 # Basic networking
 
-# Standard configuration for eth0
-cat >> $imagedir/etc/network/interfaces <<EOF
-auto lo
-iface lo inet loopback
-
-auto eth0
-iface eth0 inet dhcp
-EOF
-
 # Delete the hostname file, we get it from the ec2 dhcp server
 rm -f $imagedir/etc/hostname
 

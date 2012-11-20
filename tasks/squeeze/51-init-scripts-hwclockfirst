@@ -1,0 +1,3 @@
+#!/bin/bash
+# squeeze has the hwclockfirst.sh script, which wheezy does not have
+chroot $imagedir insserv -r hwclockfirst.sh

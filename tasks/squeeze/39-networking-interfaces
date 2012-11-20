@@ -1,0 +1,9 @@
+#!/bin/bash
+# The interfaces file in squeeze is empty (save for some comments)
+cat >> $imagedir/etc/network/interfaces <<EOF
+auto lo
+iface lo inet loopback
+
+auto eth0
+iface eth0 inet dhcp
+EOF

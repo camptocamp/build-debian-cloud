@@ -9,4 +9,3 @@ done
 
 # Inside Xen, CMOS clock is irrelevant, so save seconds at boot
 chroot $imagedir insserv -r hwclock.sh
-chroot $imagedir insserv -r hwclockfirst.sh

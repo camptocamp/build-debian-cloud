@@ -12,9 +12,6 @@ packages+=('file')
 # Apparently isc-dhcp-client doesn't work properly with ec2
 packages+=('dhcpcd')
 
-[ $arch = 'i386' ] && packages+=('linux-image-xen-686')
-[ $arch = 'amd64' ] && packages+=('linux-image-xen-amd64')
-
 # We use dhcpcd instead
 exclude_packages+=('isc-dhcp-client')
 exclude_packages+=('isc-dhcp-common')
