@@ -1,19 +1,18 @@
-# debian "squeeze" bootstrapping script for EC2 #
+# Debian bootstrapping script for Amazon machine images #
 
-This is a fork of camptocamps bootstrapping script for EC2 AMIs. It creates a
-vanilla debian squeeze machine image, no latent logfiles no .bash\_history or
-even apt package cache.  The machine configuration this script creates has been
-thoroughly tested.
+This script bootstraps a vanilla Debian installation to create an Amazon machine image.
+The image contains no latent logfiles no .bash\_history or even the apt package cache.  
+The machine configuration this script creates has been thoroughly tested.
 
-*This script is only tested on debian squeeze.*
-*You will need an EC2 server to run this bootstrapper.*
+*This script is only tested on Debian squeeze.*
+*You will need an Amazon EC2 instance to run this bootstrapper.*
 
 ## Official AMIs provided by the Debian community and Amazon ##
 The Debian community and Amazon have together created AMIs using this bootstrapper
-and replicated them across aws regions. The images have been tested for security and bugs.
+and replicated them across AWS regions. The images have been tested for security and bugs.
 They are available on the [aws marketplace](https://aws.amazon.com/marketplace/pp/ref=csl_clsc_prd?sku=8fvdn95s5ev33cprr62nq3q7t).
 
-More information about these images and a link to the gzipped volume images can be found on the
+More information about these images and links to the gzipped volume images can be found on the
 [Debian wiki page](http://wiki.debian.org/Cloud/AmazonEC2Image/Squeeze) dedicated to those images.
 
 ## Usage ##
@@ -38,7 +37,7 @@ your itch, you can of course [write your own plugin](https://github.com/andsens/
 * Base installation uses only 289MB
 * Base installation bootup time ~45s* (from AMI launch to SSH connectivity)
 * Support for both ext* and xfs
-* Uses standard debian Xen kernel from apt
+* Uses standard Debian Xen kernel from apt
 * update-grub creates an actual menu.lst which pvGrub can read
 * ec2 system log is not cluttered by grub menu
 * ec2 startup scripts:
