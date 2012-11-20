@@ -1,5 +1,8 @@
 ### 2012-11-19 Anders Ingemann <anders@ingemann.de> ###
 
+#### Major changes: ####
+* ext4 is now the default filesystem
+
 #### Minor changes: ####
 * `wget` is installed per default on debian, use that instead
 * Alternative `-h` help param for packaging

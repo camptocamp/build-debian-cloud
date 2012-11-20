@@ -29,7 +29,7 @@ your itch, you can of course [write your own plugin](https://github.com/andsens/
 * EBS booted
 * Base installation uses only 289MB
 * Base installation bootup time ~45s* (from AMI launch to SSH connectivity)
-* xfs filesystem
+* Support for both ext* and xfs
 * Uses standard debian Xen kernel from apt
 * update-grub creates an actual menu.lst which pvGrub can read
 * ec2 startup scripts:

@@ -53,7 +53,7 @@ availability_zone=
 
 # Volume and AMI info
 # Filesystem, hardcoded for now, maybe we'll add a parameter later on
-filesystem='xfs'
+filesystem='ext4'
 mountoptions=
 volume_size='1'
 device_path=
