@@ -1,6 +1,7 @@
 ### 2013-01-21 Anders Ingemann <anders@ingemann.de> ###
 
 #### Major changes: ####
+* Added support for wheezy
 * Implemented support for additional tasks based on the debian version codename
 
 ### 2013-01-17 Anders Ingemann <anders@ingemann.de> ###

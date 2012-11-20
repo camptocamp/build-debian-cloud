@@ -4,7 +4,7 @@ This script bootstraps a vanilla Debian installation to create an Amazon machine
 The image contains no latent logfiles no .bash\_history or even the apt package cache.  
 The machine configuration this script creates has been thoroughly tested.
 
-*This script is only tested on Debian squeeze.*
+*This script has been tested on Debian squeeze and wheezy.*
 *You will need an Amazon EC2 instance to run this bootstrapper.*
 
 ## Official AMIs provided by the Debian community and Amazon ##
@@ -57,6 +57,7 @@ your itch, you can of course [write your own plugin](https://github.com/andsens/
 
 * EBS volume is automatically created, mounted, formatted, unmounted, "snapshotted" and deleted
 * AMI is automatically registered with the right kernels for the current region of the host machine
+* Supports Debian squeeze and wheezy
 * Can create both 32-bit and 64-bit AMIs
 * Plugin system to keep the bootstrapping process automated
 * The process is divided into simple task based scripts

@@ -71,6 +71,7 @@ Options (defaults in ${txtbld}bold${txtdef}):
 
 ${txtund}Bootstrapping${txtdef}
     --arch ARCH [i386|amd64]      Processor architecture of the image (${txtbld}${arch}${txtdef})
+    --codename C [squeeze|wheezy] Debian version codename to bootstrap (${txtbld}${codename}${txtdef})
     --filesystem FS [ext2..4|xfs] Filesystem of the root volume (${txtbld}${filesystem}${txtdef})
     --volume-size SIZE            Default size of the root volume in GB (${txtbld}${volume_size}${txtdef})
     --plugin FILE                 Path to plugin script.
@@ -100,6 +101,7 @@ ${txtund}Other options${txtdef}
 while [ $# -gt 0 ]; do
 	case $1 in
 		--arch)             arch=$2;                       shift 2 ;;
+		--codename)         codename=$2;                   shift 2 ;;
 		--filesystem)       filesystem=$2;                 shift 2 ;;
 		--volume-size)      volume_size=$2;                shift 2 ;;
 		--name)             ami_name_suffix=$2;            shift 2 ;;
