@@ -10,6 +10,7 @@
 
 #### Bugfixes: ####
 * Fixed an issue where the bootstrapper would halt if a task ended in an if statement that failed
+* The mountpoint was announced twice
 
 ### 2012-11-18 Anders Ingemann <anders@ingemann.de> ###
 
