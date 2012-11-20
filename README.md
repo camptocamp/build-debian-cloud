@@ -30,9 +30,14 @@ your itch, you can of course [write your own plugin](https://github.com/andsens/
 * Base installation uses only 289MB
 * Base installation bootup time ~45s* (from AMI launch to SSH connectivity)
 * xfs filesystem
-* Standard ec2 startup scripts
 * Uses standard debian Xen kernel from apt
 * update-grub creates an actual menu.lst which pvGrub can read
+* ec2 startup scripts:
+  * `ec2-get-credentials`: Copies the ec2 keypair to `~/.ssh/authorized_keys`
+  * `ec2-run-user-data`: If the userdata starts with `#!` it will be executed
+  * `generate-ssh-hostkeys`: Generates hostkeys for sshd on first boot
+  * `expand-volume`: Expands the root partition to the volume size
+  * `change-root-uuid`: Regenerates the UUID of the root volume on first boot
 
 **The bootup time was measured with [this script](https://gist.github.com/3813743)*
 
