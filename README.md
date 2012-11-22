@@ -8,9 +8,13 @@ The machine configuration this script creates has been thoroughly tested.
 *You will need an Amazon EC2 instance to run this bootstrapper.*
 
 ## Official AMIs provided by the Debian community and Amazon ##
+
 The Debian community and Amazon have together created AMIs using this bootstrapper
 and replicated them across AWS regions. The images have been tested for security and bugs.
 They are available on the [aws marketplace](https://aws.amazon.com/marketplace/pp/ref=csl_clsc_prd?sku=8fvdn95s5ev33cprr62nq3q7t).
+
+For each new official AMI a commit in this repository will be [tagged](https://github.com/andsens/ec2debian-build-ami/tags),
+marking the version the AMI was bootstrapped with.
 
 More information about these images and links to the gzipped volume images can be found on the
 [Debian wiki page](http://wiki.debian.org/Cloud/AmazonEC2Image/Squeeze) dedicated to those images.
