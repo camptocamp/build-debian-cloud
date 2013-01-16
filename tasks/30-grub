@@ -9,7 +9,6 @@ chmod 755 "$imagedir/etc/grub.d/$script"
 
 sed -i "s/^GRUB_TIMEOUT=1/GRUB_TIMEOUT=0\nGRUB_HIDDEN_TIMEOUT=true/" $imagedir/etc/default/grub
 
-GRUB_HIDDEN_TIMEOUT
 # Update grub.cfg using the script
 chroot $imagedir update-grub
 
