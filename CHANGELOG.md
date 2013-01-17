@@ -1,3 +1,8 @@
+### 2013-01-17 Anders Ingemann <anders@ingemann.de> ###
+
+#### Minor changes: ####
+* Check `$PIPESTATUS` to make sure the boto patch was successful
+
 ### 2012-11-19 Anders Ingemann <anders@ingemann.de> ###
 
 #### Major changes: ####
