@@ -65,4 +65,4 @@ if [ -z "$ami_id" ]; then
 		"--architecture '$ami_arch' --kernel '$aki' \\\\" \
 		"--snapshot '$snapshot_id'"
 fi
-log "Your AMI has been created with the ID $ami_id"
+log "Your AMI has been created with the ID '$ami_id'"
