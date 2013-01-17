@@ -1,5 +1,8 @@
 ### 2013-01-17 Anders Ingemann <anders@ingemann.de> ###
 
+#### Major changes: ####
+* Fixed a bug that prevented boto from being patched that was introduced when switching to wget in 0d96ebc83e
+
 #### Minor changes: ####
 * Check `$PIPESTATUS` to make sure the boto patch was successful
 
