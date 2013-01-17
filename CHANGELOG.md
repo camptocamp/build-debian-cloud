@@ -5,6 +5,8 @@
 
 #### Minor changes: ####
 * Check `$PIPESTATUS` to make sure the boto patch was successful
+* Use sudoers.d in `admin-user` plugin (by @tmatilai)
+* Install `grub-pc` instead of the `grub` dummypackage (by @tmatilai)
 
 ### 2012-11-19 Anders Ingemann <anders@ingemann.de> ###
 
