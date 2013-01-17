@@ -56,7 +56,7 @@ ami_id=`euca-register \
 
 # If the user has already created an unnamed AMI today,
 # this will fail, so give the AMI registration command to the user
-if [ -z "$ami_id" ]; then
+if [[ ! "$ami_id" =~ ^ami-[0-9a-z]{8}$ ]]; then
 	die \
 		"Unable to register the snapshot as an AMI." \
 		"You can do it manually with:" \
