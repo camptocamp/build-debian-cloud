@@ -13,6 +13,8 @@ You can run them via the `--plugin` option when bootstrapping:
   Creates a user named 'admin', gives it sudo rights and disables the root login.
 * `publish-ami`  
   Grants launch permission of the new AMI to everybody.
+* `publish-snapshot`  
+  Grants everybody permission to create a volume from the snapshot for the AMI.
 * `remount`  
   Remounts the bootstrapped volume.
   With this plugin you can inspect the results of the bootstrapping process without launching an instance.
