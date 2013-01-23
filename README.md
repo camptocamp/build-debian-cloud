@@ -62,4 +62,5 @@ your itch, you can of course [write your own plugin](https://github.com/andsens/
 * Plugin system to keep the bootstrapping process automated
 * The process is divided into simple task based scripts
 * Uses only free software in accordance with the [Debian Social Contract](http://www.debian.org/social_contract).  
-  (In particular: The [EC2 API Tools](http://aws.amazon.com/developertools/351) have been replace with [euca2ools](http://www.eucalyptus.com/download/euca2ools))
+  (In particular: The [EC2 API Tools](http://aws.amazon.com/developertools/351)
+  have been replaced with [euca2ools](http://www.eucalyptus.com/download/euca2ools))
