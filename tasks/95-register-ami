@@ -48,7 +48,7 @@ esac
 
 # The AMI has to start with "debian", otherwise we won't get a nice icon
 ami_name="$distribution-$codename-$arch-$ami_name_suffix"
-log "Registering the snapshot '$snapshot_id' as an AMI"
+log "Registering an AMI with the snapshot '$snapshot_id'"
 ami_id=`euca-register \
 	--name "$ami_name" --description "$description" \
 	--architecture "$ami_arch" --kernel "$aki" \
@@ -58,7 +58,7 @@ ami_id=`euca-register \
 # this will fail, so give the AMI registration command to the user
 if [[ ! "$ami_id" =~ ^ami-[0-9a-z]{8}$ ]]; then
 	die \
-		"Unable to register the snapshot as an AMI." \
+		"Unable to register an AMI." \
 		"You can do it manually with:" \
 		"`which euca-register` \\\\" \
 		"--name '$ami_name' --description '$description' \\\\" \
