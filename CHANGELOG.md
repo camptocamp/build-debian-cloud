@@ -2,6 +2,7 @@
 
 #### Major changes: ####
 * The root volume is once again set to be deleted upon termination of the instance (bug introduced in 5f04e809d7, see issue #42)
+* New plugin to publish an AMI
 
 ### 2013-01-21 Anders Ingemann <anders@ingemann.de> ###
 

@@ -1,0 +1,3 @@
+#!/bin/bash
+insert_task_after $TASK_CREATE_AMI \
+	$plugindir/publish-ami-tasks/grant-launch-permission
