@@ -1,17 +1,17 @@
 ## Plugins ##
 In this folder you will find plugins made for the bootstrapper.  
-You can run them via the ``--plugin`` option when bootstrapping:  
+You can run them via the `--plugin` option when bootstrapping:  
 ```
 ./ec2debian-build-ami --plugin plugins/ec2-run-user-data
 ```
 
-* ``standard-packages``  
+* `standard-packages`  
   Adds some common packages to the AMI.
-* ``unattended-upgrades``  
+* `unattended-upgrades`  
   Enables unattended upgrades with aptitude. Your EC2 server will upgrade itself daily.
-* ``admin-user``  
+* `admin-user`  
   Creates a user named 'admin', gives it sudo rights and disables the root login.
-* ``remount``  
+* `remount`  
   Remounts the bootstrapped volume.
   With this plugin you can inspect the results of the bootstrapping process without launching an instance.
 
