@@ -47,14 +47,15 @@ esac
 [ $arch = 'amd64' ] && ami_arch='x86_64'
 
 # The AMI has to start with "debian", otherwise we won't get a nice icon
-# The ":1:true:standard" is necessary so that the root volume
+# The ":N:true:standard" is necessary so that the root volume
 # will be deleted on termination of the instance (specifically the "true" part)
 ami_name="$distribution-$codename-$arch-$ami_name_suffix"
 log "Registering an AMI with the snapshot '$snapshot_id'"
 ami_id=`euca-register \
 	--name "$ami_name" --description "$description" \
 	--architecture "$ami_arch" --kernel "$aki" \
-	--snapshot "$snapshot_id:1:true:standard" | awk '{print $2}'`
+	--snapshot "$snapshot_id:$volume_size:true:standard" \
+	| awk '{print $2}'`
 
 # If the user has already created an unnamed AMI today,
 # this will fail, so give the AMI registration command to the user
@@ -65,6 +66,6 @@ if [[ ! "$ami_id" =~ ^ami-[0-9a-z]{8}$ ]]; then
 		"`which euca-register` \\\\" \
 		"--name '$ami_name' --description '$description' \\\\" \
 		"--architecture '$ami_arch' --kernel '$aki' \\\\" \
-		"--snapshot '$snapshot_id:1:true:standard'"
+		"--snapshot '$snapshot_id:$volume_size:true:standard'"
 fi
 log "Your AMI has been created with the ID '$ami_id'"
