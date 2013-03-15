@@ -28,5 +28,8 @@ The following is a list of external plugins you can use with ec2debian-build-ami
 * [ec2-minecraft](https://github.com/andsens/ec2-minecraft)  
   Installs [Minecraft Server Manager](http://marcuswhybrow.net/minecraft-server-manager/) by Marcus Whybrow.
 
+* [ec2debian-chef](https://github.com/tmatilai/ec2debian-chef)  
+  Installs [Opscode Chef](http://www.opscode.com/chef/) client using the Omnibus installer.
+
 That's it for now. If you have made a plugin for ec2debian-build-ami and would like to share it,
 send me a pull request or drop me an email.
