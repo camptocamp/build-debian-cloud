@@ -69,3 +69,12 @@ if [[ ! "$ami_id" =~ ^ami-[0-9a-z]{8}$ ]]; then
 		"--snapshot '$snapshot_id:$volume_size:true:standard'"
 fi
 log "Your AMI has been created with the ID '$ami_id'"
+
+if [ "$buildmetadata" != "" ]; then
+	cat <<EOF > $buildmetadata
+AMI_ID=$ami_id
+AMI_NAME=$ami_name
+SNAPSHOT_ID=$snapshot_id
+EOF
+	log "AMI metadata recorded at $buildmetadata"
+fi
