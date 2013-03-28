@@ -87,7 +87,7 @@ ${txtund}Bootstrapping${txtdef}
 
     --name SUFFIX                 AMI name suffix (${txtbld}${ami_name_suffix}${txtdef})
     --description DESC            Description of the AMI
-    --buildmetadata               Metadata about the successful build e.g. AMI-ID, Snapshot ID and AMI-Name
+    --buildmetadata FILENAME      Metadata about the successful build e.g. AMI-ID, Snapshot ID and AMI-Name
 
 ${txtund}AWS${txtdef}
     --access-key ID               AWS Access Key (${txtbld}\$EC2_ACCESS_KEY${txtdef})
