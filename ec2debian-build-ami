@@ -115,7 +115,7 @@ while [ $# -gt 0 ]; do
 		--debootstrap-dir)  debootstrap_dir=$2;            shift 2 ;;
 		--plugin)           plugins+=("$2");               shift 2 ;;
 		--debug)            set -x;                        shift   ;;
-		--buildmetadata)    buildmetadata=$2;		   shift 2 ;;
+		--buildmetadata)    buildmetadata=$2;              shift 2 ;;
 		-h|--help)          printf -- "$help";             exit 0  ;;
 		*)             die "Unrecognized option: $1" \
     "Type '$0 --help' to see a list of possible options"; ;;
