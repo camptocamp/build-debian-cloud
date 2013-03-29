@@ -1,0 +1,6 @@
+#!/bin/bash
+if [ "$BUILD_METADATA" == "" ]; then
+	die "build-metadata plugin needs a \$BUILD_METADATA value to be set"
+fi
+insert_task_after $TASK_CREATE_AMI \
+	$plugindir/build-metadata-tasks/create-build-metadata
