@@ -120,7 +120,7 @@ while [ $# -gt 0 ]; do
 	esac
 done
 
-# Check if the chosen fs is on we can handle.
+# Check if the chosen fs is one we can handle.
 case $filesystem in
 	xfs)  ;;
 	ext2) ;;
