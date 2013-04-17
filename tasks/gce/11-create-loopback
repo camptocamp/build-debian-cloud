@@ -1,0 +1,10 @@
+#!/bin/bash
+# Set up loopback device
+
+device_path="$(losetup -f)"
+
+if ! losetup -o "$((1024*1024))" "${device_path}" $workspace/disk.raw; then
+  die "Unable to create volume."
+fi
+
+log "Loopback device for GCE volume is ${device_path}."

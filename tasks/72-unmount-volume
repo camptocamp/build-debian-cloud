@@ -1,5 +1,5 @@
 #!/bin/bash
-# Unmount the EBS volume
+# Unmount the volume
 umount $imagedir
 
 # Delete the imagedir, it was unique to the volume

@@ -1,0 +1,20 @@
+#!/bin/bash
+
+if [ -z "${gcs_dest}" ]; then
+  log "No GCS destination URL defined. Not uploading the image."
+  exit 0
+fi
+
+log "Uploading image to \"${gcs_dest}/${image_name}\""
+gsutil cp "${originaldir}/${image_name}" "${gcs_dest}/${image_name}"
+
+if [ -z "${gce_project}" ]; then
+  log "No GCE destination project defined. Not adding the image."
+  exit 0
+fi
+
+# GCE image name is the tarball name minus the suffix
+short_image_name="${image_name%.tar.gz}"
+
+log "Adding image \"${short_image_name}\" to GCE project \"${gce_project}\""
+gcutil --project="${gce_project}" addimage "${short_image_name}" "${gcs_dest}/${image_name}"

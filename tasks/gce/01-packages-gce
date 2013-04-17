@@ -1,0 +1,4 @@
+#!/bin/bash
+packages+=('python')
+packages+=('sudo')
+packages+=('ntp')

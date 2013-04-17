@@ -1,27 +1,13 @@
 #!/bin/bash
 
-# Stop execution if any command fails
-set -e
+# AMI details
+ami_id=
+name_suffix=$(date +%Y%m%d)
+description=
+snapshot_id=
+volume_id=
 
-# Rember various paths
-scriptdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-if [ ! -d "$scriptdir/tasks" ]; then
-	scriptdir='/usr/share/ec2debian-build-ami'
-	if [ ! -d "$scriptdir/tasks" ]; then
-		die "Unable to locate tasks folder."
-	fi
-fi
-originaldir=$(pwd)
-
-source $scriptdir/utils
-
-# Tasks, packages, plugins, boot scripts
-tasks=()
-packages=()
-exclude_packages=()
-host_packages=()
-plugins=()
-init_scripts=()
+# EC2 known regions
 known_regions=('us-east-1')
 known_regions+=('us-west-1')
 known_regions+=('us-west-2')
@@ -32,40 +18,17 @@ known_regions+=('ap-northeast-1')
 known_regions+=('sa-east-1')
 known_regions+=('us-gov-west-1')
 
-# General options about the instance
-arch='amd64'
-locale='en_US'
-charmap='UTF-8'
-timezone='UTC'
-apt_mirror='http://http.debian.net/debian'
-
-# Hardcoded params.
-# This script would explode if we had to take care of other distributions
-distribution='debian'
-codename='squeeze'
-ami_name_suffix=$(date +%Y%m%d)
-description=
-
 # EC2 host info
 instance_id=
 region=
 availability_zone=
 
-# Volume and AMI info
-# Filesystem, hardcoded for now, maybe we'll add a parameter later on
-filesystem='ext4'
-mountoptions=
-volume_size='1'
-device_path=
+# Build-time info
 debootstrap_dir='/target'
-imagedir=
-volume_id=
-snapshot_id=
-ami_id=
 
-# List of options
-help="ec2debian-build-ami
-This script creates a Debian Squeeze Amazon Machine Image.
+# List of options for ec2 subcommand
+help="build-debian-cloud ec2
+This subcommand creates a Debian Squeeze Amazon Machine Image.
 
 Options (defaults in ${txtbld}bold${txtdef}):
 
@@ -85,7 +48,7 @@ ${txtund}Bootstrapping${txtdef}
                                   The created volume will be mounted
                                   at \$debootstrap_dir/\$volume_id.
 
-    --name SUFFIX                 AMI name suffix (${txtbld}${ami_name_suffix}${txtdef})
+    --name SUFFIX                 AMI name suffix (${txtbld}${name_suffix}${txtdef})
     --description DESC            Description of the AMI
 
 ${txtund}AWS${txtdef}
@@ -104,7 +67,7 @@ while [ $# -gt 0 ]; do
 		--codename)         codename=$2;                   shift 2 ;;
 		--filesystem)       filesystem=$2;                 shift 2 ;;
 		--volume-size)      volume_size=$2;                shift 2 ;;
-		--name)             ami_name_suffix=$2;            shift 2 ;;
+		--name)             name_suffix=$2;                shift 2 ;;
 		--description)      description=$2;                shift 2 ;;
 		--access-key)       EC2_ACCESS_KEY=$2;             shift 2 ;;
 		--secret-key)       EC2_SECRET_KEY=$2;             shift 2 ;;
@@ -120,69 +83,17 @@ while [ $# -gt 0 ]; do
 	esac
 done
 
-# Check if the chosen fs is one we can handle.
-case $filesystem in
-	xfs)  ;;
-	ext2) ;;
-	ext3) ;;
-	ext4) ;;
-	*)    die "The filesystem $filesystem was not recognized." \
-	          "Valid filesystems are ext[2-4] and xfs"      ;;
-esac
 
 # Required and default parameters
 true ${EC2_ACCESS_KEY:?} ${EC2_SECRET_KEY:?}
 
-# Check the architecture
-[[ $arch != 'amd64' && $arch != 'i386' ]] && die "Unrecognized architecture: $arch"
-
 # Export the AWS credentials, so that we can launch ec2-tools without specifying them
 export EC2_ACCESS_KEY EC2_SECRET_KEY
 
-# Put all tasks in the tasks folder into an array
-tasklist=`find \
-	$scriptdir/tasks $scriptdir/tasks/$codename \
-	-maxdepth 1 -type f -name '[0-9][0-9]-*' \
-	-printf '%p\t%f\n' | sort -k 2 | awk '{print $1}'`
-tasks=()
-for task in $tasklist; do
-	if $(contains_basename `basename $task` tasks[@]); then
-		die "The task $task has a naming conflict with an existing task." "Please rename the file."
-	fi
-	tasks+=($task)
-done
-
-# Specify specific points in the bootstrapping process, which the plugins can latch onto.
+# Specify points in the bootstrapping process, which the plugins can latch onto.
 # This way plugins don't need fixing if we rename files.
-TASK_PACKAGES="01-packages"
 TASK_CREATE_VOLUME="10-create-volume"
 TASK_MOUNT_VOLUME="13-mount-volume"
-TASK_BOOTSTRAP="14-bootstrap"
-TASK_MOUNT_SPECIALS="15-mount-specials"
-TASK_APT_SOURCES="21-apt-sources"
-TASK_APT_UPGRADE="22-apt-upgrade"
-TASK_INITSCRIPTS="51-init-scripts"
-TASK_UNMOUNT_SPECIALS="71-unmount-specials"
-TASK_UNMOUNT_VOLUME="72-unmount-volume"
 TASK_SNAPSHOT="80-ebs-snapshot"
 TASK_DELETE_VOLUME="82-delete-volume"
 TASK_CREATE_AMI="95-register-ami"
-
-# Invoke plugins so that they may reorder and add tasks
-for plugin in "${plugins[@]}"; do
-	[ -e $plugin ] || die "The plugin file $plugin does not exist."
-	# Get the directory of the current plugin.
-	# This way the plugins don't have to figure it out for themselves.
-	plugindir=`dirname $plugin`
-	source $plugin
-done
-unset plugindir
-
-# Source all tasks in the right order
-for task in ${tasks[*]}; do
-	[ -e $task ] || die "The task $task does not exist."
-	log "Run task: `basename $task`"
-	taskdir=`dirname $task`
-	source $task || true
-done
-unset taskdir

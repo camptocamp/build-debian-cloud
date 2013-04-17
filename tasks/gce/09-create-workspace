@@ -1,0 +1,5 @@
+#!/bin/bash
+# Prepare safe workspace for GCE files
+
+workspace="$(mktemp -d -t build-debian-cloud.XXXXXXXXXX)"
+tarballdir=$workspace

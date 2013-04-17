@@ -1,0 +1,5 @@
+#!/bin/bash
+# Remove temporary workspace
+
+log "Deleting temporary workspace"
+rm -r $workspace

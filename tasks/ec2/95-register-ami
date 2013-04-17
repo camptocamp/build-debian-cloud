@@ -49,7 +49,7 @@ esac
 # The AMI has to start with "debian", otherwise we won't get a nice icon
 # The ":N:true:standard" is necessary so that the root volume
 # will be deleted on termination of the instance (specifically the "true" part)
-ami_name="$distribution-$codename-$arch-$ami_name_suffix"
+ami_name="$distribution-$codename-$arch-$name_suffix"
 log "Registering an AMI with the snapshot '$snapshot_id'"
 ami_id=`euca-register \
 	--name "$ami_name" --description "$description" \

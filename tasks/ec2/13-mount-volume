@@ -13,4 +13,4 @@ mkdir -p $imagedir
 [ -n "`mount | grep "$imagedir"`" ] && die "Something is already mounted on $imagedir"
 
 mount $device_path $imagedir
-log "The EBS volume is mounted at ${imagedir}."
+log "The volume is mounted at ${imagedir}."
