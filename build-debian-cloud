@@ -38,11 +38,9 @@ apt_mirror='http://http.debian.net/debian'
 distribution='debian'
 codename='squeeze'
 
-# Volume and image info
-# Filesystem, hardcoded for now, maybe we'll add a parameter later on
+# Filesystem and image info
 filesystem='ext4'
 mountoptions=
-volume_size='1'
 device_path=
 imagedir=
 

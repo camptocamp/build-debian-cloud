@@ -6,6 +6,7 @@ gce_project=
 
 # Image details
 image_name_suffix=$(date +%Y%m%d)
+volume_size='10'
 
 # List of options for gce subcommand
 help="build-debian-cloud gce

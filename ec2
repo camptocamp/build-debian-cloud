@@ -6,6 +6,7 @@ name_suffix=$(date +%Y%m%d)
 description=
 snapshot_id=
 volume_id=
+volume_size='1'
 
 # EC2 known regions
 known_regions=('us-east-1')
