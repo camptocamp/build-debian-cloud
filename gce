@@ -61,7 +61,14 @@ done
 
 # Specify points in the bootstrapping process, which the plugins can latch onto.
 # This way plugins don't need fixing if we rename files.
+TASK_PACKAGES="01-packages"
 TASK_CREATE_VOLUME="10-create-volume"
 TASK_MOUNT_VOLUME="13-mount-volume"
+TASK_BOOTSTRAP="14-bootstrap"
+TASK_MOUNT_SPECIALS="15-mount-specials"
+TASK_APT_SOURCES="21-apt-sources"
+TASK_APT_UPGRADE="22-apt-upgrade"
+TASK_UNMOUNT_SPECIALS="71-unmount-specials"
+TASK_UNMOUNT_VOLUME="72-unmount-volume"
 TASK_DELETE_VOLUME="73-delete-loopback"
 TASK_REGISTER_IMAGE="95-register-image"
