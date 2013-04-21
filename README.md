@@ -1,11 +1,12 @@
-# Debian bootstrapping script for Amazon machine images #
+# Debian bootstrapping script for Amazon machine images and Google Compute Engine images #
 
-This script bootstraps a vanilla Debian installation to create an Amazon machine image.
+This script bootstraps a vanilla Debian installation to create either
+an Amazon machine image or a Google Compute Engine image.
 The image contains no latent logfiles no .bash\_history or even the apt package cache.  
 The machine configuration this script creates has been thoroughly tested.
 
 *This script has been tested on Debian squeeze and wheezy.*
-*You will need an Amazon EC2 instance to run this bootstrapper.*
+*To create an AMI this bootstrapper needs to be run on an Amazon EC2 instance.*
 
 ## Official AMIs provided by the Debian community and Amazon ##
 
@@ -21,10 +22,12 @@ More information about these images and links to the gzipped volume images can b
 
 ## Usage ##
 
-The script is started with ``./ec2debian-build-ami`` it has sensible defaults
-but can be configured with options and plugins. To see a list of options run
-``./ec2debian-build-ami --help``.
-At the very least, the script needs to know your AWS credentials.
+The script is started with ``./build-debian-cloud``.
+You can choose to either bootstrap a Debian AMI (``./build-debian-cloud ec2``)
+or a Google Compute Engine image (``./build-debian-cloud gce``).
+Both modes have sensible defaults and can be configured with options and plugins.
+To see a list of options use ``--help``.
+When creating an AMI the script at least needs to know your AWS credentials.
 
 There are no interactive prompts, the bootstrapping can run entirely unattended
 from start till finish.
@@ -53,7 +56,7 @@ your itch, you can of course [write your own plugin](https://github.com/andsens/
 
 *\*The bootup time was measured with [this script](https://gist.github.com/3813743)*
 
-### Bootstrapper features ###
+### Bootstrapper (AMI) features ###
 
 * EBS volume is automatically created, mounted, formatted, unmounted, "snapshotted" and deleted
 * AMI is automatically registered with the right kernels for the current region of the host machine
