@@ -9,6 +9,8 @@ You can run them via the `--plugin` option when bootstrapping:
   Adds some common packages to the AMI.
 * `unattended-upgrades`  
   Enables unattended upgrades with aptitude. Your EC2 server will upgrade itself daily.
+* `build-metadata`
+  Adds a build metadata output file to record the AMI and snapshot IDs for further scripting.
 * `admin-user`  
   Creates a user named 'admin', gives it sudo rights and disables the root login.
 * `publish-ami`  
