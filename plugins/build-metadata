@@ -1,0 +1,4 @@
+#!/bin/bash
+true ${BUILD_METADATA:?}
+insert_task_after $TASK_CREATE_AMI \
+	$plugindir/build-metadata-tasks/create-build-metadata
