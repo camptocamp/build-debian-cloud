@@ -3,11 +3,3 @@
 init_scripts+=("$scriptdir/init.d/ec2-get-credentials")
 init_scripts+=("$scriptdir/init.d/ec2-run-user-data")
 init_scripts+=("$scriptdir/init.d/expand-volume")
-
-case $filesystem in
-	# xfs cannot change the UUID on mounted volumes
-	xfs)  ;;
-	ext2) init_scripts+=("$scriptdir/init.d/change-root-uuid") ;;
-	ext3) init_scripts+=("$scriptdir/init.d/change-root-uuid") ;;
-	ext4) init_scripts+=("$scriptdir/init.d/change-root-uuid") ;;
-esac
