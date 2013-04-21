@@ -1,0 +1,7 @@
+#!/bin/bash
+# Add GCE startup scripts and packages to the image.
+
+DEBS="google-compute-daemon google-startup-scripts image-bundle"
+for deb in $DEBS; do
+  chroot $imagedir apt-get install --force-yes -y ${deb}
+done

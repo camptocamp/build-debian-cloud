@@ -1,7 +1,7 @@
 #!/bin/bash
 # Output some info to the user about the AMI we are about to build
 log \
-	"Building AMI for $distribution $codename" \
+	"Building image for $distribution $codename" \
 	"architecture:      $arch" \
 	"filesystem:        $filesystem" \
 	"volume size:       $volume_size GB" \

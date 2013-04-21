@@ -1,0 +1,9 @@
+#! /bin/bash
+
+wget -O $imagedir/tmp/gcutil.tar.gz \
+  https://google-compute-engine-tools.googlecode.com/files/gcutil-1.7.2.tar.gz
+
+mkdir -p $imagedir/usr/local/share/google/gcutil
+tar xf $imagedir/tmp/gcutil.tar.gz -C $imagedir/usr/local/share/google/gcutil \
+  --strip-components=1
+ln -s ../share/google/gcutil/gcutil $imagedir/usr/local/bin/gcutil

@@ -1,0 +1,7 @@
+#!/bin/bash
+# Delete the loopback device
+log "Deleting the loopback device"
+losetup -d $device_path
+
+# Lets cleanup code know the loopback device was deleted.
+unset device_path
