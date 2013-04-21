@@ -1,7 +1,7 @@
 #!/bin/sh
 ### BEGIN INIT INFO
 # Provides:       generate-ssh-hostkeys
-# Required-Start: $network
+# Required-Start: $local_fs
 # Required-Stop:  
 # Should-Start:   
 # Should-Stop:    
