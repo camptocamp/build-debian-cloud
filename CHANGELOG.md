@@ -46,7 +46,7 @@
 
 #### Major changes: ####
 * Add `change-root-uuid` script
-  (see [this issue for more info](https://github.com/andsens/ec2debian-build-ami/issues/40))
+  (see [this issue for more info](https://github.com/andsens/build-debian-cloud/issues/40))
 * Remove contrib and non-free from apt/sources.list  
 (thanks to zack for finding this and James for the patch)
 
