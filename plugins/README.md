@@ -30,7 +30,7 @@ The following is a list of external plugins you can use with build-debian-cloud.
 * [ec2-minecraft](https://github.com/andsens/ec2-minecraft)  
   Installs [Minecraft Server Manager](http://marcuswhybrow.net/minecraft-server-manager/) by Marcus Whybrow.
 
-* [ec2debian-chef](https://github.com/tmatilai/ec2debian-chef)  
+* [debian-cloud-chef](https://github.com/tmatilai/debian-cloud-chef)  
   Installs [Opscode Chef](http://www.opscode.com/chef/) client using the Omnibus installer.
 
 That's it for now. If you have made a plugin for build-debian-cloud and would like to share it,
