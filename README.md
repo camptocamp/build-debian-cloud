@@ -14,7 +14,7 @@ The Debian community and Amazon have together created AMIs using this bootstrapp
 and replicated them across AWS regions. The images have been tested for security and bugs.
 They are available on the [aws marketplace](https://aws.amazon.com/marketplace/pp/ref=csl_clsc_prd?sku=8fvdn95s5ev33cprr62nq3q7t).
 
-For each new official AMI a commit in this repository will be [tagged](https://github.com/andsens/ec2debian-build-ami/tags),
+For each new official AMI a commit in this repository will be [tagged](https://github.com/andsens/build-debian-cloud/tags),
 marking the version the AMI was bootstrapped with.
 
 More information about these images and links to the gzipped volume images can be found on the
@@ -32,9 +32,9 @@ When creating an AMI the script at least needs to know your AWS credentials.
 There are no interactive prompts, the bootstrapping can run entirely unattended
 from start till finish.
 
-Some plugins are included in the [plugins directory](https://github.com/andsens/ec2debian-build-ami/tree/master/plugins).
+Some plugins are included in the [plugins directory](https://github.com/andsens/build-debian-cloud/tree/master/plugins).
 A list of external plugins is also provided there. If none of those scratch
-your itch, you can of course [write your own plugin](https://github.com/andsens/ec2debian-build-ami/blob/master/plugins/HOWTO.md).
+your itch, you can of course [write your own plugin](https://github.com/andsens/build-debian-cloud/blob/master/plugins/HOWTO.md).
 
 ## Features ##
 

@@ -2,7 +2,7 @@
 In this folder you will find plugins made for the bootstrapper.  
 You can run them via the `--plugin` option when bootstrapping:  
 ```
-./ec2debian-build-ami --plugin plugins/ec2-run-user-data
+./build-debian-cloud ec2 --plugin plugins/admin-user
 ```
 
 * `standard-packages`  
@@ -22,7 +22,7 @@ You can run them via the `--plugin` option when bootstrapping:
   With this plugin you can inspect the results of the bootstrapping process without launching an instance.
 
 ## Other plugins ##
-The following is a list of external plugins you can use with ec2debian-build-ami.
+The following is a list of external plugins you can use with build-debian-cloud.
 
 * [ec2-autohostname](https://github.com/secoya/ec2-autohostname)  
   Create a Route 53 CNAME record via an instance tag when booting.
@@ -33,5 +33,5 @@ The following is a list of external plugins you can use with ec2debian-build-ami
 * [ec2debian-chef](https://github.com/tmatilai/ec2debian-chef)  
   Installs [Opscode Chef](http://www.opscode.com/chef/) client using the Omnibus installer.
 
-That's it for now. If you have made a plugin for ec2debian-build-ami and would like to share it,
+That's it for now. If you have made a plugin for build-debian-cloud and would like to share it,
 send me a pull request or drop me an email.
