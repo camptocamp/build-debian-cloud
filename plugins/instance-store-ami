@@ -1,0 +1,24 @@
+#!/bin/bash
+remove_task "06-patch-boto"
+
+# Remove tasks that create the EBS volume. Instead, we create a loop device
+# for our instance image
+remove_task "10-create-volume"
+remove_task "11-attach-volume"
+insert_task_before "12-format-volume"      "$plugindir/instance-store-ami-tasks/10-create-image-file"
+insert_task_before "12-format-volume"      "$plugindir/instance-store-ami-tasks/11-attach-image-loop"
+
+# Remove tasks that handle the EBS volume and create the snapshot
+remove_task "73-detach-volume"
+remove_task "80-ebs-snapshot"
+remove_task "82-delete-volume"
+
+# New tasks that bundle our image and upload it to S3
+insert_task_after "72-unmount-volume"      "$plugindir/instance-store-ami-tasks/73-detach-image-loop"
+insert_task_after "73-detach-image-loop"   "$plugindir/instance-store-ami-tasks/80-bundle-image"
+insert_task_after "80-bundle-image"        "$plugindir/instance-store-ami-tasks/81-upload-bundle"
+insert_task_after "81-upload-bundle"       "$plugindir/instance-store-ami-tasks/82-delete-image-file"
+
+# Replace the AMI registering as the command is different for instance-store AMIs
+remove_task "95-register-ami"
+insert_task_after "82-delete-image-file"   "$plugindir/instance-store-ami-tasks/95-register-ami"

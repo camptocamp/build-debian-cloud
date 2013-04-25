@@ -1,0 +1,4 @@
+#!/bin/bash
+# Delete instance image file
+log "Deleting the image file"
+rm $imagefile

@@ -1,0 +1,16 @@
+#!/bin/bash
+# Create a file for our instance image 
+
+volume_id=instance-$RANDOM
+imagefile=$debootstrap_dir/${volume_id}.img
+
+if [ -f "$imagefile" ]; then
+  die "The image file $imagefile already exists."
+fi
+
+# Create a sparse file of $volume_site GB
+dd if=/dev/zero of=$imagefile bs=1 seek=${volume_size}G count=0
+if [ $? -ne 0 ]; then
+  die "Unable to create image file '${imagefile}'."
+fi
+log "Successfully created image file."

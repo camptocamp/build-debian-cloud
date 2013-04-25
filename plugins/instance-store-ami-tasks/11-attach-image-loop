@@ -1,0 +1,10 @@
+#!/bin/bash
+# Create a loop device and attach our instance image file
+
+device_path=`losetup --find`
+
+losetup $device_path $imagefile
+if [ $? -ne 0 ]; then
+  die "Unable to attach image file to loop device '${device_path}'."
+fi
+log "Successfully created instance image loop device '${device_path}'." 

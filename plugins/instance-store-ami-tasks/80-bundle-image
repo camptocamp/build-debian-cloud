@@ -1,0 +1,11 @@
+#!/bin/bash
+# Bundle of instance image
+
+bundledir=${debootstrap_dir}/${volume_id}-bundle
+mkdir $bundledir
+
+euca-bundle-image -i $imagefile -d $bundledir -p "${volume_id}"
+if [ $? -ne 0 ]; then
+  die "Unable to bundle instance image."
+fi
+log "Successully created an instance image bundle."
