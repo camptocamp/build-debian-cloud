@@ -3,6 +3,9 @@ remote_task "05-install-euca2ools"
 insert_task_before "06-patch-boto" "$plugindir/instance-store-ami-tasks/05-install-euca2ools"
 remove_task "06-patch-boto"
 
+# Additional vars for euca tools that manage bundles
+insert_task_after "07-host-information"    "$plugindir/instance-store-ami-tasks/08-more-host-info"
+
 # Remove tasks that create the EBS volume. Instead, we create a loop device
 # for our instance image
 remove_task "10-create-volume"

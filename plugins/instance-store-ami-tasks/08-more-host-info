@@ -1,0 +1,14 @@
+#!/bin/bash
+
+export EC2_REGION=${region}
+export S3_URL=https://s3-${region}.amazonaws.com/
+
+test ! -z "$EC2_PRIVATE_KEY" || die "Variable \$EC2_PRIVATE_KEY must be set!"
+test ! -z "$EC2_CERT" || die "Variable \$EC2_CERT must be set!"
+test ! -z "$EC2_USER_ID" || die "Variable \$EC2_USER_ID must be set!"
+test ! -z "$EUCALYPTUS_CERT" || die "Variable \$EUCALYPTUS_CERT must be set!"
+test ! -z "$S3_BUCKET" || die "Variable \$S3_BUCKET must be set!"
+
+test -f $EC2_PRIVATE_KEY || die "Could not find EC2 private key file - $EC2_PRIVATE_KEY"
+test -f $EC2_CERT || die "Could not find EC2 private key file - $EC2_CERT"
+test -f $EUCALYPTUS_CERT || die "Could not find EC2 private key file - $EUCALYPTUS_CERT"
