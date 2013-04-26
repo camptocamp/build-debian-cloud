@@ -48,7 +48,8 @@ esac
 
 ami_name="$distribution-$codename-$arch-$name_suffix"
 log "Registering an AMI"
-ami_id=`euca-register "${bucketname}/${volume_id}.manifest.xml" \
+ami_id=`euca-register \
+        "${S3_BUCKET}/${ami_name}.manifest.xml" \
         --name "$ami_name" --description "$description" \
         --architecture "$ami_arch" --kernel "$aki" \
         | awk '{print $2}'`
@@ -56,14 +57,13 @@ ami_id=`euca-register "${bucketname}/${volume_id}.manifest.xml" \
 # If the user has already created an unnamed AMI today,
 # this will fail, so give the AMI registration command to the user
 if [[ ! "$ami_id" =~ ^ami-[0-9a-z]{8}$ ]]; then
-	die "Unable to register an AMI."
-#        die \
-#                "Unable to register an AMI." \
-#                "You can do it manually with:" \
-#                "`which euca-register` \\\\" \
-#                "--name '$ami_name' --description '$description' \\\\" \
-#                "--architecture '$ami_arch' --kernel '$aki' \\\\" \
-#                "--snapshot '$snapshot_id:$volume_size:true:standard'"
+        die \
+                "Unable to register an AMI." \
+                "You can do it manually with:" \
+                "`which euca-register` \\\\" \
+                "'${S3_BUCKET}/${ami_name}.manifest.xml' \\\\" \
+                "--name '$ami_name' --description '$description' \\\\" \
+                "--architecture '$ami_arch' --kernel '$aki'"
 fi
 log "Your AMI has been created with the ID '$ami_id'"
 
