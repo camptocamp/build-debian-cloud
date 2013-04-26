@@ -1,11 +1,7 @@
 #!/bin/bash
 # Upload instance image bundle to S3
 
-bucketname="debian-ami-test2"
-
-log "euca-upload-bundle -b \"${bucketname}\" -m \"${bundledir}/${volume_id}.manifest.xml\" --location \"${region}\""
-euca-upload-bundle -b "${bucketname}" -m "${bundledir}/${volume_id}.manifest.xml" --location "${region}"
+euca-upload-bundle -b "${S3_BUCKET}" -m "${bundledir}/${ami_name}.manifest.xml"
 if [ $? -ne 0 ]; then
   die "Unable to upload image bundle to S3."
 fi
-log "Successully uploaded image bundle to S3."

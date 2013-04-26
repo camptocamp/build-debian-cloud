@@ -46,7 +46,6 @@ esac
 [ $arch = 'i386' ] && ami_arch='i386'
 [ $arch = 'amd64' ] && ami_arch='x86_64'
 
-ami_name="$distribution-$codename-$arch-$name_suffix"
 log "Registering an AMI"
 ami_id=`euca-register \
         "${S3_BUCKET}/${ami_name}.manifest.xml" \
