@@ -23,7 +23,8 @@ insert_task_after "72-unmount-volume"      "$plugindir/instance-store-ami-tasks/
 insert_task_after "73-detach-image-loop"   "$plugindir/instance-store-ami-tasks/80-bundle-image"
 insert_task_after "80-bundle-image"        "$plugindir/instance-store-ami-tasks/81-upload-bundle"
 insert_task_after "81-upload-bundle"       "$plugindir/instance-store-ami-tasks/82-delete-image-file"
+insert_task_after "82-delete-image-file"   "$plugindir/instance-store-ami-tasks/83-delete-bundle-files"
 
 # Replace the AMI registering as the command is different for instance-store AMIs
 remove_task "95-register-ami"
-insert_task_after "82-delete-image-file"   "$plugindir/instance-store-ami-tasks/95-register-ami"
+insert_task_after "83-delete-bundle-files"  "$plugindir/instance-store-ami-tasks/95-register-ami"
