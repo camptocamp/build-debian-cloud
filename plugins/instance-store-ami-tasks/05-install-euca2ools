@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# We use euca2ools to communicate with AWS
+# The package in squeeze is v 1.2, which does not support EBS images
+# So we install 2.1 from source instead
+if [ ! -d $scriptdir/euca2ools ]; then
+	wget -qO $scriptdir/euca2ools-2.1.3.tar.gz https://github.com/eucalyptus/euca2ools/archive/2.1.3.tar.gz
+	tar zxf $scriptdir/euca2ools-2.1.3.tar.gz
+fi
+
+function install_euca2ools {
+	# We want to fail if make fails, so don't start a subshell with ()
+	# Remember the old dir
+	local orig_pwd=$(pwd)
+	cd euca2ools-2.1.3
+        python setup.py build | spin
+	[ $PIPESTATUS == 0 ] || die "euca2ools build failed!"
+        python setup.py install | spin
+	[ $PIPESTATUS == 0 ] || die "euca2ools installation failed!"
+	cd $orig_pwd
+}
+
+# make the euca2ools if they are not installed or the version is wrong
+if ! command -v euca-version > /dev/null 2>&1; then
+	install_euca2ools
+elif [[ ! "`euca-version`" =~ euca2ools\ 2.1.* ]]; then
+	install_euca2ools
+fi
