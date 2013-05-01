@@ -1,5 +1,5 @@
 #!/bin/bash
-remote_task "05-install-euca2ools"
+remove_task "05-install-euca2ools"
 insert_task_before "06-patch-boto" "$plugindir/instance-store-ami-tasks/05-install-euca2ools"
 remove_task "06-patch-boto"
 
