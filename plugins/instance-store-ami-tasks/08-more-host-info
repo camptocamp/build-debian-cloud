@@ -1,7 +1,14 @@
 #!/bin/bash
 
 export EC2_REGION=${region}
-export S3_URL=https://s3-${region}.amazonaws.com/
+case "${region}" in
+us-east-1)
+  export S3_URL=https://s3.amazonaws.com/
+  ;;
+*)
+  export S3_URL=https://s3-${region}.amazonaws.com/
+  ;;
+esac
 
 test ! -z "$EC2_PRIVATE_KEY" || die "Variable \$EC2_PRIVATE_KEY must be set!"
 test ! -z "$EC2_CERT" || die "Variable \$EC2_CERT must be set!"
